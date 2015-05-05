@@ -152,7 +152,7 @@ public class DisplayGamesActivity extends Activity {
                         //Log.d("MyApp" + " Attendance: ", object.getString(TAG_ATTENDANCE_STATUS).toString());
 
                         Game game = new Game();
-
+//hello
                         if(object.isNull(TAG_ARENA_NAME) || object.isNull(TAG_RINK_NAME) || object.isNull(TAG_ATTENDANCE_STATUS)) {
                             game.setTitle(object.getString(TAG_TITLE));
                             game.setArenaName("");
