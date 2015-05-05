@@ -63,7 +63,7 @@ public class DisplayGamesActivity extends Activity {
         Log.d("MyApp" + " DisplayGamesActivity", teamId);
         */
 
-        //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/408330/17786870/5/2015");
+        //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/408330/17786870/4/2015");
         new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + playerId + "/" + getMonth + "/" + getYear);
         //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/408330/17786870/" + getMonth + "/" + getYear);
 
@@ -93,7 +93,6 @@ public class DisplayGamesActivity extends Activity {
 
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,15 +151,16 @@ public class DisplayGamesActivity extends Activity {
                         //Log.d("MyApp" + " Attendance: ", object.getString(TAG_ATTENDANCE_STATUS).toString());
 
                         Game game = new Game();
-//hello
-                        if(object.isNull(TAG_ARENA_NAME) || object.isNull(TAG_RINK_NAME) || object.isNull(TAG_ATTENDANCE_STATUS)) {
+
+                        //if user hasn't set attendance yet
+                        if(object.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("null")) {
                             game.setTitle(object.getString(TAG_TITLE));
-                            game.setArenaName("");
-                            game.setRinkName("");
+                            game.setArenaName(object.getString(TAG_ARENA_NAME));
+                            game.setRinkName(object.getString(TAG_RINK_NAME));
                             game.setEventDate(object.getString(TAG_EVENT_DATE));
                             game.setAttendance("Bro, you haven't set your attendance to this event yet");
-                            if(!object.isNull(TAG_TITLE) && !object.isNull(TAG_ARENA_NAME) && !object.isNull(TAG_RINK_NAME) && !object.isNull(TAG_EVENT_DATE)
-                                    /*&& object.getString(TAG_ATTENDANCE_STATUS).toString().equals("0")*/) {
+                            //if user has set attendance to no
+                            if(object.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("0")) {
                                 game.setTitle(object.getString(TAG_TITLE));
                                 game.setArenaName(object.getString(TAG_ARENA_NAME));
                                 game.setRinkName(object.getString(TAG_RINK_NAME));
@@ -174,9 +174,10 @@ public class DisplayGamesActivity extends Activity {
                             game.setEventDate(object.getString(TAG_EVENT_DATE));
                             game.setAttendance("I am attending this event bro");
                         }
+
                         gamesList.add(game);
-                        Log.d("MyApp", gamesList.toString());
-                        Log.d("MyApp", game.toString());
+                        //Log.d("MyApp", gamesList.toString());
+                        //Log.d("MyApp", game.toString());
                     }
                     return true;
                 }
@@ -197,4 +198,3 @@ public class DisplayGamesActivity extends Activity {
         }
     }
 }
-
