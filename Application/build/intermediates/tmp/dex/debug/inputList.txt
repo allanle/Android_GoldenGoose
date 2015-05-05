@@ -1,0 +1,6 @@
+/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/classes/debug
+/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/pre-dexed/debug/support-annotations-21.0.2-7af37afdbe55be85be7c464e57fa51f33b337613.jar
+/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/pre-dexed/debug/classes-6585fcc39223205c6975420bb98d0a363d6f7eb6.jar
+/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/pre-dexed/debug/classes-32d558b35995df525586236d9e8e1ee8b996c161.jar
+/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/pre-dexed/debug/internal_impl-21.0.2-b7bd176dbacc257747fc3b855dd6841ea2286414.jar
+/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/pre-dexed/debug/classes-50410b91d117e275952f25eaa50505950c32d04a.jar
