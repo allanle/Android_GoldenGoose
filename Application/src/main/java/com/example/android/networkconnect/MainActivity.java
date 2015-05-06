@@ -264,32 +264,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 }
                 reader.close();
 
-                Intent intent = new Intent(MainActivity.this, DisplayGamesActivity.class);
-
 	            try {
-
+                    Intent intent = new Intent(MainActivity.this, DisplayGamesActivity.class);
                     JSONObject json = new JSONObject(sb.toString());
 		            JSONArray teamList = json.getJSONArray(TAG_TEAMLIST);
 
 		            Log.d("MyApp", "Welcome " +json.getString(TAG_FIRSTNAME).toString() + " " +json.getString(TAG_LASTNAME).toString());
                     Log.d("MyApp", "TEAM ID: " + json.get(TAG_TEAMID).toString() + " PEOPLE ID: " + json.get(TAG_PEOPLE_ID).toString());
-
-
-                    String teamid = json.getString(TAG_TEAMID).toString();
-                    Log.d("MyApp", " team id " + teamid);
-                    String playerid = json.get(TAG_PEOPLE_ID).toString();
-                    Log.d("MyApp", " player id " + playerid);
-
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString("teamid", teamid);
-                    bundle.putString("playerid", playerid);
-                    Log.d("MyApp", " BUNDLE" + bundle);
-                    intent.putExtras(bundle);
-
-                    //start next activity
-                    startActivity(intent);
-
 
 		            // Number of teams.
 		            int numTeams = teamList.length();
@@ -342,29 +323,25 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 					            Log.d("MyApp", "I am attending button here");
 					            Log.d("MyApp", "I am not attending button here");
 				            }
-
 			            }
-                    /*
-                    //PreferenceManager manager = (PreferenceManager) PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    //SharedPreferences prefs = getSharedPreferences("app", 0);
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    //SharedPreferences sharedPreferences = getSharedPreferences("app", Context.MODE_PRIVATE);
-
-
-                    String getPeopleId = json.getString(TAG_PEOPLE_ID).toString();
-                    String getTeamId = json.getString(TAG_TEAMID).toString();
-                    String getAttendanceStatus = json.getString(TAG_EVENT_ATTSTATUS).toString();
-
-                    Log.d("MyApp", "json object " + getPeopleId + " " + getTeamId + " " + getAttendanceStatus);
-
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("PeopleId", getPeopleId);
-                    editor.putString("TeamId", getTeamId);
-                    editor.commit();*/
 		            }
+                    String teamid = json.getString(TAG_TEAMID).toString();
+                    Log.d("MyApp", " team id " + teamid);
+                    String playerid = json.get(TAG_PEOPLE_ID).toString();
+                    Log.d("MyApp", " player id " + playerid);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("teamid", teamid);
+                    bundle.putString("playerid", playerid);
+                    Log.d("MyApp", " BUNDLE" + bundle);
+                    intent.putExtras(bundle);
+                    //start next activity
+                    startActivity(intent);
+
 	            } catch(JSONException e) {
 		            Log.e("JSON Parser", "Error parsing data: " + e.toString());
 	            }
+
             } catch (Exception ex) {
                 Log.d("MyApp", ex.getMessage());
                 ex.printStackTrace();
@@ -380,9 +357,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         @Override
         protected void onPostExecute(String result) {
             Log.i("MyApp", " onPostExecute information " + result);
-            //Intent intent = new Intent(getApplicationContext(), DisplayGamesActivity.class);
-            //intent.putExtra("loginstuff", result);
-            //context.sendBroadcast(intent);
         }
     }
 

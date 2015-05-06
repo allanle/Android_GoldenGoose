@@ -2,7 +2,6 @@ package com.example.android.networkconnect;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.common.logger.Log;
@@ -53,16 +53,6 @@ public class DisplayGamesActivity extends Activity {
         Log.d("MyApp", " Bundle in display games activity " + bundle);
         Log.d("MyApp", " DisplayActivity " + playerId + " " + teamId);
 
-        /*
-        //SharedPreferences sharedPreerences = getSharedPreferences("app", MODE_PRIVATE);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-        peopleId = sharedPreferences.getString("PeopleId", peopleId);
-        teamId = sharedPreferences.getString("TeamId", teamId);
-        Log.d("MyApp" + " DisplayGamesActivity", peopleId);
-        Log.d("MyApp" + " DisplayGamesActivity", teamId);
-        */
-
         //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/408330/17786870/4/2015");
         new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + playerId + "/" + getMonth + "/" + getYear);
         //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/408330/17786870/" + getMonth + "/" + getYear);
@@ -80,17 +70,13 @@ public class DisplayGamesActivity extends Activity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Context context = view.getContext();
-                String a = list.getTag().toString();
-                Toast.makeText(getApplication(), gamesList.get(position).getTitle().toString(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(context, a, Toast.LENGTH_SHORT).show();
+                //Context context = view.getContext();
+                //String a = list.getTag().toString();
+                //Toast.makeText(getApplication(), gamesList.get(position).getTitle().toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, a, Toast.LENGTH_SHORT).show();
+                String game = ((TextView)view).getText().toString();
+                Toast.makeText(getBaseContext(), game, Toast.LENGTH_SHORT).show();
             }
-            /*@Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(DisplayGamesActivity.this, CustomListAdapter.class);
-                startActivity(intent);
-            }*/
-
         });
     }
 
@@ -101,7 +87,7 @@ public class DisplayGamesActivity extends Activity {
         return true;
     }
 
-    private class JSONAsyncTask extends AsyncTask<String, Void, Boolean> {
+    private class JSONAsyncTask extends AsyncTask<String, Void, String> {
         private ProgressDialog dialog;
         private static final String TAG_TITLE = "title";
         private static final String TAG_ARENA_NAME = "arenaname";
@@ -120,12 +106,11 @@ public class DisplayGamesActivity extends Activity {
         }
 
         @Override
-        protected Boolean doInBackground(String... urls) {
+        protected String doInBackground(String... urls) {
             try {
-
-                HttpGet httpPost = new HttpGet(urls[0]);
+                HttpGet httpGet = new HttpGet(urls[0]);
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpResponse response = httpClient.execute(httpPost);
+                HttpResponse response = httpClient.execute(httpGet);
 
                 // StatusLine stat = response.getStatusLine();
                 int status = response.getStatusLine().getStatusCode();
@@ -144,11 +129,6 @@ public class DisplayGamesActivity extends Activity {
                         Log.d("MyApp", "IF ATTENDANCE IS NULL THEN DO SOMETHING HURRRRR " + object.get(TAG_ATTENDANCE_STATUS));
 
                         Log.d("MyApp" + " JSON object in DisplayGamesActivity", object.toString());
-                        //Log.d("MyApp" + " Title: ", object.getString(TAG_TITLE).toString());
-                        //Log.d("MyApp" + " Arena: ", object.getString(TAG_ARENA_NAME).toString());
-                        //Log.d("MyApp" + " Rink: ", object.getString(TAG_RINK_NAME).toString());
-                        //Log.d("MyApp" + " Date: ", object.getString(TAG_EVENT_DATE).toString());
-                        //Log.d("MyApp" + " Attendance: ", object.getString(TAG_ATTENDANCE_STATUS).toString());
 
                         Game game = new Game();
 
@@ -174,27 +154,26 @@ public class DisplayGamesActivity extends Activity {
                             game.setEventDate(object.getString(TAG_EVENT_DATE));
                             game.setAttendance("I am attending this event bro");
                         }
-
                         gamesList.add(game);
-                        //Log.d("MyApp", gamesList.toString());
-                        //Log.d("MyApp", game.toString());
                     }
-                    return true;
+                    return "Hi";
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return false;
+            return "Hello";
         }
 
-        protected void onPostExecute(Boolean result) {
+        @Override
+        protected void onPostExecute(String result) {
             dialog.cancel();
             adapter.notifyDataSetChanged();
-            if (result == false) {
+            /*if (result == false) {
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_SHORT).show();
-            }
+            }*/
+            Log.d("MyApp", result);
         }
     }
 }
