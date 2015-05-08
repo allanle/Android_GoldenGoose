@@ -30,13 +30,14 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
     private int mResource;
     private ViewHolder viewHolder;
     Game game = new Game();
-    private int layout;
+    private Context ctx;
 
     public CustomListAdapter(Context context, int resource, ArrayList<Game> objects) {
         super(context, resource, objects);
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResource = resource;
         games = objects;
+        ctx = context;
     }
 
     @Override
@@ -137,6 +138,8 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
                     jsonObject.put(TAG_TEAM_ID, "408330");
                     jsonObject.put(TAG_PERM_LEVEL, "");
                     jsonObject.put(TAG_FLAGS, "");
+
+
 
                     json = jsonObject.toString();
 

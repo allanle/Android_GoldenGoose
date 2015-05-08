@@ -166,9 +166,9 @@ public class DisplayGamesActivity extends Activity {
             final Message message = new Message();
             message.obj = jsonArray;
             Log.d(TAG_MY_APP, message.toString());
-            /*if (result == false) {
+            if (jsonArray == null) {
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_SHORT).show();
-            }*/
+            }
             Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity", jsonArray.toString());
         }
     }
