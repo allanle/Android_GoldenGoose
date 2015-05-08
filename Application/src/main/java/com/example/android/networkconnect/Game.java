@@ -18,6 +18,7 @@ public class Game implements Parcelable {
     private String teamId;
     private String playerId;
     private String result;
+    private int id;
 
     public Game() {
 
@@ -108,6 +109,11 @@ public class Game implements Parcelable {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    @Override
+    public String toString() {
+        return this.id + this.title;
     }
 
     @Override

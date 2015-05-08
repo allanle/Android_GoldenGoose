@@ -2,39 +2,39 @@
 <items version="2" >
 
     <item
-        jar="/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/exploded-aar/com.android.support/gridlayout-v7/21.0.2/classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="9742ced04aafd9ac97dd2c66c1aa0e32d2ae7e54">
-        <dex dex="/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/pre-dexed/debug/classes-32d558b35995df525586236d9e8e1ee8b996c161.jar" />
-    </item>
-    <item
-        jar="/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.2/classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="d1bf02de1c56d942e7a9d093b8610ba1ef4128e3">
-        <dex dex="/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/pre-dexed/debug/classes-50410b91d117e275952f25eaa50505950c32d04a.jar" />
-    </item>
-    <item
-        jar="/Users/pointstreak/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.2/support-annotations-21.0.2.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="99373741f99a0556ee293c41e8faa1ca3ae8a4e6">
-        <dex dex="/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/pre-dexed/debug/support-annotations-21.0.2-7af37afdbe55be85be7c464e57fa51f33b337613.jar" />
-    </item>
-    <item
-        jar="/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/exploded-aar/com.android.support/cardview-v7/21.0.2/classes.jar"
+        jar="C:\Users\Allan\Desktop\goldengoose\Application\build\intermediates\exploded-aar\com.android.support\cardview-v7\21.0.2\classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="b017100da14f9c158c9f5f2f508333c224b24a7c">
-        <dex dex="/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/pre-dexed/debug/classes-6585fcc39223205c6975420bb98d0a363d6f7eb6.jar" />
+        <dex dex="C:\Users\Allan\Desktop\goldengoose\Application\build\intermediates\pre-dexed\debug\classes-e16912ddd9a9aeb0ed9a18ae11ae944573b5d2dd.jar" />
     </item>
     <item
-        jar="/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.2/libs/internal_impl-21.0.2.jar"
+        jar="C:\Users\Allan\Desktop\goldengoose\Application\build\intermediates\exploded-aar\com.android.support\gridlayout-v7\21.0.2\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="9742ced04aafd9ac97dd2c66c1aa0e32d2ae7e54">
+        <dex dex="C:\Users\Allan\Desktop\goldengoose\Application\build\intermediates\pre-dexed\debug\classes-5ef5e7a2f7a5519200bf4fa6f1750cb13a0cd5b4.jar" />
+    </item>
+    <item
+        jar="C:\Users\Allan\Desktop\goldengoose\Application\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.2\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d1bf02de1c56d942e7a9d093b8610ba1ef4128e3">
+        <dex dex="C:\Users\Allan\Desktop\goldengoose\Application\build\intermediates\pre-dexed\debug\classes-224616be8019b3975d43cc71098d0bdd641e37ee.jar" />
+    </item>
+    <item
+        jar="E:\Users\Allan\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.2\support-annotations-21.0.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="99373741f99a0556ee293c41e8faa1ca3ae8a4e6">
+        <dex dex="C:\Users\Allan\Desktop\goldengoose\Application\build\intermediates\pre-dexed\debug\support-annotations-21.0.2-03f8529d210ad8eae0afbe162eb2a8a53a9ca0c0.jar" />
+    </item>
+    <item
+        jar="C:\Users\Allan\Desktop\goldengoose\Application\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.2\libs\internal_impl-21.0.2.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="962e8b12569c56dbdcf8367eb4eac8bb129cd18f">
-        <dex dex="/Users/pointstreak/Desktop/NetworkConnect/Application/build/intermediates/pre-dexed/debug/internal_impl-21.0.2-b7bd176dbacc257747fc3b855dd6841ea2286414.jar" />
+        <dex dex="C:\Users\Allan\Desktop\goldengoose\Application\build\intermediates\pre-dexed\debug\internal_impl-21.0.2-b3bb26038c1dce380bdba06d3a43feb0e1da8940.jar" />
     </item>
 
 </items>

@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.common.logger.Log;
@@ -30,7 +31,6 @@ import java.util.Calendar;
 
 public class DisplayGamesActivity extends Activity {
     private ArrayList<Game> gamesList;
-    private ListView list;
     private CustomListAdapter adapter;
     private Button yes;
     private Button no;
@@ -38,6 +38,7 @@ public class DisplayGamesActivity extends Activity {
     private Calendar calendar = Calendar.getInstance();
     private int getMonth = calendar.get(Calendar.MONTH) + 1;
     private int getYear = calendar.get(Calendar.YEAR);
+    private static final String TAG_MY_APP = "MyApp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,32 +51,24 @@ public class DisplayGamesActivity extends Activity {
         Bundle bundle = getIntent().getExtras();
         playerId = bundle.getString("playerid");
         teamId = bundle.getString("teamid");
-        Log.d("MyApp", " Bundle in display games activity " + bundle);
-        Log.d("MyApp", " DisplayActivity " + playerId + " " + teamId);
+        Log.d(TAG_MY_APP, " Bundle in display games activity " + bundle);
+        Log.d(TAG_MY_APP, " DisplayActivity " + playerId + " " + teamId);
 
         //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/408330/17786870/4/2015");
         new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + playerId + "/" + getMonth + "/" + getYear);
         //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/408330/17786870/" + getMonth + "/" + getYear);
-
-        Log.d("MyApp", "MONTH " + getMonth + " YEAR " + getYear);
-
         //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/408330/17786870");
+        Log.d(TAG_MY_APP, "MONTH " + getMonth + " YEAR " + getYear);
 
         gamesList = new ArrayList<Game>();
-        list = (ListView) findViewById(R.id.listView);
+        ListView listView = (ListView)findViewById(R.id.listView);
         adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, gamesList);
 
-        list.setAdapter(adapter);
-
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Context context = view.getContext();
-                //String a = list.getTag().toString();
-                //Toast.makeText(getApplication(), gamesList.get(position).getTitle().toString(), Toast.LENGTH_SHORT).show();
-                //Toast.makeText(context, a, Toast.LENGTH_SHORT).show();
-                String game = ((TextView)view).getText().toString();
-                Toast.makeText(getBaseContext(), game, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), gamesList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -87,13 +80,15 @@ public class DisplayGamesActivity extends Activity {
         return true;
     }
 
-    private class JSONAsyncTask extends AsyncTask<String, Void, String> {
+    private class JSONAsyncTask extends AsyncTask<String, Void, JSONArray> {
         private ProgressDialog dialog;
         private static final String TAG_TITLE = "title";
         private static final String TAG_ARENA_NAME = "arenaname";
         private static final String TAG_RINK_NAME = "rinkname";
         private static final String TAG_EVENT_DATE = "eventdate";
         private static final String TAG_ATTENDANCE_STATUS = "attstatus";
+        private JSONObject object;
+        private JSONArray jsonArray;
 
         @Override
         protected void onPreExecute() {
@@ -106,7 +101,7 @@ public class DisplayGamesActivity extends Activity {
         }
 
         @Override
-        protected String doInBackground(String... urls) {
+        protected JSONArray doInBackground(String... urls) {
             try {
                 HttpGet httpGet = new HttpGet(urls[0]);
                 HttpClient httpClient = new DefaultHttpClient();
@@ -119,16 +114,13 @@ public class DisplayGamesActivity extends Activity {
                     HttpEntity entity = response.getEntity();
                     String data = EntityUtils.toString(entity);
 
-                    JSONArray jsonArray = new JSONArray(data);
-
-                    Log.d("MyApp" + " JSON Array in DisplayGamesActivity", jsonArray.toString());
-
+                    jsonArray = new JSONArray(data);
+                    Log.d(TAG_MY_APP + " JSON Array in DisplayGamesActivity", jsonArray.toString());
+                    Log.d(TAG_MY_APP, "hello");
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject object = jsonArray.getJSONObject(i);
+                        object = jsonArray.getJSONObject(i);
 
-                        Log.d("MyApp", "IF ATTENDANCE IS NULL THEN DO SOMETHING HURRRRR " + object.get(TAG_ATTENDANCE_STATUS));
-
-                        Log.d("MyApp" + " JSON object in DisplayGamesActivity", object.toString());
+                        Log.d(TAG_MY_APP + " JSON object in DisplayGamesActivity", object.toString());
 
                         Game game = new Game();
 
@@ -156,24 +148,28 @@ public class DisplayGamesActivity extends Activity {
                         }
                         gamesList.add(game);
                     }
-                    return "Hi";
+                    return jsonArray;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return "Hello";
+            return jsonArray;
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(JSONArray jsonArray) {
             dialog.cancel();
             adapter.notifyDataSetChanged();
+            super.onPostExecute(jsonArray);
+            final Message message = new Message();
+            message.obj = jsonArray;
+            Log.d(TAG_MY_APP, message.toString());
             /*if (result == false) {
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_SHORT).show();
             }*/
-            Log.d("MyApp", result);
+            Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity", jsonArray.toString());
         }
     }
 }

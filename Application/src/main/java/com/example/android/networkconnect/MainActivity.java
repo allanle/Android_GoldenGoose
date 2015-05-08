@@ -16,7 +16,6 @@
 
 package com.example.android.networkconnect;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -75,9 +74,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private Calendar calendar = Calendar.getInstance();
     private int month = calendar.get(Calendar.MONTH) + 1;
     private int year = calendar.get(Calendar.YEAR);
-
-    JSONObjectParser parser;
-
+    private static final String TAG_MY_APP = "TAG_MY_APP";
 
     // Reference to the fragment showing events, so we can clear it with a button
     // as necessary.
@@ -98,7 +95,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         password = (EditText)findViewById(R.id.password);
         password.setOnClickListener(this);
-
 
         rememberMe = (CheckBox)findViewById(R.id.rememberme);
         sharedPreferences = getSharedPreferences("gay", MODE_PRIVATE);
@@ -137,8 +133,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     Toast.makeText(getApplicationContext(), "Must enter password", Toast.LENGTH_SHORT).show();
                 } else {
                     new LoginTask().execute();
-                    //Intent intent = new Intent(getApplicationContext(), DisplayGamesActivity.class);
-                    //startActivity(intent);
                     Toast.makeText(getApplicationContext(), " Login Successful", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -146,7 +140,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         // Initialize the logging framework.
         initializeLogging();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -205,7 +198,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
      * Implementation of AsyncTask, to fetch the data in the background away from
      * the UI thread.
      */
-    private class LoginTask extends AsyncTask<String, Void, String> {
+    private class LoginTask extends AsyncTask<String, Void, JSONObject> {
         private static final String TAG_TEAMNAME = "teamname";
         private static final String TAG_TEAMLIST = "teamlist";
         private static final String TAG_FIRSTNAME = "firstname";
@@ -219,12 +212,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         private static final String TAG_EVENT_ATTOUT = "attout";
         private static final String TAG_EVENT_ATTSTATUS = "attstatus";
         private static final String TAG_PEOPLE_ID = "peopleid";
-        private Context context;
+        private JSONObject json;
 
         @Override
-        protected String doInBackground(String... urls) {
+        protected JSONObject doInBackground(String... urls) {
             try {
-                Log.d("MyApp", "+ Starting App");
+                Log.d(TAG_MY_APP, "+ Starting App");
 
                 URL url = new URL("https://teamlockerroom.com/api/authenticate");
                 String charset = "UTF-8";
@@ -236,8 +229,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 data += "&" + URLEncoder.encode("password", charset)
                         + "=" + URLEncoder.encode(mpassword, charset);
 
-                Log.d("MyApp", "+ Here is the data");
-                Log.d("MyApp", data);
+                Log.d(TAG_MY_APP, "+ Here is the data");
+                Log.d(TAG_MY_APP, data);
 
                 BufferedReader reader = null;
                 String line = null;
@@ -247,7 +240,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 conn.setRequestProperty("Accept-Charset", charset);
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
                 conn.setDoOutput(true);
-                Log.d("MyApp", "+ Connected to URL.");
+                Log.d(TAG_MY_APP, "+ Connected to URL.");
 
                 OutputStream ostream = conn.getOutputStream();
                 OutputStreamWriter wr = new OutputStreamWriter(ostream);
@@ -255,7 +248,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 wr.flush();
 
                 reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                Log.d("MyApp", "+ Dumping Output stream");
+                Log.d(TAG_MY_APP, "+ Dumping Output stream");
 
                 // Read Server Response
                 while((line = reader.readLine()) != null) {
@@ -265,25 +258,25 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 reader.close();
 
 	            try {
-                    Intent intent = new Intent(MainActivity.this, DisplayGamesActivity.class);
-                    JSONObject json = new JSONObject(sb.toString());
+                    //Intent intent = new Intent(MainActivity.this, DisplayGamesActivity.class);
+                    json = new JSONObject(sb.toString());
 		            JSONArray teamList = json.getJSONArray(TAG_TEAMLIST);
 
-		            Log.d("MyApp", "Welcome " +json.getString(TAG_FIRSTNAME).toString() + " " +json.getString(TAG_LASTNAME).toString());
-                    Log.d("MyApp", "TEAM ID: " + json.get(TAG_TEAMID).toString() + " PEOPLE ID: " + json.get(TAG_PEOPLE_ID).toString());
+		            Log.d(TAG_MY_APP, "Welcome " +json.getString(TAG_FIRSTNAME).toString() + " " +json.getString(TAG_LASTNAME).toString());
+                    Log.d(TAG_MY_APP, "TEAM ID: " + json.get(TAG_TEAMID).toString() + " PEOPLE ID: " + json.get(TAG_PEOPLE_ID).toString());
 
 		            // Number of teams.
 		            int numTeams = teamList.length();
 
 		            if(numTeams > 1) {
-			            Log.d("MyApp", "+ Multiple teams detected. Number of Teams: " +teamList.length());
-			            Log.d("MyApp", "+ Team info: " +teamList.toString());
+			            Log.d(TAG_MY_APP, "+ Multiple teams detected. Number of Teams: " +teamList.length());
+			            Log.d(TAG_MY_APP, "+ Team info: " +teamList.toString());
 		            } else {
 			            String teamId = json.getString(TAG_TEAMID);
 			            String teamName = json.getString(TAG_TEAMNAME);
 
-			            Log.d("MyApp", "+ There is only one team with id: " +teamId);
-			            Log.d("MyApp", "+ There is only one team with name: " +teamName);
+			            Log.d(TAG_MY_APP, "+ There is only one team with id: " +teamId);
+			            Log.d(TAG_MY_APP, "+ There is only one team with name: " +teamName);
 
 			            // Get the schedule for this team.
 			            URL eventURL = new URL("https://teamlockerroom.com/api/calendar/" + TAG_TEAMID + TAG_PEOPLE_ID + month + year);
@@ -306,48 +299,34 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 			            // The fucking thing is an array already.
 			            JSONArray eventsJSON = new JSONArray(eventSB.toString());
 			            int numEvents = eventsJSON.length();
-			            Log.d("MyApp", "+ Number of Events: " +Integer.toString(numEvents));
+			            Log.d(TAG_MY_APP, "+ Number of Events: " +Integer.toString(numEvents));
 
 			            // Loop through the JSON and look for the next game.
 			            for(int i = 0; i < numEvents; i++) {
 				            JSONObject tempEvent = eventsJSON.getJSONObject(i);
 				            int tempGameId = Integer.parseInt(tempEvent.getString(TAG_EVENT_GAMEID));
-                            Log.d("MyApp", "   " + tempEvent);
+                            Log.d(TAG_MY_APP, "   " + tempEvent);
 				            if(tempGameId != 0) {
-					            Log.d("MyApp", "GameID: " +tempEvent.getString(TAG_EVENT_GAMEID).toString());
-					            Log.d("MyApp", "Game Date: " +tempEvent.getString(TAG_EVENT_DATE).toString());
-					            Log.d("MyApp", "Rink Name: " +tempEvent.getString(TAG_EVENT_RINKNAME).toString());
-					            Log.d("MyApp", "Attending: " +tempEvent.getString(TAG_EVENT_ATTIN).toString());
-					            Log.d("MyApp", "Not Attending: " +tempEvent.getString(TAG_EVENT_ATTOUT).toString());
-					            Log.d("MyApp", "Attending Status: " +tempEvent.getString(TAG_EVENT_ATTSTATUS).toString());
-					            Log.d("MyApp", "I am attending button here");
-					            Log.d("MyApp", "I am not attending button here");
+					            Log.d(TAG_MY_APP, "GameID: " +tempEvent.getString(TAG_EVENT_GAMEID).toString());
+					            Log.d(TAG_MY_APP, "Game Date: " +tempEvent.getString(TAG_EVENT_DATE).toString());
+					            Log.d(TAG_MY_APP, "Rink Name: " +tempEvent.getString(TAG_EVENT_RINKNAME).toString());
+					            Log.d(TAG_MY_APP, "Attending: " +tempEvent.getString(TAG_EVENT_ATTIN).toString());
+					            Log.d(TAG_MY_APP, "Not Attending: " +tempEvent.getString(TAG_EVENT_ATTOUT).toString());
+					            Log.d(TAG_MY_APP, "Attending Status: " +tempEvent.getString(TAG_EVENT_ATTSTATUS).toString());
+					            Log.d(TAG_MY_APP, "I am attending button here");
+					            Log.d(TAG_MY_APP, "I am not attending button here");
 				            }
 			            }
 		            }
-                    String teamid = json.getString(TAG_TEAMID).toString();
-                    Log.d("MyApp", " team id " + teamid);
-                    String playerid = json.get(TAG_PEOPLE_ID).toString();
-                    Log.d("MyApp", " player id " + playerid);
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString("teamid", teamid);
-                    bundle.putString("playerid", playerid);
-                    Log.d("MyApp", " BUNDLE" + bundle);
-                    intent.putExtras(bundle);
-                    //start next activity
-                    startActivity(intent);
-
 	            } catch(JSONException e) {
 		            Log.e("JSON Parser", "Error parsing data: " + e.toString());
 	            }
 
             } catch (Exception ex) {
-                Log.d("MyApp", ex.getMessage());
+                Log.d(TAG_MY_APP, ex.getMessage());
                 ex.printStackTrace();
             }
-            return "+ Done Asynctask";
-
+            return json;
         }
 
         /**
@@ -355,8 +334,25 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
          * operation in the log fragment.
          */
         @Override
-        protected void onPostExecute(String result) {
-            Log.i("MyApp", " onPostExecute information " + result);
+        protected void onPostExecute(JSONObject json) {
+            try {
+                String teamid = json.getString(TAG_TEAMID).toString();
+                Log.d(TAG_MY_APP, " team id " + teamid);
+                String playerid = json.get(TAG_PEOPLE_ID).toString();
+                Log.d(TAG_MY_APP, " player id " + playerid);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("teamid", teamid);
+                bundle.putString("playerid", playerid);
+                Log.d(TAG_MY_APP, " BUNDLE" + bundle);
+                Intent intent = new Intent(MainActivity.this, DisplayGamesActivity.class);
+                intent.putExtras(bundle);
+                //start next activity
+                startActivity(intent);
+                Log.i(TAG_MY_APP, " onPostExecute information " + json.toString());
+            }catch(JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

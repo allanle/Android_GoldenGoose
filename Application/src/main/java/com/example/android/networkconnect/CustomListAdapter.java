@@ -30,6 +30,7 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
     private int mResource;
     private ViewHolder viewHolder;
     Game game = new Game();
+    private int layout;
 
     public CustomListAdapter(Context context, int resource, ArrayList<Game> objects) {
         super(context, resource, objects);
@@ -40,7 +41,6 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        //View v = convertView;
         if(convertView == null) {
             viewHolder = new ViewHolder();
             convertView = layoutInflater.inflate(mResource, null);
@@ -50,12 +50,7 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
             viewHolder.rinkName = (TextView)convertView.findViewById(R.id.rinkname);
             viewHolder.eventDate = (TextView)convertView.findViewById(R.id.eventdate);
             viewHolder.attendance = (TextView)convertView.findViewById(R.id.attendance);
-
-            viewHolder.title.setText(games.get(position).getTitle());
-            viewHolder.rinkName.setText(games.get(position).getRinkName());
-            viewHolder.arenaName.setText(games.get(position).getArenaName());
-            viewHolder.eventDate.setText(games.get(position).getEventDate());
-            viewHolder.attendance.setText(games.get(position).getAttendance());
+            convertView.setTag(viewHolder);
 
             viewHolder.no = (Button)convertView.findViewById(R.id.no);
             viewHolder.yes = (Button)convertView.findViewById(R.id.yes);
@@ -95,6 +90,11 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
         } else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
+        viewHolder.title.setText(games.get(position).getTitle());
+        viewHolder.rinkName.setText(games.get(position).getRinkName());
+        viewHolder.arenaName.setText(games.get(position).getArenaName());
+        viewHolder.eventDate.setText(games.get(position).getEventDate());
+        viewHolder.attendance.setText(games.get(position).getAttendance());
         return convertView;
     }
 
@@ -126,7 +126,6 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
                     String json = "";
 
                     JSONObject jsonObject = new JSONObject();
-
                     String a = game.getArenaName();
                     String b = game.getAttendance();
                     String c = game.getEventDate();
@@ -209,7 +208,6 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.i("MyAp", result);
-        }
+            Log.i("MyApp", result);        }
     }
 }
