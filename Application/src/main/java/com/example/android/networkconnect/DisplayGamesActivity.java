@@ -2,6 +2,7 @@ package com.example.android.networkconnect;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
@@ -39,6 +40,8 @@ public class DisplayGamesActivity extends Activity {
     private int getMonth = calendar.get(Calendar.MONTH) + 1;
     private int getYear = calendar.get(Calendar.YEAR);
     private static final String TAG_MY_APP = "MyApp";
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public class DisplayGamesActivity extends Activity {
         return true;
     }
 
-    private class JSONAsyncTask extends AsyncTask<String, Void, JSONArray> {
+    private class JSONAsyncTask extends AsyncTask<String, Void, JSONObject> {
         private ProgressDialog dialog;
         private static final String TAG_TITLE = "title";
         private static final String TAG_ARENA_NAME = "arenaname";
@@ -101,7 +104,7 @@ public class DisplayGamesActivity extends Activity {
         }
 
         @Override
-        protected JSONArray doInBackground(String... urls) {
+        protected JSONObject doInBackground(String... urls) {
             try {
                 HttpGet httpGet = new HttpGet(urls[0]);
                 HttpClient httpClient = new DefaultHttpClient();
@@ -148,28 +151,56 @@ public class DisplayGamesActivity extends Activity {
                         }
                         gamesList.add(game);
                     }
-                    return jsonArray;
+                    return object;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return jsonArray;
+            return object;
         }
 
         @Override
-        protected void onPostExecute(JSONArray jsonArray) {
+        protected void onPostExecute(JSONObject jsonObject) {
             dialog.cancel();
             adapter.notifyDataSetChanged();
-            super.onPostExecute(jsonArray);
+            super.onPostExecute(jsonObject);
             final Message message = new Message();
-            message.obj = jsonArray;
+            message.obj = jsonObject;
             Log.d(TAG_MY_APP, message.toString());
             if (jsonArray == null) {
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_SHORT).show();
             }
-            Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity", jsonArray.toString());
+            Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity", jsonObject.toString());
+
+            try {
+                sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
+                editor = sharedPreferences.edit();
+                String eventid = jsonObject.getString("eventid").toString();
+                String status = jsonObject.getString("status").toString();
+                String peopleid = jsonObject.getString("status").toString();
+                String teamid = jsonObject.getString("status").toString();
+                String permlevel = jsonObject.getString("status").toString();
+                String flag = jsonObject.getString("status").toString();
+                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", eventid);
+                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", status);
+                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", peopleid);
+                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", teamid);
+                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", permlevel);
+                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", flag);
+                editor.putString("event", eventid);
+                editor.putString("status", status);
+                editor.putString("people", peopleid);
+                editor.putString("team", teamid);
+                editor.putString("permlevel", permlevel);
+                editor.putString("flag", flag);
+                editor.commit();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }

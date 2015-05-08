@@ -1,6 +1,7 @@
 package com.example.android.networkconnect;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,6 +119,20 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
         private static final String TAG_FLAGS = "flags";
 
         @Override
+        protected void onPreExecute() {
+            SharedPreferences sharedPreferences = ctx.getSharedPreferences("data", Context.MODE_PRIVATE);
+
+            String eventid = sharedPreferences.getString("event", "");
+            String status = sharedPreferences.getString("status", "");
+            String peopleid = sharedPreferences.getString("people", "");
+            String teamid = sharedPreferences.getString("team", "");
+            String permlevel = sharedPreferences.getString("perm", "");
+            String flag = sharedPreferences.getString("flag", "");
+
+            Log.d("MyApp" + " IS THIS WORKING BRO ", eventid + "---" + status + "---" + peopleid + "---" + teamid + "---" + permlevel + "---" + flag);
+        }
+
+        @Override
         protected String doInBackground(String... urls) {
             if(!viewHolder.yes.isSelected()) {
                 try {
@@ -175,7 +190,7 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
                     JSONObject jsonObject = new JSONObject();
 
                     jsonObject.put(TAG_EVENT_ID, "1895772");
-                    jsonObject.put(TAG_STATUS, "no");
+                    jsonObject.put(TAG_STATUS, "out");
                     jsonObject.put(TAG_PEOPLE_ID, "17786870"); //17786870 17788045
                     jsonObject.put(TAG_TEAM_ID, "408330");
                     jsonObject.put(TAG_PERM_LEVEL, "");
@@ -211,6 +226,7 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.i("MyApp", result);        }
+            Log.i("MyApp", result);
+        }
     }
 }
