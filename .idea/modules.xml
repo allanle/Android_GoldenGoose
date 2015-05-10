@@ -3,8 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Application/Application.iml" filepath="$PROJECT_DIR$/Application/Application.iml" />
-      <module fileurl="file://$PROJECT_DIR$/NetworkConnect.iml" filepath="$PROJECT_DIR$/NetworkConnect.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WolfTen.iml" filepath="$PROJECT_DIR$/WolfTen.iml" />
       <module fileurl="file://$PROJECT_DIR$/goldengoose.iml" filepath="$PROJECT_DIR$/goldengoose.iml" />
     </modules>
   </component>
 </project>
+

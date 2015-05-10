@@ -2,7 +2,6 @@ package com.example.android.networkconnect;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
@@ -40,32 +39,30 @@ public class DisplayGamesActivity extends Activity {
     private int getMonth = calendar.get(Calendar.MONTH) + 1;
     private int getYear = calendar.get(Calendar.YEAR);
     private static final String TAG_MY_APP = "MyApp";
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_games);
 
+	    Bundle bundle = getIntent().getExtras();
+
         //getting json data from login activity to pass into api calendar
-        String playerId;
-        String teamId;
-        Bundle bundle = getIntent().getExtras();
-        playerId = bundle.getString("playerid");
-        teamId = bundle.getString("teamid");
-        Log.d(TAG_MY_APP, " Bundle in display games activity " + bundle);
-        Log.d(TAG_MY_APP, " DisplayActivity " + playerId + " " + teamId);
+        String playerId = bundle.getString("playerid");
+        String teamId = bundle.getString("teamid");
 
-        //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/408330/17786870/4/2015");
-        new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + playerId + "/" + getMonth + "/" + getYear);
-        //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/408330/17786870/" + getMonth + "/" + getYear);
-        //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/408330/17786870");
-        Log.d(TAG_MY_APP, "MONTH " + getMonth + " YEAR " + getYear);
+        //Log.d(TAG_MY_APP, " Bundle in display games activity " + bundle);
+        Log.d("MyApp", " DisplayActivity " + playerId + " " + teamId);
 
-        gamesList = new ArrayList<Game>();
+	    gamesList = new ArrayList<Game>();
+
+        //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + playerId + "/" + getMonth + "/" + getYear);
+        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/408330/17786407/" + getMonth + "/" + getYear);
+        //Log.d(TAG_MY_APP, "MONTH " + getMonth + " YEAR " + getYear);
+
+        //gamesList = new ArrayList<Game>();
         ListView listView = (ListView)findViewById(R.id.listView);
-        adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, gamesList);
+        adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, playerId, teamId, gamesList);
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new OnItemClickListener() {
@@ -83,14 +80,15 @@ public class DisplayGamesActivity extends Activity {
         return true;
     }
 
-    private class JSONAsyncTask extends AsyncTask<String, Void, JSONObject> {
+    private class ProcessCalendarAsync extends AsyncTask<String, Void, JSONArray> {
         private ProgressDialog dialog;
+        private static final String TAG_EVENT_ID = "eventid";
         private static final String TAG_TITLE = "title";
         private static final String TAG_ARENA_NAME = "arenaname";
         private static final String TAG_RINK_NAME = "rinkname";
         private static final String TAG_EVENT_DATE = "eventdate";
         private static final String TAG_ATTENDANCE_STATUS = "attstatus";
-        private JSONObject object;
+        private JSONObject jsonObject;
         private JSONArray jsonArray;
 
         @Override
@@ -104,7 +102,7 @@ public class DisplayGamesActivity extends Activity {
         }
 
         @Override
-        protected JSONObject doInBackground(String... urls) {
+        protected JSONArray doInBackground(String... urls) {
             try {
                 HttpGet httpGet = new HttpGet(urls[0]);
                 HttpClient httpClient = new DefaultHttpClient();
@@ -116,91 +114,63 @@ public class DisplayGamesActivity extends Activity {
                 if(status == 200) {
                     HttpEntity entity = response.getEntity();
                     String data = EntityUtils.toString(entity);
-
                     jsonArray = new JSONArray(data);
-                    Log.d(TAG_MY_APP + " JSON Array in DisplayGamesActivity", jsonArray.toString());
-                    Log.d(TAG_MY_APP, "hello");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        object = jsonArray.getJSONObject(i);
 
-                        Log.d(TAG_MY_APP + " JSON object in DisplayGamesActivity", object.toString());
+                    for(int i = 0; i < jsonArray.length(); i++) {
+	                    jsonObject = jsonArray.getJSONObject(i);
 
                         Game game = new Game();
 
+	                    // Set the eventId.
+	                    game.setEventId(jsonObject.getString(TAG_EVENT_ID));
+
                         //if user hasn't set attendance yet
-                        if(object.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("null")) {
-                            game.setTitle(object.getString(TAG_TITLE));
-                            game.setArenaName(object.getString(TAG_ARENA_NAME));
-                            game.setRinkName(object.getString(TAG_RINK_NAME));
-                            game.setEventDate(object.getString(TAG_EVENT_DATE));
+                        if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("null")) {
+                            game.setTitle(jsonObject.getString(TAG_TITLE));
+                            game.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
+                            game.setRinkName(jsonObject.getString(TAG_RINK_NAME));
+                            game.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
                             game.setAttendance("Bro, you haven't set your attendance to this event yet");
+
                             //if user has set attendance to no
-                            if(object.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("0")) {
-                                game.setTitle(object.getString(TAG_TITLE));
-                                game.setArenaName(object.getString(TAG_ARENA_NAME));
-                                game.setRinkName(object.getString(TAG_RINK_NAME));
-                                game.setEventDate(object.getString(TAG_EVENT_DATE));
+                            if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("0")) {
+                                game.setTitle(jsonObject.getString(TAG_TITLE));
+                                game.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
+                                game.setRinkName(jsonObject.getString(TAG_RINK_NAME));
+                                game.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
                                 game.setAttendance("Not attending this event bro");
                             }
                         } else {
-                            game.setTitle(object.getString(TAG_TITLE));
-                            game.setArenaName(object.getString(TAG_ARENA_NAME));
-                            game.setRinkName(object.getString(TAG_RINK_NAME));
-                            game.setEventDate(object.getString(TAG_EVENT_DATE));
+                            game.setTitle(jsonObject.getString(TAG_TITLE));
+                            game.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
+                            game.setRinkName(jsonObject.getString(TAG_RINK_NAME));
+                            game.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
                             game.setAttendance("I am attending this event bro");
                         }
                         gamesList.add(game);
                     }
-                    return object;
+                    return jsonArray;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return object;
+            return jsonArray;
         }
 
         @Override
-        protected void onPostExecute(JSONObject jsonObject) {
+        protected void onPostExecute(JSONArray jsonArray) {
             dialog.cancel();
             adapter.notifyDataSetChanged();
-            super.onPostExecute(jsonObject);
+            super.onPostExecute(jsonArray);
             final Message message = new Message();
-            message.obj = jsonObject;
-            Log.d(TAG_MY_APP, message.toString());
-            if (jsonArray == null) {
+            message.obj = jsonArray;
+
+            /*if (result == false) {
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_SHORT).show();
-            }
-            Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity", jsonObject.toString());
-
-            try {
-                sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
-                editor = sharedPreferences.edit();
-                String eventid = jsonObject.getString("eventid").toString();
-                String status = jsonObject.getString("status").toString();
-                String peopleid = jsonObject.getString("status").toString();
-                String teamid = jsonObject.getString("status").toString();
-                String permlevel = jsonObject.getString("status").toString();
-                String flag = jsonObject.getString("status").toString();
-                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", eventid);
-                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", status);
-                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", peopleid);
-                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", teamid);
-                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", permlevel);
-                Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity ", flag);
-                editor.putString("event", eventid);
-                editor.putString("status", status);
-                editor.putString("people", peopleid);
-                editor.putString("team", teamid);
-                editor.putString("permlevel", permlevel);
-                editor.putString("flag", flag);
-                editor.commit();
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
+            }*/
+            //Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity", jsonArray.toString());
         }
     }
 }
