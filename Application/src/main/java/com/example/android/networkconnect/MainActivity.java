@@ -224,10 +224,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 String username = email.getText().toString(); //"14hhqt+2y8jbjzz3wz1s@sharklasers.com";
                 String mpassword = password.getText().toString(); //"ZuLGHDaLM9";
                 String data = URLEncoder.encode("username", charset)
-                        + "=" + URLEncoder.encode(username, charset);
+                        + "=" + URLEncoder.encode("14hhqt+2y8jbjzz3wz1s@sharklasers.com", charset);
 
                 data += "&" + URLEncoder.encode("password", charset)
-                        + "=" + URLEncoder.encode(mpassword, charset);
+                        + "=" + URLEncoder.encode("ZuLGHDaLM9", charset);
 
                 Log.d(TAG_MY_APP, "+ Here is the data");
                 Log.d(TAG_MY_APP, data);
@@ -350,7 +350,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 //start next activity
                 startActivity(intent);
                 Log.i(TAG_MY_APP, " onPostExecute information " + json.toString());
-            }catch(JSONException e) {
+            } catch(JSONException e) {
                 e.printStackTrace();
             }
         }

@@ -1,7 +1,6 @@
 package com.example.android.networkconnect;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,89 +17,69 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class CustomListAdapter extends ArrayAdapter<Game> {
     private ArrayList<Game> games;
+	private String peopleId;
+	private String teamId;
     private LayoutInflater layoutInflater;
     private int mResource;
     private ViewHolder viewHolder;
-    Game game = new Game();
-    private Context ctx;
 
-    public CustomListAdapter(Context context, int resource, ArrayList<Game> objects) {
-        super(context, resource, objects);
+    public CustomListAdapter(Context context, int resource, String peopleId, String teamId, ArrayList<Game> games) {
+        super(context, resource, games);
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResource = resource;
-        games = objects;
-        ctx = context;
+
+	    // Set the passed in variables.
+        this.games = games;
+	    this.peopleId = peopleId;
+	    this.teamId = teamId;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
+	        // Get the eventId for this record.
+	        String eventId = games.get(position).getEventId();
+
             viewHolder = new ViewHolder();
             convertView = layoutInflater.inflate(mResource, null);
 
+	        // Set the tags for the record.
+	        viewHolder.eventId = (TextView)convertView.findViewById(R.id.eventid);
             viewHolder.title = (TextView)convertView.findViewById(R.id.title);
             viewHolder.arenaName = (TextView)convertView.findViewById(R.id.arenaname);
             viewHolder.rinkName = (TextView)convertView.findViewById(R.id.rinkname);
             viewHolder.eventDate = (TextView)convertView.findViewById(R.id.eventdate);
             viewHolder.attendance = (TextView)convertView.findViewById(R.id.attendance);
-            convertView.setTag(viewHolder);
-
             viewHolder.no = (Button)convertView.findViewById(R.id.no);
             viewHolder.yes = (Button)convertView.findViewById(R.id.yes);
-            View.OnClickListener listener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    switch(v.getId()) {
-                        case R.id.yes:
-                            new UpdateAttendanceEvent().execute("https://teamlockerroom.com/api/setattendance");
-                            Toast.makeText(getContext(), "Attending Game Bro", Toast.LENGTH_SHORT).show();
-                            break;
-                        case R.id.no:
-                            new UpdateAttendanceEvent().execute("https://teamlockerroom.com/api/setattendance");
-                            Toast.makeText(getContext(), "Not Attending Game Bro", Toast.LENGTH_SHORT).show();
-                            break;
-                    }
-                }
-            };
+	        convertView.setTag(viewHolder);
 
-            viewHolder.no.setOnClickListener(listener);
-            viewHolder.yes.setOnClickListener(listener);
-/*
-            viewHolder.no.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new UpdateAttendanceEvent().execute("https://teamlockerroom.com/api/setattendance");
-                    Toast.makeText(getContext(), "Not Attending Game Bro", Toast.LENGTH_SHORT).show();
-                }
-            });
-            viewHolder.yes.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new UpdateAttendanceEvent().execute("https://teamlockerroom.com/api/setattendance");
-                    Toast.makeText(getContext(), "Attending Game Bro", Toast.LENGTH_SHORT).show();
-                }
-            });*/
+	        // Click listeners for the attendance buttons.
+            viewHolder.no.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId));
+            viewHolder.yes.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId));
         } else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
+
+	    viewHolder.eventId.setText(games.get(position).getEventId());
         viewHolder.title.setText(games.get(position).getTitle());
         viewHolder.rinkName.setText(games.get(position).getRinkName());
         viewHolder.arenaName.setText(games.get(position).getArenaName());
         viewHolder.eventDate.setText(games.get(position).getEventDate());
         viewHolder.attendance.setText(games.get(position).getAttendance());
+
         return convertView;
     }
 
-    static class ViewHolder {
+    class ViewHolder {
+	    public TextView eventId;
         public TextView title;
         public TextView arenaName;
         public TextView rinkName;
@@ -110,121 +89,104 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
         public TextView attendance;
     }
 
-    private class UpdateAttendanceEvent extends AsyncTask<String, Boolean, String> {
+	public class AttendanceClickListener implements View.OnClickListener {
+		private final String eventId;
+		private final String peopleId;
+		private final String teamId;
+
+		public AttendanceClickListener(final String eventId, final String peopleId, final String teamId) {
+			this.eventId = eventId;
+			this.peopleId = peopleId;
+			this.teamId = teamId;
+		}
+
+		@Override
+		// Instead of creating one instance of a listener for everything and trying to get the eventid,
+		// this will make sure that each button has a unique event ID to call the UpdateAttendanceEvent
+		// function.
+		public void onClick(View v) {
+			switch(v.getId()) {
+				case R.id.yes:
+					// The eventId, peopleId and teamId.
+					new UpdateAttendanceEvent().execute("in", eventId, "17786870", "408330");
+					//new UpdateAttendanceEvent().execute("in", eventId, peopleId, teamId);
+					Toast.makeText(getContext(), "Attending Game Bro", Toast.LENGTH_SHORT).show();
+				break;
+				case R.id.no:
+					// The eventId, peopleId and teamId.
+					new UpdateAttendanceEvent().execute("out", eventId, "17786870", "408330");
+					//new UpdateAttendanceEvent().execute("out", eventId, peopleId, teamId);
+					Toast.makeText(getContext(), "Not Attending Game Bro", Toast.LENGTH_SHORT).show();
+				break;
+			}
+		}
+	}
+
+	// This is called by the onClick handler for a YES or NO button.
+	// The handler should pass "true" or "false" to this update attendance function.
+	// The handler should also pass the eventId, peopleId, teamId to this function.
+	// <String> gets sent to doInBackground.
+	// <Void> get sent to process function (if needed).
+	// <String> get sent to onPostExecute.
+    private class UpdateAttendanceEvent extends AsyncTask<String, Void, String> {
         private static final String TAG_EVENT_ID = "eventid";
         private static final String TAG_STATUS = "status";
         private static final String TAG_PEOPLE_ID = "peopleid";
         private static final String TAG_TEAM_ID = "teamid";
         private static final String TAG_PERM_LEVEL = "permlevel";
         private static final String TAG_FLAGS = "flags";
+	    private static final String API_URL = "https://teamlockerroom.com/api/setattendance";
 
         @Override
-        protected void onPreExecute() {
-            SharedPreferences sharedPreferences = ctx.getSharedPreferences("data", Context.MODE_PRIVATE);
+        // "params" should have 0 = String "in"/"out", 1 = eventid, 2 = peopleid, 3 = teamid.
+        protected String doInBackground(String... params) {
+	        String attendance = "not attending";
+	        if(params[0].equals("in")) {
+		        attendance = "attending";
+	        }
 
-            String eventid = sharedPreferences.getString("event", "");
-            String status = sharedPreferences.getString("status", "");
-            String peopleid = sharedPreferences.getString("people", "");
-            String teamid = sharedPreferences.getString("team", "");
-            String permlevel = sharedPreferences.getString("perm", "");
-            String flag = sharedPreferences.getString("flag", "");
+	        // Try and set the attendance.
+	        try {
+		        HttpPost httpPost = new HttpPost(API_URL);
+		        HttpClient httpClient = new DefaultHttpClient();
+		        JSONObject jsonObject = new JSONObject();
+		        String json = "";
 
-            Log.d("MyApp" + " IS THIS WORKING BRO ", eventid + "---" + status + "---" + peopleid + "---" + teamid + "---" + permlevel + "---" + flag);
+		        jsonObject.put(TAG_STATUS, params[0]);
+		        jsonObject.put(TAG_EVENT_ID, params[1]);
+		        jsonObject.put(TAG_PEOPLE_ID, params[2]);
+		        jsonObject.put(TAG_TEAM_ID, params[3]);
+		        jsonObject.put(TAG_PERM_LEVEL, "");
+		        jsonObject.put(TAG_FLAGS, "");
+
+		        json = jsonObject.toString();
+
+		        StringEntity stringEntity = new StringEntity(json);
+		        httpPost.setEntity(stringEntity);
+		        httpPost.setHeader("Accept", "application/json");
+		        httpPost.setHeader("Content-type", "application/json");
+
+		        Log.d("MyApp", params[0]);
+		        Log.d("MyApp", params[1]);
+		        Log.d("MyApp", params[2]);
+		        Log.d("MyApp", params[3]);
+
+		        HttpResponse httpResponse = httpClient.execute(httpPost);
+		        if(httpResponse.getStatusLine().getStatusCode() == 200) {
+			        return "I am " +attendance +" Event" +params[1];
+		        }
+	        } catch(Exception e) {
+		        e.printStackTrace();
+	        }
+
+	        return "There was an issue setting my attendance";
         }
 
         @Override
-        protected String doInBackground(String... urls) {
-            if(!viewHolder.yes.isSelected()) {
-                try {
-                    HttpPost httpPost = new HttpPost(urls[0]);
-
-                    HttpClient httpClient = new DefaultHttpClient();
-                    String json = "";
-
-                    JSONObject jsonObject = new JSONObject();
-                    String a = game.getArenaName();
-                    String b = game.getAttendance();
-                    String c = game.getEventDate();
-                    Log.d("MyApp", a + b + c);
-
-                    jsonObject.put(TAG_EVENT_ID, "1895772");
-                    jsonObject.put(TAG_STATUS, "in");
-                    jsonObject.put(TAG_PEOPLE_ID, "17786870"); //17786870 17788045
-                    jsonObject.put(TAG_TEAM_ID, "408330");
-                    jsonObject.put(TAG_PERM_LEVEL, "");
-                    jsonObject.put(TAG_FLAGS, "");
-
-
-
-                    json = jsonObject.toString();
-
-                    Log.d("MyApp" + " Update Attendance Event", json);
-
-                    StringEntity stringEntity = new StringEntity(json);
-                    httpPost.setEntity(stringEntity);
-                    httpPost.setHeader("Accept", "application/json");
-                    httpPost.setHeader("Content-type", "application/json");
-
-                    HttpResponse httpResponse = httpClient.execute(httpPost);
-
-                    int responseStatus = httpResponse.getStatusLine().getStatusCode();
-                    if (responseStatus == 200) {
-                        Log.d("MyApp", "Attendance Success 200");
-                    } else {
-                        Log.d("MyApp", "Attendance Fail 500");
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return "attendance set to yes";
-            } else if(viewHolder.no.isSelected()) {
-                try {
-                    HttpPost httpPost = new HttpPost(urls[0]);
-
-                    HttpClient httpClient = new DefaultHttpClient();
-                    String json = "";
-
-                    JSONObject jsonObject = new JSONObject();
-
-                    jsonObject.put(TAG_EVENT_ID, "1895772");
-                    jsonObject.put(TAG_STATUS, "out");
-                    jsonObject.put(TAG_PEOPLE_ID, "17786870"); //17786870 17788045
-                    jsonObject.put(TAG_TEAM_ID, "408330");
-                    jsonObject.put(TAG_PERM_LEVEL, "");
-                    jsonObject.put(TAG_FLAGS, "");
-
-                    json = jsonObject.toString();
-
-                    Log.d("MyApp" + " Update Attendance Event", json);
-
-                    StringEntity stringEntity = new StringEntity(json);
-                    httpPost.setEntity(stringEntity);
-                    httpPost.setHeader("Accept", "application/json");
-                    httpPost.setHeader("Content-type", "application/json");
-
-                    HttpResponse httpResponse = httpClient.execute(httpPost);
-
-                    int responseStatus = httpResponse.getStatusLine().getStatusCode();
-                    if (responseStatus == 200) {
-                        Log.d("MyApp", "Attendance Success 200");
-                    } else {
-                        Log.d("MyApp", "Attendance Fail 500");
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return "attendance set to no";
-            }
-            return null;
-        }
-
-        @Override
+        // After you're done updating the attendance, return true / false
+        // to the UI so that it can properly update the text field with
+        // "I am attending this event" or "I am not attending this event"
+        // or it can highlight the yes/no button and disable the other.
         protected void onPostExecute(String result) {
             Log.i("MyApp", result);
         }

@@ -9,6 +9,7 @@ import org.json.JSONObject;
  * Created by pointstreak on 15-04-14.
  */
 public class Game implements Parcelable {
+	private String eventId;
     private String title;
     private String arenaName;
     private String rinkName;
@@ -20,11 +21,8 @@ public class Game implements Parcelable {
     private String result;
     private int id;
 
-    public Game() {
-
-    }
-
     public Game(Parcel in) {
+	    eventId = in.readString();
         title = in.readString();
         arenaName = in.readString();
         rinkName = in.readString();
@@ -35,17 +33,11 @@ public class Game implements Parcelable {
         result = in.readString();
     }
 
-    public Game(String title, String arenaName, String rinkName, String eventDate, String attendance,
-                String teamId, String playerId, String result) {
-        this.title = title;
-        this.arenaName = arenaName;
-        this.rinkName = rinkName;
-        this.eventDate = eventDate;
-        this.attendance = attendance;
-        this.teamId = teamId;
-        this.playerId = playerId;
-        this.result = result;
-    }
+	public Game() {}
+
+	public String getEventId() { return eventId; }
+
+	public void setEventId(String eventId) { this.eventId = eventId; }
 
     public String getTitle() {
         return title;
@@ -125,6 +117,7 @@ public class Game implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.playerId);
         dest.writeString(this.teamId);
+	    dest.writeString(this.eventId);
     }
 
     public static final Parcelable.Creator<Game> CREATOR = new Parcelable.Creator<Game>() {
