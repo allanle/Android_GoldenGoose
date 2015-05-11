@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class DisplayGamesActivity extends Activity {
     private ArrayList<Game> gamesList;
@@ -41,9 +42,8 @@ public class DisplayGamesActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_games);
 
-	    Bundle bundle = getIntent().getExtras();
-
         //getting json data from login activity to pass into api calendar
+	    Bundle bundle = getIntent().getExtras();
         String playerId = bundle.getString("playerid");
         String teamId = bundle.getString("teamid");
 
@@ -53,7 +53,6 @@ public class DisplayGamesActivity extends Activity {
 
         new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + playerId + "/" + getMonth + "/" + getYear);
 
-        //gamesList = new ArrayList<Game>();
         ListView listView = (ListView)findViewById(R.id.listView);
         adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, playerId, teamId, gamesList);
 
@@ -109,6 +108,10 @@ public class DisplayGamesActivity extends Activity {
                     String data = EntityUtils.toString(entity);
                     jsonArray = new JSONArray(data);
 
+                    Date date = new Date();
+                    Log.d("MyApp", date.toString());
+
+
                     for(int i = 0; i < jsonArray.length(); i++) {
 	                    jsonObject = jsonArray.getJSONObject(i);
 
@@ -116,34 +119,19 @@ public class DisplayGamesActivity extends Activity {
 
 	                    // Set the eventId.
 	                    game.setEventId(jsonObject.getString(TAG_EVENT_ID));
+                        game.setTitle(jsonObject.getString(TAG_TITLE));
+                        game.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
+                        game.setRinkName(jsonObject.getString(TAG_RINK_NAME));
+                        game.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
 
-                        //if user hasn't set attendance yet.
                         if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("null")) {
-                            game.setTitle(jsonObject.getString(TAG_TITLE));
-                            game.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
-                            game.setRinkName(jsonObject.getString(TAG_RINK_NAME));
-                            game.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
                             game.setAttendance("You haven't decided yet");
-                            gamesList.add(game);
-                        }
-                        //if user has set attendance to no.
-                        if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("0")) {
-                            game.setTitle(jsonObject.getString(TAG_TITLE));
-                            game.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
-                            game.setRinkName(jsonObject.getString(TAG_RINK_NAME));
-                            game.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
+                        } else if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("0")) {
                             game.setAttendance("I am not attending this event");
-                            gamesList.add(game);
-                        }
-                        //if user has set attendance to yes.
-                        if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("1")) {
-                            game.setTitle(jsonObject.getString(TAG_TITLE));
-                            game.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
-                            game.setRinkName(jsonObject.getString(TAG_RINK_NAME));
-                            game.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
+                        } else if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("1")) {
                             game.setAttendance("I am attending this event");
-                            gamesList.add(game);
                         }
+                        gamesList.add(game);
                     }
                     return jsonArray;
                 }
@@ -160,13 +148,10 @@ public class DisplayGamesActivity extends Activity {
             dialog.cancel();
             adapter.notifyDataSetChanged();
             super.onPostExecute(jsonArray);
+
             final Message message = new Message();
             message.obj = jsonArray;
-
-            /*if (result == false) {
-                Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_SHORT).show();
-            }*/
-            //Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity", jsonArray.toString());
+            Log.d(TAG_MY_APP + " onPostExecute DisplayGamesActivity", jsonArray.toString());
         }
     }
 }
