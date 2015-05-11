@@ -115,7 +115,7 @@ public class DisplayGamesActivity extends Activity {
                         Game game = new Game();
 
 	                    // Set the eventId.
-	                    //game.setEventId(jsonObject.getString(TAG_EVENT_ID));
+	                    game.setEventId(jsonObject.getString(TAG_EVENT_ID));
 
                         //if user hasn't set attendance yet.
                         if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("null")) {
