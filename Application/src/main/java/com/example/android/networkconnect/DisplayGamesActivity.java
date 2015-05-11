@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -32,9 +31,6 @@ import java.util.Calendar;
 public class DisplayGamesActivity extends Activity {
     private ArrayList<Game> gamesList;
     private CustomListAdapter adapter;
-    private Button yes;
-    private Button no;
-
     private Calendar calendar = Calendar.getInstance();
     private int getMonth = calendar.get(Calendar.MONTH) + 1;
     private int getYear = calendar.get(Calendar.YEAR);
@@ -51,14 +47,11 @@ public class DisplayGamesActivity extends Activity {
         String playerId = bundle.getString("playerid");
         String teamId = bundle.getString("teamid");
 
-        //Log.d(TAG_MY_APP, " Bundle in display games activity " + bundle);
-        Log.d("MyApp", " DisplayActivity " + playerId + " " + teamId);
+        Log.d(TAG_MY_APP, " DisplayActivity " + playerId + " " + teamId);
 
 	    gamesList = new ArrayList<Game>();
 
-        //new JSONAsyncTask().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + playerId + "/" + getMonth + "/" + getYear);
-        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/408330/17786407/" + getMonth + "/" + getYear);
-        //Log.d(TAG_MY_APP, "MONTH " + getMonth + " YEAR " + getYear);
+        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + playerId + "/" + getMonth + "/" + getYear);
 
         //gamesList = new ArrayList<Game>();
         ListView listView = (ListView)findViewById(R.id.listView);
@@ -122,32 +115,35 @@ public class DisplayGamesActivity extends Activity {
                         Game game = new Game();
 
 	                    // Set the eventId.
-	                    game.setEventId(jsonObject.getString(TAG_EVENT_ID));
+	                    //game.setEventId(jsonObject.getString(TAG_EVENT_ID));
 
-                        //if user hasn't set attendance yet
+                        //if user hasn't set attendance yet.
                         if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("null")) {
                             game.setTitle(jsonObject.getString(TAG_TITLE));
                             game.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
                             game.setRinkName(jsonObject.getString(TAG_RINK_NAME));
                             game.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
-                            game.setAttendance("Bro, you haven't set your attendance to this event yet");
-
-                            //if user has set attendance to no
-                            if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("0")) {
-                                game.setTitle(jsonObject.getString(TAG_TITLE));
-                                game.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
-                                game.setRinkName(jsonObject.getString(TAG_RINK_NAME));
-                                game.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
-                                game.setAttendance("Not attending this event bro");
-                            }
-                        } else {
+                            game.setAttendance("You haven't decided yet");
+                            gamesList.add(game);
+                        }
+                        //if user has set attendance to no.
+                        if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("0")) {
                             game.setTitle(jsonObject.getString(TAG_TITLE));
                             game.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
                             game.setRinkName(jsonObject.getString(TAG_RINK_NAME));
                             game.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
-                            game.setAttendance("I am attending this event bro");
+                            game.setAttendance("I am not attending this event");
+                            gamesList.add(game);
                         }
-                        gamesList.add(game);
+                        //if user has set attendance to yes.
+                        if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("1")) {
+                            game.setTitle(jsonObject.getString(TAG_TITLE));
+                            game.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
+                            game.setRinkName(jsonObject.getString(TAG_RINK_NAME));
+                            game.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
+                            game.setAttendance("I am attending this event");
+                            gamesList.add(game);
+                        }
                     }
                     return jsonArray;
                 }

@@ -224,10 +224,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 String username = email.getText().toString(); //"14hhqt+2y8jbjzz3wz1s@sharklasers.com";
                 String mpassword = password.getText().toString(); //"ZuLGHDaLM9";
                 String data = URLEncoder.encode("username", charset)
-                        + "=" + URLEncoder.encode("14hhqt+2y8jbjzz3wz1s@sharklasers.com", charset);
+                        + "=" + URLEncoder.encode(username, charset);
 
                 data += "&" + URLEncoder.encode("password", charset)
-                        + "=" + URLEncoder.encode("ZuLGHDaLM9", charset);
+                        + "=" + URLEncoder.encode(mpassword, charset);
 
                 Log.d(TAG_MY_APP, "+ Here is the data");
                 Log.d(TAG_MY_APP, data);
@@ -258,7 +258,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 reader.close();
 
 	            try {
-                    //Intent intent = new Intent(MainActivity.this, DisplayGamesActivity.class);
                     json = new JSONObject(sb.toString());
 		            JSONArray teamList = json.getJSONArray(TAG_TEAMLIST);
 
@@ -280,8 +279,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
 			            // Get the schedule for this team.
 			            URL eventURL = new URL("https://teamlockerroom.com/api/calendar/" + TAG_TEAMID + TAG_PEOPLE_ID + month + year);
-			            //URL eventURL = new URL("https://teamlockerroom.com/api/calendar/" + teamId +"/100");
-                        //URL eventURL = new URL("https://teamlockerroom.com/api/calendar/408330/17786870");
 
 			            BufferedReader eventReader = null;
 			            String eventLine = null;
@@ -345,6 +342,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bundle.putString("teamid", teamid);
                 bundle.putString("playerid", playerid);
                 Log.d(TAG_MY_APP, " BUNDLE" + bundle);
+
                 Intent intent = new Intent(MainActivity.this, DisplayGamesActivity.class);
                 intent.putExtras(bundle);
                 //start next activity

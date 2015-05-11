@@ -22,4 +22,4 @@
         android:showAsAction="ifRoom|withText"
         android:title="@string/clear_text" />
 </menu>
-<!-- From: file:/I:/Users/e/AndroidStudioProjects/WolfTen/Application/src/main/res/menu/main.xml -->
+<!-- From: file:/Users/pointstreak/Desktop/goldengoose/Application/src/main/res/menu/main.xml -->

@@ -68,13 +68,12 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
             viewHolder = (ViewHolder)convertView.getTag();
         }
 
-	    viewHolder.eventId.setText(games.get(position).getEventId());
         viewHolder.title.setText(games.get(position).getTitle());
         viewHolder.rinkName.setText(games.get(position).getRinkName());
         viewHolder.arenaName.setText(games.get(position).getArenaName());
         viewHolder.eventDate.setText(games.get(position).getEventDate());
         viewHolder.attendance.setText(games.get(position).getAttendance());
-
+		viewHolder.eventId.setText(games.get(position).getEventId());
         return convertView;
     }
 
@@ -108,14 +107,14 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
 			switch(v.getId()) {
 				case R.id.yes:
 					// The eventId, peopleId and teamId.
-					new UpdateAttendanceEvent().execute("in", eventId, "17786870", "408330");
-					//new UpdateAttendanceEvent().execute("in", eventId, peopleId, teamId);
+					//new UpdateAttendanceEvent().execute("in", eventId, "17786870", "408330");
+					new UpdateAttendanceEvent().execute("in", eventId, peopleId, teamId);
 					Toast.makeText(getContext(), "Attending Game Bro", Toast.LENGTH_SHORT).show();
 				break;
 				case R.id.no:
 					// The eventId, peopleId and teamId.
-					new UpdateAttendanceEvent().execute("out", eventId, "17786870", "408330");
-					//new UpdateAttendanceEvent().execute("out", eventId, peopleId, teamId);
+					//new UpdateAttendanceEvent().execute("out", eventId, "17786870", "408330");
+					new UpdateAttendanceEvent().execute("out", eventId, peopleId, teamId);
 					Toast.makeText(getContext(), "Not Attending Game Bro", Toast.LENGTH_SHORT).show();
 				break;
 			}
@@ -166,19 +165,18 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
 		        httpPost.setHeader("Accept", "application/json");
 		        httpPost.setHeader("Content-type", "application/json");
 
-		        Log.d("MyApp", params[0]);
-		        Log.d("MyApp", params[1]);
-		        Log.d("MyApp", params[2]);
-		        Log.d("MyApp", params[3]);
+		        Log.d("MyApp" + " attendance ", params[0]);
+		        Log.d("MyApp" + " event id " , params[1]);
+		        Log.d("MyApp" + " people id ", params[2]);
+		        Log.d("MyApp" + " team id ", params[3]);
 
 		        HttpResponse httpResponse = httpClient.execute(httpPost);
 		        if(httpResponse.getStatusLine().getStatusCode() == 200) {
-			        return "I am " +attendance +" Event" +params[1];
+			        return "I am " +attendance +" Event " +params[1];
 		        }
 	        } catch(Exception e) {
 		        e.printStackTrace();
 	        }
-
 	        return "There was an issue setting my attendance";
         }
 
@@ -188,7 +186,11 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
         // "I am attending this event" or "I am not attending this event"
         // or it can highlight the yes/no button and disable the other.
         protected void onPostExecute(String result) {
-            Log.i("MyApp", result);
+            if(result.equals("attending")) {
+				viewHolder.attendance.setText("I am attending this event");
+			} else {
+				viewHolder.attendance.setText("I am not attending this event");
+			}
         }
     }
 }
