@@ -334,9 +334,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         protected void onPostExecute(JSONObject json) {
             try {
                 String teamid = json.getString(TAG_TEAMID).toString();
-                Log.d(TAG_MY_APP, " team id " + teamid);
                 String playerid = json.get(TAG_PEOPLE_ID).toString();
-                Log.d(TAG_MY_APP, " player id " + playerid);
 
                 Bundle bundle = new Bundle();
                 bundle.putString("teamid", teamid);
@@ -347,7 +345,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 intent.putExtras(bundle);
                 //start next activity
                 startActivity(intent);
-                Log.i(TAG_MY_APP, " onPostExecute information " + json.toString());
+                Log.i(TAG_MY_APP, json.toString());
             } catch(JSONException e) {
                 e.printStackTrace();
             }
