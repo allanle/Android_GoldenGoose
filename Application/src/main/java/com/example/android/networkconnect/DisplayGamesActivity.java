@@ -36,7 +36,8 @@ public class DisplayGamesActivity extends Activity {
     private int getMonth = calendar.get(Calendar.MONTH) + 1;
     private int getYear = calendar.get(Calendar.YEAR);
     private static final String TAG_MY_APP = "MyApp";
-
+    private static final String TAG_PEOPLE_ID = "peopleid";
+    private static final String TAG_TEAM_ID = "teamid";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,17 +45,17 @@ public class DisplayGamesActivity extends Activity {
 
         //getting json data from login activity to pass into api calendar
 	    Bundle bundle = getIntent().getExtras();
-        String playerId = bundle.getString("playerid");
-        String teamId = bundle.getString("teamid");
+        String peopleId = bundle.getString(TAG_PEOPLE_ID);
+        String teamId = bundle.getString(TAG_TEAM_ID);
 
-        Log.d(TAG_MY_APP, " DisplayActivity " + playerId + " " + teamId);
+        Log.d(TAG_MY_APP, " DisplayActivity " + peopleId + " " + teamId);
 
 	    gamesList = new ArrayList<Game>();
 
-        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + playerId + "/" + getMonth + "/" + getYear);
+        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
 
         ListView listView = (ListView)findViewById(R.id.listView);
-        adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, playerId, teamId, gamesList);
+        adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, peopleId, teamId, gamesList);
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new OnItemClickListener() {
@@ -98,19 +99,18 @@ public class DisplayGamesActivity extends Activity {
             try {
                 HttpGet httpGet = new HttpGet(urls[0]);
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpResponse response = httpClient.execute(httpGet);
+                HttpResponse httpResponse = httpClient.execute(httpGet);
 
                 // StatusLine stat = response.getStatusLine();
-                int status = response.getStatusLine().getStatusCode();
+                int status = httpResponse.getStatusLine().getStatusCode();
 
                 if(status == 200) {
-                    HttpEntity entity = response.getEntity();
+                    HttpEntity entity = httpResponse.getEntity();
                     String data = EntityUtils.toString(entity);
                     jsonArray = new JSONArray(data);
 
                     Date date = new Date();
-                    Log.d("MyApp", date.toString());
-
+                    Log.d(TAG_MY_APP, date.toString());
 
                     for(int i = 0; i < jsonArray.length(); i++) {
 	                    jsonObject = jsonArray.getJSONObject(i);

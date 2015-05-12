@@ -29,6 +29,7 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
     private LayoutInflater layoutInflater;
     private int mResource;
     private ViewHolder viewHolder;
+	private static final String TAG_MY_APP = "TAG_MY_APP";
 
     public CustomListAdapter(Context context, int resource, String peopleId, String teamId, ArrayList<Game> games) {
         super(context, resource, games);
@@ -109,13 +110,13 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
 					// The eventId, peopleId and teamId.
 					//new UpdateAttendanceEvent().execute("in", eventId, "17786870", "408330");
 					new UpdateAttendanceEvent().execute("in", eventId, peopleId, teamId);
-					Toast.makeText(getContext(), "Attending Game Bro", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getContext(), "Attending Game", Toast.LENGTH_SHORT).show();
 				break;
 				case R.id.no:
 					// The eventId, peopleId and teamId.
 					//new UpdateAttendanceEvent().execute("out", eventId, "17786870", "408330");
 					new UpdateAttendanceEvent().execute("out", eventId, peopleId, teamId);
-					Toast.makeText(getContext(), "Not Attending Game Bro", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getContext(), "Not Attending Game", Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
@@ -165,14 +166,14 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
 		        httpPost.setHeader("Accept", "application/json");
 		        httpPost.setHeader("Content-type", "application/json");
 
-		        Log.d("MyApp" + " attendance ", params[0]);
-		        Log.d("MyApp" + " event id " , params[1]);
-		        Log.d("MyApp" + " people id ", params[2]);
-		        Log.d("MyApp" + " team id ", params[3]);
+		        Log.d(TAG_MY_APP + " attendance ", params[0]);
+		        Log.d(TAG_MY_APP + " event id " , params[1]);
+		        Log.d(TAG_MY_APP + " people id ", params[2]);
+		        Log.d(TAG_MY_APP + " team id ", params[3]);
 
 		        HttpResponse httpResponse = httpClient.execute(httpPost);
 		        if(httpResponse.getStatusLine().getStatusCode() == 200) {
-			        return "I am " +attendance +" Event " +params[1];
+			        return "I am " +attendance + " Event " +params[1];
 		        }
 	        } catch(Exception e) {
 		        e.printStackTrace();

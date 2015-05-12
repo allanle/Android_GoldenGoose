@@ -17,7 +17,6 @@
 package com.example.android.networkconnect;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -25,7 +24,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -66,11 +64,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private EditText email;
     private EditText password;
     private Button login;
-    private CheckBox rememberMe;
-
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
-
     private Calendar calendar = Calendar.getInstance();
     private int month = calendar.get(Calendar.MONTH) + 1;
     private int year = calendar.get(Calendar.YEAR);
@@ -95,33 +88,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         password = (EditText)findViewById(R.id.password);
         password.setOnClickListener(this);
-
-        rememberMe = (CheckBox)findViewById(R.id.rememberme);
-        sharedPreferences = getSharedPreferences("gay", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        Boolean saveLogin = sharedPreferences.getBoolean("saveLogin", false);
-        if(saveLogin == true) {
-            email.setText(sharedPreferences.getString("email", ""));
-            password.setText(sharedPreferences.getString("password", ""));
-            rememberMe.setChecked(true);
-        }
-
-/*        sharedPreferences = getSharedPreferences("Remember", 0);
-        String a = sharedPreferences.getString("email", null);
-        String b = sharedPreferences.getString("password", null);
-        rememberMe = (CheckBox)findViewById(R.id.rememberme);
-        if(rememberMe.isChecked()) {
-            getSharedPreferences("Remember", 0).edit().putString("email", email.getText().toString().trim()).putString("password", password.getText().toString().trim()).commit();
-        }
-
-        rememberMe = (CheckBox)findViewById(R.id.rememberme);
-        boolean isChecked = rememberMe.isChecked();
-        if(isChecked == true) {
-            Toast.makeText(getApplication(), "Remember Me Checked:", Toast.LENGTH_SHORT).show();
-            saveLoginDetails();
-        } else {
-            removeLoginDetails();
-        }*/
 
         login = (Button)findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
@@ -171,28 +137,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             password.setText("");
         }
     }
-/*
-    private void saveLoginDetails() {
-        email = (EditText)findViewById(R.id.email);
-        password = (EditText)findViewById(R.id.password);
-
-        String mEmail = email.getText().toString();
-        String mPassword = password.getText().toString();
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("rememberMe", true);
-        editor.putString("email", mEmail);
-        editor.putString("password", mPassword);
-        editor.commit();
-    }
-
-    private void removeLoginDetails() {
-        editor = sharedPreferences.edit();
-        editor.putBoolean("rememberMe", false);
-        editor.remove("email");
-        editor.remove("password");
-        editor.commit();
-    }*/
 
     /**
      * Implementation of AsyncTask, to fetch the data in the background away from
@@ -333,12 +277,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         @Override
         protected void onPostExecute(JSONObject json) {
             try {
-                String teamid = json.getString(TAG_TEAMID).toString();
-                String playerid = json.get(TAG_PEOPLE_ID).toString();
+                String teamId = json.getString(TAG_TEAMID).toString();
+                String peopleId = json.get(TAG_PEOPLE_ID).toString();
 
                 Bundle bundle = new Bundle();
-                bundle.putString("teamid", teamid);
-                bundle.putString("playerid", playerid);
+                bundle.putString(TAG_TEAMID, teamId);
+                bundle.putString(TAG_PEOPLE_ID, peopleId);
                 Log.d(TAG_MY_APP, " BUNDLE" + bundle);
 
                 Intent intent = new Intent(MainActivity.this, DisplayGamesActivity.class);
