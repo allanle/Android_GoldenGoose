@@ -6,35 +6,35 @@
         jumboMode="false"
         revision="21.1.2"
         sha1="b017100da14f9c158c9f5f2f508333c224b24a7c">
-        <dex dex="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/debug/classes-b8d146bcc6c77544d4e25c7f4430d6e07ec0c6e5.jar" />
+        <dex dex="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/release/classes-b8d146bcc6c77544d4e25c7f4430d6e07ec0c6e5.jar" />
     </item>
     <item
         jar="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.2/libs/internal_impl-21.0.2.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="962e8b12569c56dbdcf8367eb4eac8bb129cd18f">
-        <dex dex="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/debug/internal_impl-21.0.2-0f1f2aa228fa18ab0320d5f73b4c3b89a8e33a3c.jar" />
+        <dex dex="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/release/internal_impl-21.0.2-0f1f2aa228fa18ab0320d5f73b4c3b89a8e33a3c.jar" />
     </item>
     <item
         jar="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/exploded-aar/com.android.support/gridlayout-v7/21.0.2/classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="9742ced04aafd9ac97dd2c66c1aa0e32d2ae7e54">
-        <dex dex="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/debug/classes-cd254a1df1476d0d439deb71702fdf7d396fd3a9.jar" />
+        <dex dex="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/release/classes-cd254a1df1476d0d439deb71702fdf7d396fd3a9.jar" />
     </item>
     <item
         jar="/Users/pointstreak/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.2/support-annotations-21.0.2.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="99373741f99a0556ee293c41e8faa1ca3ae8a4e6">
-        <dex dex="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/debug/support-annotations-21.0.2-7af37afdbe55be85be7c464e57fa51f33b337613.jar" />
+        <dex dex="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/release/support-annotations-21.0.2-7af37afdbe55be85be7c464e57fa51f33b337613.jar" />
     </item>
     <item
         jar="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.2/classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="d1bf02de1c56d942e7a9d093b8610ba1ef4128e3">
-        <dex dex="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/debug/classes-ae307b47c4bddac4dec5371a5349c70c228c4ae7.jar" />
+        <dex dex="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/release/classes-ae307b47c4bddac4dec5371a5349c70c228c4ae7.jar" />
     </item>
 
 </items>

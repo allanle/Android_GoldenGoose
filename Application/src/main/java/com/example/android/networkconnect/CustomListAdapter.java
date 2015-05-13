@@ -31,6 +31,10 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
     private ViewHolder viewHolder;
 	private static final String TAG_MY_APP = "TAG_MY_APP";
 
+	public CustomListAdapter() {
+		super(null, Integer.parseInt(null));
+	}
+
     public CustomListAdapter(Context context, int resource, String peopleId, String teamId, ArrayList<Events> events) {
         super(context, resource, events);
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
