@@ -62,7 +62,7 @@
     <string name="title_activity_custom_list_adapter">CustomListAdapter</string>
     <string name="title_activity_games">GamesActivity</string>
     <string name="welcome_message">Project WolfSix
-        Click FETCH to get your next game
+        Click FETCH to get your next event
     </string>
     <!-- From: file:/Users/pointstreak/Desktop/goldengoose/Application/src/main/res/values/template-styles.xml -->
     <eat-comment/>

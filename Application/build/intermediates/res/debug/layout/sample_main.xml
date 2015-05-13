@@ -50,7 +50,7 @@
         android:text="@string/Login"
         android:id="@+id/login"
         android:layout_gravity="center_horizontal"
-        android:onClick="run" />
+        />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -63,8 +63,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-
 
         <fragment
             android:name="com.example.android.common.logger.LogFragment"

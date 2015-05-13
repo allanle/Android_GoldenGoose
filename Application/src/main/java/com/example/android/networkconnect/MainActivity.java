@@ -58,15 +58,13 @@ import java.util.Calendar;
  * This sample uses the logging framework to display log output in the log
  * fragment (LogFragment).
  */
-public class MainActivity extends FragmentActivity implements View.OnClickListener {
-
-    public static final String TAG = "Network Connect";
+public class MainActivity extends FragmentActivity {
     private EditText email;
     private EditText password;
     private Button login;
     private Calendar calendar = Calendar.getInstance();
-    private int month = calendar.get(Calendar.MONTH) + 1;
-    private int year = calendar.get(Calendar.YEAR);
+    private int getMonth = calendar.get(Calendar.MONTH) + 1;
+    private int getYear = calendar.get(Calendar.YEAR);
     private static final String TAG_MY_APP = "TAG_MY_APP";
 
     // Reference to the fragment showing events, so we can clear it with a button
@@ -84,10 +82,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         //introFragment.getTextView().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16.0f);
 
         email = (EditText)findViewById(R.id.email);
-        email.setOnClickListener(this);
-
         password = (EditText)findViewById(R.id.password);
-        password.setOnClickListener(this);
 
         login = (Button)findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
@@ -127,15 +122,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
               return true;
         }
         return false;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if(v == email) {
-            email.setText("");
-        } else if(v == password) {
-            password.setText("");
-        }
     }
 
     /**
@@ -222,7 +208,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 			            Log.d(TAG_MY_APP, "+ There is only one team with name: " +teamName);
 
 			            // Get the schedule for this team.
-			            URL eventURL = new URL("https://teamlockerroom.com/api/calendar/" + TAG_TEAMID + TAG_PEOPLE_ID + month + year);
+			            URL eventURL = new URL("https://teamlockerroom.com/api/calendar/" + TAG_TEAMID + "/" + TAG_PEOPLE_ID + "/"  + getMonth + "/"  + getYear);
 
 			            BufferedReader eventReader = null;
 			            String eventLine = null;
@@ -249,7 +235,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                             Log.d(TAG_MY_APP, "   " + tempEvent);
 				            if(tempGameId != 0) {
 					            Log.d(TAG_MY_APP, "GameID: " +tempEvent.getString(TAG_EVENT_GAMEID).toString());
-					            Log.d(TAG_MY_APP, "Game Date: " +tempEvent.getString(TAG_EVENT_DATE).toString());
+					            Log.d(TAG_MY_APP, "Events Date: " +tempEvent.getString(TAG_EVENT_DATE).toString());
 					            Log.d(TAG_MY_APP, "Rink Name: " +tempEvent.getString(TAG_EVENT_RINKNAME).toString());
 					            Log.d(TAG_MY_APP, "Attending: " +tempEvent.getString(TAG_EVENT_ATTIN).toString());
 					            Log.d(TAG_MY_APP, "Not Attending: " +tempEvent.getString(TAG_EVENT_ATTOUT).toString());
@@ -285,7 +271,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 bundle.putString(TAG_PEOPLE_ID, peopleId);
                 Log.d(TAG_MY_APP, " BUNDLE" + bundle);
 
-                Intent intent = new Intent(MainActivity.this, DisplayGamesActivity.class);
+                Intent intent = new Intent(MainActivity.this, DisplayEventsActivity.class);
                 intent.putExtras(bundle);
                 //start next activity
                 startActivity(intent);

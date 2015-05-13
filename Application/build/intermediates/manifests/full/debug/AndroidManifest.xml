@@ -43,8 +43,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.android.networkconnect.DisplayGamesActivity"
-            android:label="@string/title_activity_games" >
+            android:name="com.example.android.networkconnect.DisplayEventsActivity"
+            android:label="Events" >
         </activity>
         <activity
             android:name="com.example.android.networkconnect.CustomListAdapter"

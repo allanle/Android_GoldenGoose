@@ -51,7 +51,7 @@ category#android.intent.category.LAUNCHER
 ADDED from AndroidManifest.xml:38:17
 	android:name
 		ADDED from AndroidManifest.xml:38:27
-activity#com.example.android.networkconnect.DisplayGamesActivity
+activity#com.example.android.networkconnect.DisplayEventsActivity
 ADDED from AndroidManifest.xml:41:9
 	android:label
 		ADDED from AndroidManifest.xml:43:13

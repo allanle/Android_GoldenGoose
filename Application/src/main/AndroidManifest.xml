@@ -39,8 +39,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DisplayGamesActivity"
-            android:label="@string/title_activity_games" >
+            android:name=".DisplayEventsActivity"
+            android:label="Events" >
         </activity>
         <activity
             android:name=".CustomListAdapter"

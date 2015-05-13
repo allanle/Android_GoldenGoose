@@ -22,8 +22,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class CustomListAdapter extends ArrayAdapter<Game> {
-    private ArrayList<Game> games;
+public class CustomListAdapter extends ArrayAdapter<Events> {
+    private ArrayList<Events> events;
 	private String peopleId;
 	private String teamId;
     private LayoutInflater layoutInflater;
@@ -31,22 +31,22 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
     private ViewHolder viewHolder;
 	private static final String TAG_MY_APP = "TAG_MY_APP";
 
-    public CustomListAdapter(Context context, int resource, String peopleId, String teamId, ArrayList<Game> games) {
-        super(context, resource, games);
+    public CustomListAdapter(Context context, int resource, String peopleId, String teamId, ArrayList<Events> events) {
+        super(context, resource, events);
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResource = resource;
 
 	    // Set the passed in variables.
-        this.games = games;
+        this.events = events;
 	    this.peopleId = peopleId;
 	    this.teamId = teamId;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
 	        // Get the eventId for this record.
-	        String eventId = games.get(position).getEventId();
+	        String eventId = events.get(position).getEventId();
 
             viewHolder = new ViewHolder();
             convertView = layoutInflater.inflate(mResource, null);
@@ -69,14 +69,22 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
             viewHolder = (ViewHolder)convertView.getTag();
         }
 
-        viewHolder.title.setText(games.get(position).getTitle());
-        viewHolder.rinkName.setText(games.get(position).getRinkName());
-        viewHolder.arenaName.setText(games.get(position).getArenaName());
-        viewHolder.eventDate.setText(games.get(position).getEventDate());
-        viewHolder.attendance.setText(games.get(position).getAttendance());
-		viewHolder.eventId.setText(games.get(position).getEventId());
+        viewHolder.title.setText(events.get(position).getTitle());
+        viewHolder.rinkName.setText(events.get(position).getRinkName());
+        viewHolder.arenaName.setText(events.get(position).getArenaName());
+        viewHolder.eventDate.setText(events.get(position).getEventDate());
+        viewHolder.attendance.setText(events.get(position).getAttendance());
+		viewHolder.eventId.setText(events.get(position).getEventId());
+
+		convertView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(getContext(), events.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+			}
+		});
+
         return convertView;
-    }
+	}
 
     class ViewHolder {
 	    public TextView eventId;
@@ -110,13 +118,13 @@ public class CustomListAdapter extends ArrayAdapter<Game> {
 					// The eventId, peopleId and teamId.
 					//new UpdateAttendanceEvent().execute("in", eventId, "17786870", "408330");
 					new UpdateAttendanceEvent().execute("in", eventId, peopleId, teamId);
-					Toast.makeText(getContext(), "Attending Game", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getContext(), "Attending Event", Toast.LENGTH_SHORT).show();
 				break;
 				case R.id.no:
 					// The eventId, peopleId and teamId.
 					//new UpdateAttendanceEvent().execute("out", eventId, "17786870", "408330");
 					new UpdateAttendanceEvent().execute("out", eventId, peopleId, teamId);
-					Toast.makeText(getContext(), "Not Attending Game", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getContext(), "Not Attending Event", Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
