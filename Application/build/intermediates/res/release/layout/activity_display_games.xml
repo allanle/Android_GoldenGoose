@@ -1,0 +1,17 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="com.example.android.networkconnect.DisplayEventsActivity"
+    android:weightSum="1"
+    >
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:clickable="true"
+        tools:listitem="@layout/custom_list_adapter"
+        />
+
+</RelativeLayout><!-- From: file:/Users/pointstreak/Desktop/goldengoose/Application/src/main/res/layout/activity_display_games.xml -->
