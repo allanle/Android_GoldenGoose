@@ -34,7 +34,7 @@
         <attr format="dimension" name="contentPaddingTop"/>
         <!-- Inner padding between the bottom edge of the Card and children of the CardView. -->
         <attr format="dimension" name="contentPaddingBottom"/>
-    </declare-styleable></file></source></dataSet><dataSet config="21.0.2"><source path="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.2/res"/></dataSet><dataSet config="21.0.2"><source path="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/exploded-aar/com.android.support/gridlayout-v7/21.0.2/res"><file path="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/exploded-aar/com.android.support/gridlayout-v7/21.0.2/res/values/values.xml" qualifiers=""><declare-styleable name="GridLayout_Layout">
+    </declare-styleable></file></source></dataSet><dataSet config="21.0.2"><source path="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/exploded-aar/com.android.support/gridlayout-v7/21.0.2/res"><file path="/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/exploded-aar/com.android.support/gridlayout-v7/21.0.2/res/values/values.xml" qualifiers=""><declare-styleable name="GridLayout_Layout">
 
         <!--
               support versions. All attributes not present in MarginLayout are

@@ -28,9 +28,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.android.common.logger.Log;
-import com.example.android.common.logger.LogFragment;
-import com.example.android.common.logger.LogWrapper;
-import com.example.android.common.logger.MessageOnlyLogFilter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,9 +51,6 @@ import java.util.Calendar;
  * Sample application demonstrating how to connect to the network and fetch raw
  * HTML. It uses AsyncTask to do the fetch on a background thread. To establish
  * the network connection, it uses HttpURLConnection.
- *
- * This sample uses the logging framework to display log output in the log
- * fragment (LogFragment).
  */
 public class MainActivity extends FragmentActivity {
     private EditText email;
@@ -67,19 +61,10 @@ public class MainActivity extends FragmentActivity {
     private int getYear = calendar.get(Calendar.YEAR);
     private static final String TAG_MY_APP = "TAG_MY_APP";
 
-    // Reference to the fragment showing events, so we can clear it with a button
-    // as necessary.
-    private LogFragment mLogFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sample_main);
-
-        // Initialize text fragment that displays intro text.
-        //SimpleTextFragment introFragment = (SimpleTextFragment) getSupportFragmentManager().findFragmentById(R.id.intro_fragment);
-        //introFragment.setText(R.string.welcome_message);
-        //introFragment.getTextView().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16.0f);
 
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
@@ -98,8 +83,6 @@ public class MainActivity extends FragmentActivity {
                 }
             }
         });
-        // Initialize the logging framework.
-        initializeLogging();
     }
 
     @Override
@@ -116,10 +99,6 @@ public class MainActivity extends FragmentActivity {
             case R.id.fetch_action:
                 new LoginTask().execute();
                 return true;
-            // Clear the log view fragment.
-            case R.id.clear_action:
-              mLogFragment.getLogView().setText("");
-              return true;
         }
         return false;
     }
@@ -334,24 +313,4 @@ public class MainActivity extends FragmentActivity {
         reader.read(buffer);
         return new String(buffer);
     }
-
-    /** Create a chain of targets that will receive log data */
-    public void initializeLogging() {
-
-        // Using Log, front-end to the logging chain, emulates
-        // android.util.log method signatures.
-
-        // Wraps Android's native log framework
-        LogWrapper logWrapper = new LogWrapper();
-        Log.setLogNode(logWrapper);
-
-        // A filter that strips out everything except the message text.
-        MessageOnlyLogFilter msgFilter = new MessageOnlyLogFilter();
-        logWrapper.setNext(msgFilter);
-
-        // On screen logging via a fragment with a TextView.
-        mLogFragment = (LogFragment) getSupportFragmentManager().findFragmentById(R.id.log_fragment);
-        msgFilter.setNext(mLogFragment.getLogView());
-    }
-
 }
