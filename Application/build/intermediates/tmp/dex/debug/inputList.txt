@@ -1,6 +1,0 @@
-I:\Users\e\AndroidStudioProjects\WolfTen\Application\build\intermediates\classes\debug
-I:\Users\e\AndroidStudioProjects\WolfTen\Application\build\intermediates\pre-dexed\debug\support-annotations-21.0.2-96973858545ab62de0ed4dcda99d4582b03e8fe5.jar
-I:\Users\e\AndroidStudioProjects\WolfTen\Application\build\intermediates\pre-dexed\debug\classes-567bfc474ab386c77c0b127a5000119a8bfc3194.jar
-I:\Users\e\AndroidStudioProjects\WolfTen\Application\build\intermediates\pre-dexed\debug\classes-43329845a74fcae876b36a4519d254f073567531.jar
-I:\Users\e\AndroidStudioProjects\WolfTen\Application\build\intermediates\pre-dexed\debug\internal_impl-21.0.2-4d12ae5e4cd1588645a6350ca7d9a5794832f396.jar
-I:\Users\e\AndroidStudioProjects\WolfTen\Application\build\intermediates\pre-dexed\debug\classes-68ea639b501698889693456363664edcddc94930.jar

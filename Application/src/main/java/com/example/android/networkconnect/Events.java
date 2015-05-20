@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Created by pointstreak on 15-04-14.
  */
-public class Game implements Parcelable {
+public class Events implements Parcelable {
 	private String eventId;
     private String title;
     private String arenaName;
@@ -21,7 +21,11 @@ public class Game implements Parcelable {
     private String result;
     private int id;
 
-    public Game(Parcel in) {
+    public Events() {
+
+    }
+
+    public Events(Parcel in) {
 	    eventId = in.readString();
         title = in.readString();
         arenaName = in.readString();
@@ -32,12 +36,6 @@ public class Game implements Parcelable {
         playerId = in.readString();
         result = in.readString();
     }
-
-	public Game() {}
-
-	public String getEventId() { return eventId; }
-
-	public void setEventId(String eventId) { this.eventId = eventId; }
 
     public String getTitle() {
         return title;
@@ -103,6 +101,14 @@ public class Game implements Parcelable {
         this.result = result;
     }
 
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
     @Override
     public String toString() {
         return this.id + this.title;
@@ -120,16 +126,16 @@ public class Game implements Parcelable {
 	    dest.writeString(this.eventId);
     }
 
-    public static final Parcelable.Creator<Game> CREATOR = new Parcelable.Creator<Game>() {
+    public static final Parcelable.Creator<Events> CREATOR = new Parcelable.Creator<Events>() {
 
         @Override
-        public Game createFromParcel(Parcel in) {
-            return new Game(in); // RECREATE VENUE GIVEN SOURCE
+        public Events createFromParcel(Parcel in) {
+            return new Events(in); // RECREATE VENUE GIVEN SOURCE
         }
 
         @Override
-        public Game[] newArray(int size) {
-            return new Game[size]; // CREATING AN ARRAY OF VENUES
+        public Events[] newArray(int size) {
+            return new Events[size]; // CREATING AN ARRAY OF VENUES
         }
 
     };

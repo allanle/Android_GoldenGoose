@@ -17,7 +17,6 @@
 package com.example.android.networkconnect;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -25,14 +24,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.android.common.logger.Log;
-import com.example.android.common.logger.LogFragment;
-import com.example.android.common.logger.LogWrapper;
-import com.example.android.common.logger.MessageOnlyLogFilter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,72 +51,23 @@ import java.util.Calendar;
  * Sample application demonstrating how to connect to the network and fetch raw
  * HTML. It uses AsyncTask to do the fetch on a background thread. To establish
  * the network connection, it uses HttpURLConnection.
- *
- * This sample uses the logging framework to display log output in the log
- * fragment (LogFragment).
  */
-public class MainActivity extends FragmentActivity implements View.OnClickListener {
-
-    public static final String TAG = "Network Connect";
+public class MainActivity extends FragmentActivity {
     private EditText email;
     private EditText password;
     private Button login;
-    private CheckBox rememberMe;
-
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
-
     private Calendar calendar = Calendar.getInstance();
-    private int month = calendar.get(Calendar.MONTH) + 1;
-    private int year = calendar.get(Calendar.YEAR);
+    private int getMonth = calendar.get(Calendar.MONTH) + 1;
+    private int getYear = calendar.get(Calendar.YEAR);
     private static final String TAG_MY_APP = "TAG_MY_APP";
-
-    // Reference to the fragment showing events, so we can clear it with a button
-    // as necessary.
-    private LogFragment mLogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sample_main);
 
-        // Initialize text fragment that displays intro text.
-        //SimpleTextFragment introFragment = (SimpleTextFragment) getSupportFragmentManager().findFragmentById(R.id.intro_fragment);
-        //introFragment.setText(R.string.welcome_message);
-        //introFragment.getTextView().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16.0f);
-
         email = (EditText)findViewById(R.id.email);
-        email.setOnClickListener(this);
-
         password = (EditText)findViewById(R.id.password);
-        password.setOnClickListener(this);
-
-        rememberMe = (CheckBox)findViewById(R.id.rememberme);
-        sharedPreferences = getSharedPreferences("gay", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        Boolean saveLogin = sharedPreferences.getBoolean("saveLogin", false);
-        if(saveLogin == true) {
-            email.setText(sharedPreferences.getString("email", ""));
-            password.setText(sharedPreferences.getString("password", ""));
-            rememberMe.setChecked(true);
-        }
-
-/*        sharedPreferences = getSharedPreferences("Remember", 0);
-        String a = sharedPreferences.getString("email", null);
-        String b = sharedPreferences.getString("password", null);
-        rememberMe = (CheckBox)findViewById(R.id.rememberme);
-        if(rememberMe.isChecked()) {
-            getSharedPreferences("Remember", 0).edit().putString("email", email.getText().toString().trim()).putString("password", password.getText().toString().trim()).commit();
-        }
-
-        rememberMe = (CheckBox)findViewById(R.id.rememberme);
-        boolean isChecked = rememberMe.isChecked();
-        if(isChecked == true) {
-            Toast.makeText(getApplication(), "Remember Me Checked:", Toast.LENGTH_SHORT).show();
-            saveLoginDetails();
-        } else {
-            removeLoginDetails();
-        }*/
 
         login = (Button)findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
@@ -137,8 +83,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 }
             }
         });
-        // Initialize the logging framework.
-        initializeLogging();
     }
 
     @Override
@@ -155,44 +99,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             case R.id.fetch_action:
                 new LoginTask().execute();
                 return true;
-            // Clear the log view fragment.
-            case R.id.clear_action:
-              mLogFragment.getLogView().setText("");
-              return true;
         }
         return false;
     }
-
-    @Override
-    public void onClick(View v) {
-        if(v == email) {
-            email.setText("");
-        } else if(v == password) {
-            password.setText("");
-        }
-    }
-/*
-    private void saveLoginDetails() {
-        email = (EditText)findViewById(R.id.email);
-        password = (EditText)findViewById(R.id.password);
-
-        String mEmail = email.getText().toString();
-        String mPassword = password.getText().toString();
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("rememberMe", true);
-        editor.putString("email", mEmail);
-        editor.putString("password", mPassword);
-        editor.commit();
-    }
-
-    private void removeLoginDetails() {
-        editor = sharedPreferences.edit();
-        editor.putBoolean("rememberMe", false);
-        editor.remove("email");
-        editor.remove("password");
-        editor.commit();
-    }*/
 
     /**
      * Implementation of AsyncTask, to fetch the data in the background away from
@@ -224,10 +133,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 String username = email.getText().toString(); //"14hhqt+2y8jbjzz3wz1s@sharklasers.com";
                 String mpassword = password.getText().toString(); //"ZuLGHDaLM9";
                 String data = URLEncoder.encode("username", charset)
-                        + "=" + URLEncoder.encode("14hhqt+2y8jbjzz3wz1s@sharklasers.com", charset);
+                        + "=" + URLEncoder.encode(username, charset);
 
                 data += "&" + URLEncoder.encode("password", charset)
-                        + "=" + URLEncoder.encode("ZuLGHDaLM9", charset);
+                        + "=" + URLEncoder.encode(mpassword, charset);
 
                 Log.d(TAG_MY_APP, "+ Here is the data");
                 Log.d(TAG_MY_APP, data);
@@ -258,7 +167,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 reader.close();
 
 	            try {
-                    //Intent intent = new Intent(MainActivity.this, DisplayGamesActivity.class);
                     json = new JSONObject(sb.toString());
 		            JSONArray teamList = json.getJSONArray(TAG_TEAMLIST);
 
@@ -279,9 +187,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 			            Log.d(TAG_MY_APP, "+ There is only one team with name: " +teamName);
 
 			            // Get the schedule for this team.
-			            URL eventURL = new URL("https://teamlockerroom.com/api/calendar/" + TAG_TEAMID + TAG_PEOPLE_ID + month + year);
-			            //URL eventURL = new URL("https://teamlockerroom.com/api/calendar/" + teamId +"/100");
-                        //URL eventURL = new URL("https://teamlockerroom.com/api/calendar/408330/17786870");
+			            URL eventURL = new URL("https://teamlockerroom.com/api/calendar/" + TAG_TEAMID + "/" + TAG_PEOPLE_ID + "/"  + getMonth + "/"  + getYear);
 
 			            BufferedReader eventReader = null;
 			            String eventLine = null;
@@ -308,7 +214,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                             Log.d(TAG_MY_APP, "   " + tempEvent);
 				            if(tempGameId != 0) {
 					            Log.d(TAG_MY_APP, "GameID: " +tempEvent.getString(TAG_EVENT_GAMEID).toString());
-					            Log.d(TAG_MY_APP, "Game Date: " +tempEvent.getString(TAG_EVENT_DATE).toString());
+					            Log.d(TAG_MY_APP, "Events Date: " +tempEvent.getString(TAG_EVENT_DATE).toString());
 					            Log.d(TAG_MY_APP, "Rink Name: " +tempEvent.getString(TAG_EVENT_RINKNAME).toString());
 					            Log.d(TAG_MY_APP, "Attending: " +tempEvent.getString(TAG_EVENT_ATTIN).toString());
 					            Log.d(TAG_MY_APP, "Not Attending: " +tempEvent.getString(TAG_EVENT_ATTOUT).toString());
@@ -336,20 +242,19 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         @Override
         protected void onPostExecute(JSONObject json) {
             try {
-                String teamid = json.getString(TAG_TEAMID).toString();
-                Log.d(TAG_MY_APP, " team id " + teamid);
-                String playerid = json.get(TAG_PEOPLE_ID).toString();
-                Log.d(TAG_MY_APP, " player id " + playerid);
+                String teamId = json.getString(TAG_TEAMID).toString();
+                String peopleId = json.get(TAG_PEOPLE_ID).toString();
 
                 Bundle bundle = new Bundle();
-                bundle.putString("teamid", teamid);
-                bundle.putString("playerid", playerid);
+                bundle.putString(TAG_TEAMID, teamId);
+                bundle.putString(TAG_PEOPLE_ID, peopleId);
                 Log.d(TAG_MY_APP, " BUNDLE" + bundle);
-                Intent intent = new Intent(MainActivity.this, DisplayGamesActivity.class);
+
+                Intent intent = new Intent(MainActivity.this, DisplayEventsActivity.class);
                 intent.putExtras(bundle);
                 //start next activity
                 startActivity(intent);
-                Log.i(TAG_MY_APP, " onPostExecute information " + json.toString());
+                Log.i(TAG_MY_APP, json.toString());
             } catch(JSONException e) {
                 e.printStackTrace();
             }
@@ -408,24 +313,4 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         reader.read(buffer);
         return new String(buffer);
     }
-
-    /** Create a chain of targets that will receive log data */
-    public void initializeLogging() {
-
-        // Using Log, front-end to the logging chain, emulates
-        // android.util.log method signatures.
-
-        // Wraps Android's native log framework
-        LogWrapper logWrapper = new LogWrapper();
-        Log.setLogNode(logWrapper);
-
-        // A filter that strips out everything except the message text.
-        MessageOnlyLogFilter msgFilter = new MessageOnlyLogFilter();
-        logWrapper.setNext(msgFilter);
-
-        // On screen logging via a fragment with a TextView.
-        mLogFragment = (LogFragment) getSupportFragmentManager().findFragmentById(R.id.log_fragment);
-        msgFilter.setNext(mLogFragment.getLogView());
-    }
-
 }
