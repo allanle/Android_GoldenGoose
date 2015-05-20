@@ -7,8 +7,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.view.Menu;
 import android.widget.ListView;
-
-import com.example.android.common.logger.Log;
+import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
