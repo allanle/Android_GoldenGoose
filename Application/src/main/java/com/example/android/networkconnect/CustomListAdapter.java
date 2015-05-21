@@ -28,7 +28,7 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
     private LayoutInflater layoutInflater;
     private int mResource;
     private ViewHolder viewHolder;
-	private static final String TAG_MY_APP = "TAG_MY_APP";
+	private static final String TAG_MY_APP = "MyApp";
 
 	public CustomListAdapter() {
 		super(null, Integer.parseInt(null));
@@ -184,8 +184,10 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 
 		        HttpResponse httpResponse = httpClient.execute(httpPost);
 		        if(httpResponse.getStatusLine().getStatusCode() == 200) {
-			        return "I am " +attendance + " Event " +params[1];
-		        }
+                    Log.d(TAG_MY_APP, attendance);
+                    //return "I am " +attendance + " Event " +params[1];
+					return attendance;
+                }
 	        } catch(Exception e) {
 		        e.printStackTrace();
 	        }
@@ -198,11 +200,13 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         // "I am attending this event" or "I am not attending this event"
         // or it can highlight the yes/no button and disable the other.
         protected void onPostExecute(String result) {
-            if(result.equals("attending")) {
-				viewHolder.attendance.setText("I am attending this event");
-			} else {
-				viewHolder.attendance.setText("I am not attending this event");
-			}
+            super.onPostExecute(result);
+			Log.d(TAG_MY_APP + " onPostExecute ", result);
+            if(result.equalsIgnoreCase("attending")) {
+                viewHolder.attendance.setText("broooooooooo");
+            } else if(result.equalsIgnoreCase("not attending")) {
+                viewHolder.attendance.setText("woooooow bro");
+            }
         }
     }
 }

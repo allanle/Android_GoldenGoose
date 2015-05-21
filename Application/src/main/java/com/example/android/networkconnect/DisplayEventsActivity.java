@@ -4,10 +4,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.ListView;
-import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -133,11 +132,6 @@ public class DisplayEventsActivity extends Activity {
         protected void onPostExecute(JSONArray jsonArray) {
             dialog.cancel();
             adapter.notifyDataSetChanged();
-            super.onPostExecute(jsonArray);
-
-            final Message message = new Message();
-            message.obj = jsonArray;
-            Log.d(TAG_MY_APP + " onPostExecute DisplayEventsActivity", jsonArray.toString());
         }
     }
 }
