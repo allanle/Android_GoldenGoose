@@ -64,12 +64,12 @@ public class MainActivity extends FragmentActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(email.getText().toString().equals("")) {
+                if (email.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Must enter email", Toast.LENGTH_SHORT).show();
-                } else if(password.getText().toString().equals("")) {
+                } else if (password.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Must enter password", Toast.LENGTH_SHORT).show();
                 } else {
-	                Toast.makeText(getApplicationContext(), "Trying to login...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Trying to login...", Toast.LENGTH_SHORT).show();
                     new LoginTask().execute();
                 }
             }
@@ -135,48 +135,37 @@ public class MainActivity extends FragmentActivity {
 	            try {
 		            Log.d(TAG_MY_APP, "+ Connected to URL.");
 		            responseCode = conn.getResponseCode();
-		            if(responseCode == 200) {
-			            ok = true;
+		            if(responseCode != 200) {
+                        json = new JSONObject("{failed: false}");
+                        json.put("failed", false);
+                        return json;
 		            }
-	            } catch(java.io.IOException e) {
-		            // Here we are basically trying to get the response code twice (see above comment on headers).
-		            if(e.getMessage().contains("authentication challenge")) {
-			            responseCode = conn.getResponseCode();
-			            if(responseCode == 200) {
-				            ok = true;
-			            }
-		            } else {
-			            throw e;
-		            }
+	            } catch(Exception e) {
+                    json = new JSONObject("{failed: true}");
+                    json.put("message", e.getMessage());
+                    return json;
 	            }
 
-	            // When we get to here, we are reasonably sure that the responseCode is OK
-	            // and that we can try to read the JSON data for the User now.
-	            if(ok) {
-		            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-		            // Read Server Response and append it to a String.
-		            while((line = reader.readLine()) != null) {
-			            sb.append(line +"\n");
-		            }
-		            reader.close();
+                // Read Server Response and append it to a String.
+                while((line = reader.readLine()) != null) {
+                    sb.append(line +"\n");
+                }
+                reader.close();
 
-		            try {
-			            json = new JSONObject(sb.toString());
-			            json.put("failed", false);
-		            } catch(JSONException jse) {
-			            json = new JSONObject("{failed: true}");
-			            json.put("message", "There was an error reading the data.");
-		            }
-	            } else {
-		            json = new JSONObject("{failed: true}");
-		            json.put("message", "There was an error reading the data.");
-	            }
-            } catch(Exception ex) {
-                Log.d(TAG_MY_APP, ex.getMessage());
-                ex.printStackTrace();
+                try {
+                    json = new JSONObject(sb.toString());
+                    json.put("failed", false);
+                } catch(JSONException jse) {
+                    json = new JSONObject("{failed: true}");
+                    json.put("message", "There was an error reading the data.");
+                }
+
+            } catch(Exception e) {
+                Log.d(TAG_MY_APP, e.getMessage());
+                e.printStackTrace();
             }
-
 	        // Return a JSONObject so that onPostExecute can figure out what to do.
             return json;
         }
@@ -193,22 +182,26 @@ public class MainActivity extends FragmentActivity {
 		            Toast.makeText(MainActivity.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
 	            } else {
 		            // TODO: Need to check if these actually have values in them.
-		            String teamId = json.getString(TAG_TEAMID).toString();
-		            String peopleId = json.get(TAG_PEOPLE_ID).toString();
+                    if(json.getString(TAG_TEAMID).equals(null) || json.getString(TAG_PEOPLE_ID).equals(null)) {
+                        Toast.makeText(MainActivity.this, "Something went wrong. Try again.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        String teamId = json.getString(TAG_TEAMID).toString();
+                        String peopleId = json.get(TAG_PEOPLE_ID).toString();
 
-		            // Put the bundle of extras together for the next activity.
-		            Bundle bundle = new Bundle();
-		            bundle.putString(TAG_TEAMID, teamId);
-		            bundle.putString(TAG_PEOPLE_ID, peopleId);
+                        // Put the bundle of extras together for the next activity.
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TAG_TEAMID, teamId);
+                        bundle.putString(TAG_PEOPLE_ID, peopleId);
 
-		            Intent intent = new Intent(MainActivity.this, DisplayEventsActivity.class);
-		            intent.putExtras(bundle);
+                        Intent intent = new Intent(MainActivity.this, DisplayEventsActivity.class);
+                        intent.putExtras(bundle);
 
-		            // Login was successful, notify the User.
-		            Toast.makeText(MainActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
+                        // Login was successful, notify the User.
+                        Toast.makeText(MainActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
 
-		            // Start the DisplayEventsActivity.
-		            startActivity(intent);
+                        // Start the DisplayEventsActivity.
+                        startActivity(intent);
+                    }
 	            }
             } catch(JSONException e) {
 	            Toast.makeText(MainActivity.this, "There was an error reading data.", Toast.LENGTH_SHORT).show();
