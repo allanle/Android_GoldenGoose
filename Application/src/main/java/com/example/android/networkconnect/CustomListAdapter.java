@@ -2,6 +2,7 @@ package com.example.android.networkconnect;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.android.common.logger.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -179,7 +178,7 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		        httpPost.setHeader("Content-type", "application/json");
 
 		        Log.d(TAG_MY_APP + " attendance ", params[0]);
-		        Log.d(TAG_MY_APP + " event id " , params[1]);
+		        Log.d(TAG_MY_APP + " event id ", params[1]);
 		        Log.d(TAG_MY_APP + " people id ", params[2]);
 		        Log.d(TAG_MY_APP + " team id ", params[3]);
 

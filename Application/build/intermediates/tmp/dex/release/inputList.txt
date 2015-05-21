@@ -1,6 +1,0 @@
-/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/classes/release
-/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/release/support-annotations-21.0.2-7af37afdbe55be85be7c464e57fa51f33b337613.jar
-/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/release/classes-b8d146bcc6c77544d4e25c7f4430d6e07ec0c6e5.jar
-/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/release/classes-cd254a1df1476d0d439deb71702fdf7d396fd3a9.jar
-/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/release/internal_impl-21.0.2-0f1f2aa228fa18ab0320d5f73b4c3b89a8e33a3c.jar
-/Users/pointstreak/Desktop/goldengoose/Application/build/intermediates/pre-dexed/release/classes-ae307b47c4bddac4dec5371a5349c70c228c4ae7.jar
