@@ -31,8 +31,6 @@ public class DisplayEventsActivity extends Activity {
     private static final String TAG_MY_APP = "MyApp";
     private static final String TAG_PEOPLE_ID = "peopleid";
     private static final String TAG_TEAM_ID = "teamid";
-    private JSONObject jsonObject;
-    private JSONArray jsonArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +50,7 @@ public class DisplayEventsActivity extends Activity {
 
         ListView listView = (ListView)findViewById(R.id.listView);
         adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, peopleId, teamId, eventsList);
-        Log.d(TAG_MY_APP+ "events brah " , eventsList.toString());
+
         listView.setAdapter(adapter);
     }
 
@@ -71,8 +69,9 @@ public class DisplayEventsActivity extends Activity {
         private static final String TAG_RINK_NAME = "rinkname";
         private static final String TAG_EVENT_DATE = "eventdate";
         private static final String TAG_ATTENDANCE_STATUS = "attstatus";
-        //private JSONObject jsonObject;
-        //private JSONArray jsonArray;
+        private static final String TAG_PLAYED = "played";
+        private JSONObject jsonObject;
+        private JSONArray jsonArray;
 
         @Override
         protected void onPreExecute() {
@@ -101,10 +100,11 @@ public class DisplayEventsActivity extends Activity {
 
                     for(int i = 0; i < jsonArray.length(); i++) {
 	                    jsonObject = jsonArray.getJSONObject(i);
-                        Log.d(TAG_MY_APP +"Look here bro", jsonObject.toString());
+
                         Events event = new Events();
 
 	                    // Set the eventId.
+                        event.setPlayed(jsonObject.getString(TAG_PLAYED));
 	                    event.setEventId(jsonObject.getString(TAG_EVENT_ID));
                         event.setTitle(jsonObject.getString(TAG_TITLE));
                         event.setArenaName(jsonObject.getString(TAG_ARENA_NAME));

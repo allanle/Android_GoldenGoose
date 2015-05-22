@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.android.networkconnect.CustomListAdapter"
-    android:background="#000000"
+
     android:weightSum="1">
 
     <LinearLayout
@@ -14,10 +14,17 @@
         android:layout_weight="1">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/played"
+            android:textColor="#000000"
+            />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/eventid"
-            android:visibility="invisible"
+            android:textColor="#000000"
             />
 
         <TextView
@@ -26,6 +33,7 @@
             android:textAppearance="@android:style/TextAppearance.Medium"
             android:id="@+id/title"
             android:text="MF Hustlers vs.Pointstreak"
+            android:textColor="#000000"
             />
 
         <TextView
@@ -34,6 +42,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/eventdate"
             android:text="Tue, Apr 8, 2014 10:30 PM"
+            android:textColor="#000000"
             />
 
         <TextView
@@ -42,6 +51,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/arenaname"
             android:text="Kensington Complex"
+            android:textColor="#000000"
             />
 
         <TextView
@@ -51,6 +61,7 @@
             android:id="@+id/rinkname"
             android:text="Kensington 1"
             android:layout_below="@+id/arenaname"
+            android:textColor="#000000"
             />
 
         <TextView
@@ -60,6 +71,7 @@
             android:text="I am attending"
             android:id="@+id/attendance"
             android:layout_below="@+id/rinkname"
+            android:textColor="#000000"
             />
 
     </LinearLayout>

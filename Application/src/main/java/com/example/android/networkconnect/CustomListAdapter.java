@@ -1,6 +1,7 @@
 package com.example.android.networkconnect;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,10 +44,6 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         this.events = events;
 	    this.peopleId = peopleId;
 	    this.teamId = teamId;
-
-		Log.d(TAG_MY_APP + " events ", events.toString());
-		Log.d(TAG_MY_APP + " peopleid ", peopleId);
-		Log.d(TAG_MY_APP + " teamid ", teamId);
     }
 
 	/**
@@ -72,12 +69,14 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
             convertView = layoutInflater.inflate(mResource, null);
 
 	        // Set the tags for the record.
-	        viewHolder.eventId = (TextView)convertView.findViewById(R.id.eventid);
+
             viewHolder.title = (TextView)convertView.findViewById(R.id.title);
             viewHolder.arenaName = (TextView)convertView.findViewById(R.id.arenaname);
             viewHolder.rinkName = (TextView)convertView.findViewById(R.id.rinkname);
             viewHolder.eventDate = (TextView)convertView.findViewById(R.id.eventdate);
             viewHolder.attendance = (TextView)convertView.findViewById(R.id.attendance);
+			viewHolder.eventId = (TextView)convertView.findViewById(R.id.eventid);
+			viewHolder.played = (TextView)convertView.findViewById(R.id.played);
             viewHolder.no = (Button)convertView.findViewById(R.id.no);
             viewHolder.yes = (Button)convertView.findViewById(R.id.yes);
 	        convertView.setTag(viewHolder);
@@ -89,12 +88,21 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
             viewHolder = (ViewHolder)convertView.getTag();
         }
 
-        viewHolder.title.setText(events.get(position).getTitle());
+		viewHolder.title.setText(events.get(position).getTitle());
         viewHolder.rinkName.setText(events.get(position).getRinkName());
         viewHolder.arenaName.setText(events.get(position).getArenaName());
         viewHolder.eventDate.setText(events.get(position).getEventDate());
         viewHolder.attendance.setText(events.get(position).getAttendance());
 		viewHolder.eventId.setText(events.get(position).getEventId());
+		viewHolder.played.setText(events.get(position).getPlayed());
+
+		if(viewHolder.played.toString().contains("1")) {
+			viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			viewHolder.rinkName.setPaintFlags(viewHolder.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			viewHolder.arenaName.setPaintFlags(viewHolder.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			viewHolder.eventDate.setPaintFlags(viewHolder.eventDate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			viewHolder.attendance.setPaintFlags(viewHolder.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+		}
 
 		convertView.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -107,6 +115,7 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 	}
 
     class ViewHolder {
+		public TextView played;
 	    public TextView eventId;
         public TextView title;
         public TextView arenaName;
@@ -179,7 +188,7 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		        HttpClient httpClient = new DefaultHttpClient();
 		        JSONObject jsonObject = new JSONObject();
 		        String json = "";
-				Log.d(TAG_MY_APP + "BROOOOOOO", jsonObject.toString());
+
 		        jsonObject.put(TAG_STATUS, params[0]);
 		        jsonObject.put(TAG_EVENT_ID, params[1]);
 		        jsonObject.put(TAG_PEOPLE_ID, params[2]);
@@ -188,7 +197,7 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		        jsonObject.put(TAG_FLAGS, "");
 
 		        json = jsonObject.toString();
-				Log.d(TAG_MY_APP + "BRO", json);
+
 		        StringEntity stringEntity = new StringEntity(json);
 		        httpPost.setEntity(stringEntity);
 		        httpPost.setHeader("Accept", "application/json");

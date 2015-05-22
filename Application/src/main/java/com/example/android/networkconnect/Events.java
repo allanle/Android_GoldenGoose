@@ -20,6 +20,7 @@ public class Events implements Parcelable {
     private String playerId;
     private String result;
     private int id;
+    private String played;
 
     public Events() {
 
@@ -35,6 +36,7 @@ public class Events implements Parcelable {
         teamId = in.readString();
         playerId = in.readString();
         result = in.readString();
+        played = in.readString();
     }
 
     public String getTitle() {
@@ -107,6 +109,14 @@ public class Events implements Parcelable {
 
     public void setEventId(String eventId) {
         this.eventId = eventId;
+    }
+
+    public String getPlayed() {
+        return played;
+    }
+
+    public void setPlayed(String played) {
+        this.played = played;
     }
 
     @Override
