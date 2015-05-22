@@ -108,12 +108,14 @@ public class MainActivity extends FragmentActivity {
         protected JSONObject doInBackground(String... urls) {
             boolean ok = false;
             int responseCode = 0;
-
             HttpURLConnection conn = null;
             String requestData = null;
             BufferedReader reader = null;
             String line = null;
             StringBuilder sb = new StringBuilder();
+            OutputStream oStream;
+            OutputStreamWriter wr;
+
             try {
                 URL url = new URL(API_URL);
                 String mUsername = email.getText().toString(); //"14hhqt+2y8jbjzz3wz1s@sharklasers.com";
@@ -126,13 +128,8 @@ public class MainActivity extends FragmentActivity {
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + CHARSET);
                 conn.setDoOutput(true);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                OutputStream  oStream = conn.getOutputStream();
-                OutputStreamWriter wr = new OutputStreamWriter(oStream);
+                oStream = conn.getOutputStream();
+                wr = new OutputStreamWriter(oStream);
                 wr.write(requestData);
                 wr.flush();
             } catch (IOException e) {
