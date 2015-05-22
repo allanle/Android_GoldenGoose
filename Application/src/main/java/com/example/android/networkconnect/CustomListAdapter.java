@@ -43,8 +43,25 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         this.events = events;
 	    this.peopleId = peopleId;
 	    this.teamId = teamId;
+
+		Log.d(TAG_MY_APP + " events ", events.toString());
+		Log.d(TAG_MY_APP + " peopleid ", peopleId);
+		Log.d(TAG_MY_APP + " teamid ", teamId);
     }
 
+	/**
+	 * The list view is not in charge of instantiating or modifying the underlying state of the views it contains.
+	 * That's the job of the adapter. When you scroll a ListView, it calls the adapter method getView()
+	 * and the adapter will hand it a row (possibly a recycle view from the rows that scrolled off-screen).
+	 *
+	 * Inside the getView() method, the adapter should consult the underlying data set and modify the row
+	 * as needed - that would include crossing out text, or setting any visual properties of the row content.
+	 *
+	 * @param position
+	 * @param convertView
+	 * @param parent
+	 * @return
+	 */
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
@@ -162,7 +179,7 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		        HttpClient httpClient = new DefaultHttpClient();
 		        JSONObject jsonObject = new JSONObject();
 		        String json = "";
-
+				Log.d(TAG_MY_APP + "BROOOOOOO", jsonObject.toString());
 		        jsonObject.put(TAG_STATUS, params[0]);
 		        jsonObject.put(TAG_EVENT_ID, params[1]);
 		        jsonObject.put(TAG_PEOPLE_ID, params[2]);
@@ -171,7 +188,7 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		        jsonObject.put(TAG_FLAGS, "");
 
 		        json = jsonObject.toString();
-
+				Log.d(TAG_MY_APP + "BRO", json);
 		        StringEntity stringEntity = new StringEntity(json);
 		        httpPost.setEntity(stringEntity);
 		        httpPost.setHeader("Accept", "application/json");

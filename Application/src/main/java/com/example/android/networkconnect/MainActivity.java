@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -105,47 +106,58 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         protected JSONObject doInBackground(String... urls) {
-	        boolean ok = false;
-	        int responseCode = 0;
+            boolean ok = false;
+            int responseCode = 0;
 
+            HttpURLConnection conn = null;
+            String requestData = null;
+            BufferedReader reader = null;
+            String line = null;
+            StringBuilder sb = new StringBuilder();
             try {
-				URL url = new URL(API_URL);
+                URL url = new URL(API_URL);
                 String mUsername = email.getText().toString(); //"14hhqt+2y8jbjzz3wz1s@sharklasers.com";
                 String mPassword = password.getText().toString(); //"ZuLGHDaLM9";
-                String requestData = URLEncoder.encode("username", CHARSET) + "=" + URLEncoder.encode(mUsername, CHARSET);
-	            requestData += "&" + URLEncoder.encode("password", CHARSET) + "=" + URLEncoder.encode(mPassword, CHARSET);
+                requestData = URLEncoder.encode("username", CHARSET) + "=" + URLEncoder.encode(mUsername, CHARSET);
+                requestData += "&" + URLEncoder.encode("password", CHARSET) + "=" + URLEncoder.encode(mPassword, CHARSET);
 
-                BufferedReader reader = null;
-                String line = null;
-                StringBuilder sb = new StringBuilder();
-
-	            // Let's build the connection and related data for the request.
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Accept-Charset", CHARSET);
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + CHARSET);
                 conn.setDoOutput(true);
 
-                OutputStream oStream = conn.getOutputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                OutputStream  oStream = conn.getOutputStream();
                 OutputStreamWriter wr = new OutputStreamWriter(oStream);
                 wr.write(requestData);
                 wr.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-	            // This is a hack for the TLR server not being able to return a WWW-Authenticate: Basic realm="TLR" header.
-	            // See: http://stackoverflow.com/questions/12931791/java-io-ioexception-received-authentication-challenge-is-null-in-ics-4-0-3?lq=1
-	            try {
-		            Log.d(TAG_MY_APP, "+ Connected to URL.");
-		            responseCode = conn.getResponseCode();
-		            if(responseCode != 200) {
-                        json = new JSONObject("{failed: false}");
-                        json.put("failed", false);
-                        return json;
-		            }
-	            } catch(Exception e) {
+            try {
+                Log.d(TAG_MY_APP, "+ Connected to URL.");
+                responseCode = conn.getResponseCode();
+                if(responseCode != 200) {
+                    json = new JSONObject("{failed: false}");
+                    json.put("failed", false);
+                    return json;
+                }
+            } catch(Exception e) {
+                try {
                     json = new JSONObject("{failed: true}");
                     json.put("message", e.getMessage());
                     return json;
-	            }
+                } catch(JSONException e1) {
+                    e1.printStackTrace();
+                }
+            }
 
+            try {
                 reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
                 // Read Server Response and append it to a String.
@@ -154,19 +166,21 @@ public class MainActivity extends FragmentActivity {
                 }
                 reader.close();
 
-                try {
-                    json = new JSONObject(sb.toString());
-                    json.put("failed", false);
-                } catch(JSONException jse) {
-                    json = new JSONObject("{failed: true}");
-                    json.put("message", "There was an error reading the data.");
-                }
-
-            } catch(Exception e) {
-                Log.d(TAG_MY_APP, e.getMessage());
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-	        // Return a JSONObject so that onPostExecute can figure out what to do.
+
+            try {
+                json = new JSONObject(sb.toString());
+                json.put("failed", false);
+            } catch(JSONException jse) {
+                try {
+                    json = new JSONObject("{failed: true}");
+                    json.put("message", "There was an error reading the data.");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
             return json;
         }
 
@@ -204,7 +218,7 @@ public class MainActivity extends FragmentActivity {
                     }
 	            }
             } catch(JSONException e) {
-	            Toast.makeText(MainActivity.this, "There was an error reading data.", Toast.LENGTH_SHORT).show();
+	            Toast.makeText(MainActivity.this, "Incorrect email/password. Please try again.", Toast.LENGTH_SHORT).show();
             }
         }
     }
