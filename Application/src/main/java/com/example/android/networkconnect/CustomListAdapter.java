@@ -1,7 +1,6 @@
 package com.example.android.networkconnect;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -95,14 +94,14 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         viewHolder.attendance.setText(events.get(position).getAttendance());
 		viewHolder.eventId.setText(events.get(position).getEventId());
 		viewHolder.played.setText(events.get(position).getPlayed());
-
+/*
 		if(viewHolder.played.toString().contains("1")) {
 			viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 			viewHolder.rinkName.setPaintFlags(viewHolder.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 			viewHolder.arenaName.setPaintFlags(viewHolder.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 			viewHolder.eventDate.setPaintFlags(viewHolder.eventDate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 			viewHolder.attendance.setPaintFlags(viewHolder.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-		}
+		}*/
 
 		convertView.setOnClickListener(new View.OnClickListener() {
 			@Override

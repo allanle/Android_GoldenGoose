@@ -20,6 +20,7 @@
     android:versionName="1.0" >
 
     <!-- Min/target SDK versions (<uses-sdk>) managed by build.gradle -->
+    <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="22" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -42,10 +43,6 @@
         <activity
             android:name=".DisplayEventsActivity"
             android:label="Events" >
-        </activity>
-        <activity
-            android:name=".CustomListAdapter"
-            android:label="@string/title_activity_custom_list_adapter" >
         </activity>
     </application>
 

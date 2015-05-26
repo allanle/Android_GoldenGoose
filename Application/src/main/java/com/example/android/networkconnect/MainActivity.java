@@ -124,8 +124,15 @@ public class MainActivity extends FragmentActivity {
                 requestData += "&" + URLEncoder.encode("password", CHARSET) + "=" + URLEncoder.encode(mPassword, CHARSET);
 
                 conn = (HttpURLConnection) url.openConnection();
+
+                //setJellyBeanAuthentication(conn);
+
                 conn.setRequestProperty("Accept-Charset", CHARSET);
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + CHARSET);
+
+                //HttpURLConnection uses the GET method by default.
+                //It will use POST if setDoOutPut(true).
+                //Other HTTP methods (OPTIONS, HEAD, PUT, DELETE and TRACE) can be used with setRequestMethod(String).
                 conn.setDoOutput(true);
 
                 oStream = conn.getOutputStream();
@@ -153,7 +160,7 @@ public class MainActivity extends FragmentActivity {
                     e1.printStackTrace();
                 }
             }
-
+            Log.d(TAG_MY_APP," response bro " + responseCode);
             try {
                 reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
@@ -165,6 +172,7 @@ public class MainActivity extends FragmentActivity {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                //reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
             }
 
             try {
@@ -192,7 +200,6 @@ public class MainActivity extends FragmentActivity {
 	            if(json.getBoolean("failed")) {
 		            Toast.makeText(MainActivity.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
 	            } else {
-		            // TODO: Need to check if these actually have values in them.
                     if(json.getString(TAG_TEAMID).equals(null) || json.getString(TAG_PEOPLE_ID).equals(null)) {
                         Toast.makeText(MainActivity.this, "Something went wrong. Try again.", Toast.LENGTH_SHORT).show();
                     } else {
@@ -219,4 +226,12 @@ public class MainActivity extends FragmentActivity {
             }
         }
     }
+/*
+    private void setJellyBeanAuthentication(HttpURLConnection httpURLConnection) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            byte[] auth = (email + ":" + password).getBytes();
+            String basic = Base64.encodeToString(auth, Base64.NO_WRAP);
+            httpURLConnection.setRequestProperty("Authorization", "Basic " + basic);
+        }
+    }*/
 }
