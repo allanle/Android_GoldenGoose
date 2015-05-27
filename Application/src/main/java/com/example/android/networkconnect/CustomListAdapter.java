@@ -35,6 +35,10 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		super(null, Integer.parseInt(null));
 	}
 
+    public CustomListAdapter(Context context, int resource, ArrayList<Events> events) {
+        super(context, resource, events);
+    }
+
     public CustomListAdapter(Context context, int resource, String peopleId, String teamId, ArrayList<Events> events) {
         super(context, resource, events);
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -64,7 +68,6 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         if(convertView == null) {
             // Get the eventId for this record.
 	        String eventId = events.get(position).getEventId();
-            String played = events.get(position).getPlayed();
 
             viewHolder = new ViewHolder();
             convertView = layoutInflater.inflate(mResource, null);
@@ -191,15 +194,19 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         // "params" should have 0 = String "in"/"out", 1 = eventid, 2 = peopleid, 3 = teamid.
         protected String doInBackground(String... params) {
 	        String attendance = "not attending";
+            HttpPost httpPost = null;
+            HttpClient httpClient = null;
+            JSONObject jsonObject = null;
+
 	        if(params[0].equals("in")) {
 		        attendance = "attending";
 	        }
 
 	        // Try and set the attendance.
 	        try {
-		        HttpPost httpPost = new HttpPost(API_URL);
-		        HttpClient httpClient = new DefaultHttpClient();
-		        JSONObject jsonObject = new JSONObject();
+		        httpPost = new HttpPost(API_URL);
+		        httpClient = new DefaultHttpClient();
+		        jsonObject = new JSONObject();
 		        String json = "";
 
 		        jsonObject.put(TAG_STATUS, params[0]);
@@ -239,13 +246,43 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         // "I am attending this event" or "I am not attending this event"
         // or it can highlight the yes/no button and disable the other.
         protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-			Log.d(TAG_MY_APP + " onPostExecute ", result);
-            if(result.equalsIgnoreCase("attending")) {
-                viewHolder.attendance.setText("yessssssssss");
-            } else if(result.equalsIgnoreCase("not attending")) {
-                viewHolder.attendance.setText("nooooooooooo");
+            // Have a counter to set a limit on the number of clicks the user can do.
+            // If the counter reaches a certain limit (5) then display a toast or disable the buttons.
+            // Need to cycle through the list view to update the attendance UI
+            // of the row the user sets their attendance to.
+            for(int i = 0; i < events.size(); i++) {
+                if(result.equals("attending")) {
+                    viewHolder.attendance.setText("ATTENDING");
+                } else {
+                    viewHolder.attendance.setText("NOT ATTENDING");
+                }
+                Log.d(TAG_MY_APP, ""+i);
+
             }
+            Log.d(TAG_MY_APP, " count " + getCount());
+            Log.d(TAG_MY_APP, " getItem " + getItem(0));
+            Log.d(TAG_MY_APP, " getItem " + getItem(1));
+            Log.d(TAG_MY_APP, " getItem " + getItem(2));
+            Log.d(TAG_MY_APP, " getItem " + getItem(3));
+            Log.d(TAG_MY_APP, " getItem " + getItem(4));
+            Log.d(TAG_MY_APP, " getItem " + getItem(5));
+            Log.d(TAG_MY_APP, " getItem " + getItem(6));
+            Log.d(TAG_MY_APP, "getItemId " + getItemId(0));
+            Log.d(TAG_MY_APP, "getItemId " + getItemId(1));
+            Log.d(TAG_MY_APP, "getItemId " + getItemId(2));
+            Log.d(TAG_MY_APP, "getItemId " + getItemId(3));
+            Log.d(TAG_MY_APP, "getItemId " + getItemId(4));
+            Log.d(TAG_MY_APP, "getItemId " + getItemId(5));
+            Log.d(TAG_MY_APP, "getItemId " + getItemId(6));
+            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(0));
+            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(1));
+            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(2));
+            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(3));
+            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(4));
+            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(5));
+            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(6));
+            Log.d(TAG_MY_APP, " view count " + getViewTypeCount());
+
         }
     }
 }

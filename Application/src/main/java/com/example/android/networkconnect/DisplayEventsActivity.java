@@ -37,6 +37,7 @@ public class DisplayEventsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_games);
 
+
         //getting json data from login activity to pass into api calendar
 	    Bundle bundle = getIntent().getExtras();
         String peopleId = bundle.getString(TAG_PEOPLE_ID);
@@ -72,7 +73,6 @@ public class DisplayEventsActivity extends Activity {
         private static final String TAG_PLAYED = "played";
         private JSONObject jsonObject;
         private JSONArray jsonArray;
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -85,12 +85,14 @@ public class DisplayEventsActivity extends Activity {
 
         @Override
         protected JSONArray doInBackground(String... urls) {
+            HttpGet httpGet = null;
+            HttpClient httpClient = null;
+            Events event = null;
             try {
-                HttpGet httpGet = new HttpGet(urls[0]);
-                HttpClient httpClient = new DefaultHttpClient();
+                httpGet = new HttpGet(urls[0]);
+                httpClient = new DefaultHttpClient();
                 HttpResponse httpResponse = httpClient.execute(httpGet);
 
-                // StatusLine stat = response.getStatusLine();
                 int status = httpResponse.getStatusLine().getStatusCode();
 
                 if(status == 200) {
@@ -101,12 +103,10 @@ public class DisplayEventsActivity extends Activity {
                     for(int i = 0; i < jsonArray.length(); i++) {
 	                    jsonObject = jsonArray.getJSONObject(i);
 
-                        Events event = new Events();
+                        event = new Events();
 
 	                    // Set the eventId.
-                        //Log.d("MyApp", jsonObject.getString(TAG_PLAYED));
                         event.setPlayed(jsonObject.getString(TAG_PLAYED));
-                        //Log.d("MyApp", event.getPlayed());
 	                    event.setEventId(jsonObject.getString(TAG_EVENT_ID));
                         event.setTitle(jsonObject.getString(TAG_TITLE));
                         event.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
