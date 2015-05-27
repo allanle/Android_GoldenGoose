@@ -104,7 +104,9 @@ public class DisplayEventsActivity extends Activity {
                         Events event = new Events();
 
 	                    // Set the eventId.
+                        //Log.d("MyApp", jsonObject.getString(TAG_PLAYED));
                         event.setPlayed(jsonObject.getString(TAG_PLAYED));
+                        //Log.d("MyApp", event.getPlayed());
 	                    event.setEventId(jsonObject.getString(TAG_EVENT_ID));
                         event.setTitle(jsonObject.getString(TAG_TITLE));
                         event.setArenaName(jsonObject.getString(TAG_ARENA_NAME));

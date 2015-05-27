@@ -112,7 +112,7 @@ public class Events implements Parcelable {
     }
 
     public String getPlayed() {
-        return played;
+        return this.played;
     }
 
     public void setPlayed(String played) {

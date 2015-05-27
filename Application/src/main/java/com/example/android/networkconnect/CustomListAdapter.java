@@ -1,6 +1,7 @@
 package com.example.android.networkconnect;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,8 +62,12 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
+            //Log.d("MyApp", String.valueOf(position));
+            Log.d("MyApp", String.valueOf(events.get(position)));
+
 	        // Get the eventId for this record.
 	        String eventId = events.get(position).getEventId();
+            String played = events.get(position).getPlayed();
 
             viewHolder = new ViewHolder();
             convertView = layoutInflater.inflate(mResource, null);
@@ -78,7 +83,23 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 			viewHolder.played = (TextView)convertView.findViewById(R.id.played);
             viewHolder.no = (Button)convertView.findViewById(R.id.no);
             viewHolder.yes = (Button)convertView.findViewById(R.id.yes);
+
+
+            //Log.d(TAG_MY_APP, "played: " +played);
+                if (played.equalsIgnoreCase("1")) {
+
+                    viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    //viewHolder.rinkName.setPaintFlags(viewHolder.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    //viewHolder.arenaName.setPaintFlags(viewHolder.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    //viewHolder.eventDate.setPaintFlags(viewHolder.eventDate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    //viewHolder.attendance.setPaintFlags(viewHolder.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                } else {
+                    //viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                }
+
 	        convertView.setTag(viewHolder);
+
+
 
 	        // Click listeners for the attendance buttons.
             viewHolder.no.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId));
@@ -86,22 +107,15 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         } else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
-
+        //Log.d(TAG_MY_APP, " event size: " + events.size());
+        //Log.d(TAG_MY_APP, "played: " + viewHolder.played.getText().toString());
 		viewHolder.title.setText(events.get(position).getTitle());
-        viewHolder.rinkName.setText(events.get(position).getRinkName());
-        viewHolder.arenaName.setText(events.get(position).getArenaName());
-        viewHolder.eventDate.setText(events.get(position).getEventDate());
-        viewHolder.attendance.setText(events.get(position).getAttendance());
+		viewHolder.rinkName.setText(events.get(position).getRinkName());
+		viewHolder.arenaName.setText(events.get(position).getArenaName());
+		viewHolder.eventDate.setText(events.get(position).getEventDate());
+		viewHolder.attendance.setText(events.get(position).getAttendance());
 		viewHolder.eventId.setText(events.get(position).getEventId());
 		viewHolder.played.setText(events.get(position).getPlayed());
-/*
-		if(viewHolder.played.toString().contains("1")) {
-			viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			viewHolder.rinkName.setPaintFlags(viewHolder.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			viewHolder.arenaName.setPaintFlags(viewHolder.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			viewHolder.eventDate.setPaintFlags(viewHolder.eventDate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			viewHolder.attendance.setPaintFlags(viewHolder.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-		}*/
 
 		convertView.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -228,9 +242,9 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
             super.onPostExecute(result);
 			Log.d(TAG_MY_APP + " onPostExecute ", result);
             if(result.equalsIgnoreCase("attending")) {
-                viewHolder.attendance.setText("broooooooooo");
+                viewHolder.attendance.setText("yessssssssss");
             } else if(result.equalsIgnoreCase("not attending")) {
-                viewHolder.attendance.setText("woooooow bro");
+                viewHolder.attendance.setText("nooooooooooo");
             }
         }
     }

@@ -13,19 +13,7 @@
         android:weightSum="1"
         android:layout_weight="1">
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/played"
-            android:textColor="#000000"
-            />
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/eventid"
-            android:textColor="#000000"
-            />
 
         <TextView
             android:layout_width="fill_parent"
@@ -72,6 +60,22 @@
             android:id="@+id/attendance"
             android:layout_below="@+id/rinkname"
             android:textColor="#000000"
+            />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/played"
+            android:textColor="#000000"
+            android:text="Game played 1"
+            />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/eventid"
+            android:textColor="#000000"
+            android:text="Event ID"
             />
 
     </LinearLayout>
