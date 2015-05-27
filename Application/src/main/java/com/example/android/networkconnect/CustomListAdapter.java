@@ -62,10 +62,7 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
-            //Log.d("MyApp", String.valueOf(position));
-            Log.d("MyApp", String.valueOf(events.get(position)));
-
-	        // Get the eventId for this record.
+            // Get the eventId for this record.
 	        String eventId = events.get(position).getEventId();
             String played = events.get(position).getPlayed();
 
@@ -73,7 +70,6 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
             convertView = layoutInflater.inflate(mResource, null);
 
 	        // Set the tags for the record.
-
             viewHolder.title = (TextView)convertView.findViewById(R.id.title);
             viewHolder.arenaName = (TextView)convertView.findViewById(R.id.arenaname);
             viewHolder.rinkName = (TextView)convertView.findViewById(R.id.rinkname);
@@ -84,22 +80,7 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
             viewHolder.no = (Button)convertView.findViewById(R.id.no);
             viewHolder.yes = (Button)convertView.findViewById(R.id.yes);
 
-
-            //Log.d(TAG_MY_APP, "played: " +played);
-                if (played.equalsIgnoreCase("1")) {
-
-                    viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    //viewHolder.rinkName.setPaintFlags(viewHolder.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    //viewHolder.arenaName.setPaintFlags(viewHolder.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    //viewHolder.eventDate.setPaintFlags(viewHolder.eventDate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    //viewHolder.attendance.setPaintFlags(viewHolder.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                } else {
-                    //viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                }
-
 	        convertView.setTag(viewHolder);
-
-
 
 	        // Click listeners for the attendance buttons.
             viewHolder.no.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId));
@@ -107,8 +88,27 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         } else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
-        //Log.d(TAG_MY_APP, " event size: " + events.size());
-        //Log.d(TAG_MY_APP, "played: " + viewHolder.played.getText().toString());
+
+		// Strike through text for past events
+		if(events.get(position).getPlayed().equals("1")) {
+			viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			viewHolder.rinkName.setPaintFlags(viewHolder.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			viewHolder.arenaName.setPaintFlags(viewHolder.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			viewHolder.eventDate.setPaintFlags(viewHolder.eventDate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			viewHolder.attendance.setPaintFlags(viewHolder.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			viewHolder.yes.setPaintFlags(viewHolder.yes.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			viewHolder.no.setPaintFlags(viewHolder.no.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+		} else {
+			// Don't strike text if future events
+			viewHolder.title.setPaintFlags(0);
+			viewHolder.rinkName.setPaintFlags(0);
+			viewHolder.arenaName.setPaintFlags(0);
+			viewHolder.eventDate.setPaintFlags(0);
+			viewHolder.attendance.setPaintFlags(0);
+			viewHolder.yes.setPaintFlags(0);
+			viewHolder.no.setPaintFlags(0);
+		}
+
 		viewHolder.title.setText(events.get(position).getTitle());
 		viewHolder.rinkName.setText(events.get(position).getRinkName());
 		viewHolder.arenaName.setText(events.get(position).getArenaName());
