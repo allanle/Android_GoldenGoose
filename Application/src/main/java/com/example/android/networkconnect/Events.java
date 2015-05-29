@@ -2,6 +2,7 @@ package com.example.android.networkconnect;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Button;
 
 import org.json.JSONObject;
 
@@ -21,6 +22,7 @@ public class Events implements Parcelable {
     private String result;
     private int id;
     private String played;
+    private Button yes;
 
     public Events() {
 
@@ -37,6 +39,14 @@ public class Events implements Parcelable {
         playerId = in.readString();
         result = in.readString();
         played = in.readString();
+    }
+
+    public Button getYes() {
+        return yes;
+    }
+
+    public void setYes(Button yes) {
+        this.yes = yes;
     }
 
     public String getTitle() {

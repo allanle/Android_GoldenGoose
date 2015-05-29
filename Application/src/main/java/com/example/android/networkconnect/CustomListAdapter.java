@@ -86,8 +86,8 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 	        convertView.setTag(viewHolder);
 
 	        // Click listeners for the attendance buttons.
-            viewHolder.no.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId));
-            viewHolder.yes.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId));
+            viewHolder.no.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId, position));
+            viewHolder.yes.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId, position));
         } else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
@@ -146,11 +146,14 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		private final String eventId;
 		private final String peopleId;
 		private final String teamId;
+		private final int position;
 
-		public AttendanceClickListener(final String eventId, final String peopleId, final String teamId) {
+		public AttendanceClickListener(final String eventId, final String peopleId, final String teamId,
+									   final int position) {
 			this.eventId = eventId;
 			this.peopleId = peopleId;
 			this.teamId = teamId;
+			this.position = position;
 		}
 
 		@Override
@@ -158,19 +161,25 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		// this will make sure that each button has a unique event ID to call the UpdateAttendanceEvent
 		// function.
 		public void onClick(View v) {
-			switch(v.getId()) {
-				case R.id.yes:
-					// The eventId, peopleId and teamId.
-					//new UpdateAttendanceEvent().execute("in", eventId, "17786870", "408330");
-					new UpdateAttendanceEvent().execute("in", eventId, peopleId, teamId);
-					Toast.makeText(getContext(), "Attending Event", Toast.LENGTH_SHORT).show();
-				break;
+            Button parentYes = (Button)((View)v.getParent().getParent()).findViewById(R.id.yes);
+            Button parentNo = (Button)((View)v.getParent().getParent()).findViewById(R.id.no);
+            switch(v.getId()) {
+                case R.id.yes:
+                    // The eventId, paeopleId and teamId.
+                    //new UpdateAttendanceEvent().execute("in", eventId, "17786870", "408330");
+                    new UpdateAttendanceEvent(v).execute("in", eventId, peopleId, teamId);
+                    events.get(position).setAttendance("I am attending this event");
+                    parentYes.setEnabled(false);
+                    Toast.makeText(getContext(), "Attending Event", Toast.LENGTH_SHORT).show();
+                    break;
 				case R.id.no:
-					// The eventId, peopleId and teamId.
-					//new UpdateAttendanceEvent().execute("out", eventId, "17786870", "408330");
-					new UpdateAttendanceEvent().execute("out", eventId, peopleId, teamId);
-					Toast.makeText(getContext(), "Not Attending Event", Toast.LENGTH_SHORT).show();
-				break;
+                    // The eventId, peopleId and teamId.
+                    //new UpdateAttendanceEvent().execute("out", eventId, "17786870", "408330");
+                    new UpdateAttendanceEvent(v).execute("out", eventId, peopleId, teamId);
+                    events.get(position).setAttendance("I am not attending this event");
+                    Toast.makeText(getContext(), "Not Attending Event", Toast.LENGTH_SHORT).show();
+                    parentNo.setEnabled(false);
+                    break;
 			}
 		}
 	}
@@ -189,6 +198,12 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         private static final String TAG_PERM_LEVEL = "permlevel";
         private static final String TAG_FLAGS = "flags";
 	    private static final String API_URL = "https://teamlockerroom.com/api/setattendance";
+        private View rowView;
+
+        public UpdateAttendanceEvent(View v) {
+            super();
+            this.rowView = v;
+        }
 
         @Override
         // "params" should have 0 = String "in"/"out", 1 = eventid, 2 = peopleid, 3 = teamid.
@@ -246,42 +261,14 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         // "I am attending this event" or "I am not attending this event"
         // or it can highlight the yes/no button and disable the other.
         protected void onPostExecute(String result) {
-            // Have a counter to set a limit on the number of clicks the user can do.
-            // If the counter reaches a certain limit (5) then display a toast or disable the buttons.
-            // Need to cycle through the list view to update the attendance UI
-            // of the row the user sets their attendance to.
-            for(int i = 0; i < events.size(); i++) {
-                if(result.equals("attending")) {
-                    viewHolder.attendance.setText("ATTENDING");
-                } else {
-                    viewHolder.attendance.setText("NOT ATTENDING");
-                }
-                Log.d(TAG_MY_APP, ""+i);
+            TextView attendance = (TextView)((View)rowView.getParent().getParent()).findViewById(R.id.attendance);
 
+            if(result.equals("attending")) {
+                attendance.setText("I am attending this event");
+            } else {
+                attendance.setText("I am not attending this event");
             }
-            Log.d(TAG_MY_APP, " count " + getCount());
-            Log.d(TAG_MY_APP, " getItem " + getItem(0));
-            Log.d(TAG_MY_APP, " getItem " + getItem(1));
-            Log.d(TAG_MY_APP, " getItem " + getItem(2));
-            Log.d(TAG_MY_APP, " getItem " + getItem(3));
-            Log.d(TAG_MY_APP, " getItem " + getItem(4));
-            Log.d(TAG_MY_APP, " getItem " + getItem(5));
-            Log.d(TAG_MY_APP, " getItem " + getItem(6));
-            Log.d(TAG_MY_APP, "getItemId " + getItemId(0));
-            Log.d(TAG_MY_APP, "getItemId " + getItemId(1));
-            Log.d(TAG_MY_APP, "getItemId " + getItemId(2));
-            Log.d(TAG_MY_APP, "getItemId " + getItemId(3));
-            Log.d(TAG_MY_APP, "getItemId " + getItemId(4));
-            Log.d(TAG_MY_APP, "getItemId " + getItemId(5));
-            Log.d(TAG_MY_APP, "getItemId " + getItemId(6));
-            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(0));
-            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(1));
-            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(2));
-            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(3));
-            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(4));
-            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(5));
-            Log.d(TAG_MY_APP, " getItemViewType " + getItemViewType(6));
-            Log.d(TAG_MY_APP, " view count " + getViewTypeCount());
+
 
         }
     }
