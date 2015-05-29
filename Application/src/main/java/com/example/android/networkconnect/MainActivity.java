@@ -118,10 +118,10 @@ public class MainActivity extends FragmentActivity {
 
             try {
                 URL url = new URL(API_URL);
-                //String mUsername = email.getText().toString(); //"14hhqt+2y8jbjzz3wz1s@sharklasers.com";
-                //String mPassword = password.getText().toString(); //"ZuLGHDaLM9";
-                String mUsername = "ale@pointstreak.com";
-                String mPassword = "allan123";
+                String mUsername = email.getText().toString(); //"14hhqt+2y8jbjzz3wz1s@sharklasers.com";
+                String mPassword = password.getText().toString(); //"ZuLGHDaLM9";
+                //String mUsername = "ale@pointstreak.com";
+                //String mPassword = "allan123";
                 requestData = URLEncoder.encode("username", CHARSET) + "=" + URLEncoder.encode(mUsername, CHARSET);
                 requestData += "&" + URLEncoder.encode("password", CHARSET) + "=" + URLEncoder.encode(mPassword, CHARSET);
 
