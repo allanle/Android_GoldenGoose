@@ -268,8 +268,6 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
             } else {
                 attendance.setText("I am not attending this event");
             }
-
-
         }
     }
 }
