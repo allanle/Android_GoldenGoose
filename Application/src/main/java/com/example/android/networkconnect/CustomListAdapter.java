@@ -120,6 +120,18 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		viewHolder.eventId.setText(events.get(position).getEventId());
 		viewHolder.played.setText(events.get(position).getPlayed());
 
+        if(events.get(position).isYesClicked()) {
+            viewHolder.yes.setEnabled(false);
+        } else {
+            viewHolder.yes.setEnabled(true);
+        }
+
+        if(events.get(position).isNoClicked()) {
+            viewHolder.no.setEnabled(false);
+        } else {
+            viewHolder.no.setEnabled(true);
+        }
+
 		convertView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -140,6 +152,8 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         public Button yes;
         public Button no;
         public TextView attendance;
+        public boolean yesClicked = false;
+        public boolean noClicked = false;
     }
 
 	public class AttendanceClickListener implements View.OnClickListener {
@@ -161,24 +175,24 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		// this will make sure that each button has a unique event ID to call the UpdateAttendanceEvent
 		// function.
 		public void onClick(View v) {
-            Button parentYes = (Button)((View)v.getParent().getParent()).findViewById(R.id.yes);
-            Button parentNo = (Button)((View)v.getParent().getParent()).findViewById(R.id.no);
             switch(v.getId()) {
                 case R.id.yes:
                     // The eventId, paeopleId and teamId.
                     //new UpdateAttendanceEvent().execute("in", eventId, "17786870", "408330");
-                    new UpdateAttendanceEvent(v).execute("in", eventId, peopleId, teamId);
+                    new UpdateAttendanceEvent(v, position).execute("in", eventId, peopleId, teamId);
                     events.get(position).setAttendance("I am attending this event");
-                    parentYes.setEnabled(false);
+//                    parentYes.setEnabled(false);
                     Toast.makeText(getContext(), "Attending Event", Toast.LENGTH_SHORT).show();
+                    events.get(position).setYesClicked(true);
                     break;
 				case R.id.no:
                     // The eventId, peopleId and teamId.
                     //new UpdateAttendanceEvent().execute("out", eventId, "17786870", "408330");
-                    new UpdateAttendanceEvent(v).execute("out", eventId, peopleId, teamId);
+                    new UpdateAttendanceEvent(v, position).execute("out", eventId, peopleId, teamId);
                     events.get(position).setAttendance("I am not attending this event");
                     Toast.makeText(getContext(), "Not Attending Event", Toast.LENGTH_SHORT).show();
-                    parentNo.setEnabled(false);
+                    events.get(position).setNoClicked(true);
+//                    parentNo.setEnabled(false);
                     break;
 			}
 		}
@@ -199,10 +213,12 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         private static final String TAG_FLAGS = "flags";
 	    private static final String API_URL = "https://teamlockerroom.com/api/setattendance";
         private View rowView;
+        private int position;
 
-        public UpdateAttendanceEvent(View v) {
+        public UpdateAttendanceEvent(View v, int position) {
             super();
             this.rowView = v;
+            this.position = position;
         }
 
         @Override

@@ -24,6 +24,25 @@ public class Events implements Parcelable {
     private String played;
     private Button yes;
 
+    public boolean isYesClicked() {
+        return yesClicked;
+    }
+
+    public void setYesClicked(boolean yesClicked) {
+        this.yesClicked = yesClicked;
+    }
+
+    public boolean isNoClicked() {
+        return noClicked;
+    }
+
+    public void setNoClicked(boolean noClicked) {
+        this.noClicked = noClicked;
+    }
+
+    private boolean yesClicked;
+    private boolean noClicked;
+
     public Events() {
 
     }
