@@ -2,7 +2,6 @@ package com.example.android.networkconnect;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.Button;
 
 import org.json.JSONObject;
 
@@ -22,30 +21,8 @@ public class Events implements Parcelable {
     private String result;
     private int id;
     private String played;
-    private Button yes;
-
-    public boolean isYesClicked() {
-        return yesClicked;
-    }
-
-    public void setYesClicked(boolean yesClicked) {
-        this.yesClicked = yesClicked;
-    }
-
-    public boolean isNoClicked() {
-        return noClicked;
-    }
-
-    public void setNoClicked(boolean noClicked) {
-        this.noClicked = noClicked;
-    }
-
     private boolean yesClicked;
     private boolean noClicked;
-
-    public Events() {
-
-    }
 
     public Events(Parcel in) {
 	    eventId = in.readString();
@@ -58,14 +35,6 @@ public class Events implements Parcelable {
         playerId = in.readString();
         result = in.readString();
         played = in.readString();
-    }
-
-    public Button getYes() {
-        return yes;
-    }
-
-    public void setYes(Button yes) {
-        this.yes = yes;
     }
 
     public String getTitle() {
@@ -146,6 +115,25 @@ public class Events implements Parcelable {
 
     public void setPlayed(String played) {
         this.played = played;
+    }
+
+    public boolean isYesClicked() {
+        return yesClicked;
+    }
+
+    public void setYesClicked(boolean yesClicked) {
+        this.yesClicked = yesClicked;
+    }
+
+    public boolean isNoClicked() {
+        return noClicked;
+    }
+
+    public void setNoClicked(boolean noClicked) {
+        this.noClicked = noClicked;
+    }
+    public Events() {
+
     }
 
     @Override
