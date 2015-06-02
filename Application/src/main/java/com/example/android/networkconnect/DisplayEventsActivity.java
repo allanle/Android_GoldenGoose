@@ -47,9 +47,9 @@ public class DisplayEventsActivity extends Activity {
 
         eventsList = new ArrayList<Events>();
 
-//        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
+        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
 
-        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/410281/17802742/5/2015");
+//        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/410281/17802742/5/2015");
         ListView listView = (ListView)findViewById(R.id.listView);
         adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, peopleId, teamId, eventsList);
 
