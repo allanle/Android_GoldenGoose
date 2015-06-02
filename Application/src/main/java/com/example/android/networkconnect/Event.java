@@ -3,12 +3,13 @@ package com.example.android.networkconnect;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Created by pointstreak on 15-04-14.
  */
-public class Events implements Parcelable {
+public class Event implements Parcelable {
 	private String eventId;
     private String title;
     private String arenaName;
@@ -24,17 +25,47 @@ public class Events implements Parcelable {
     private boolean yesClicked;
     private boolean noClicked;
 
-    public Events(Parcel in) {
-	    eventId = in.readString();
-        title = in.readString();
-        arenaName = in.readString();
-        rinkName = in.readString();
-        eventDate = in.readString();
-        attendance = in.readString();
-        teamId = in.readString();
-        playerId = in.readString();
-        result = in.readString();
-        played = in.readString();
+    private static final String TAG_EVENT_ID = "eventid";
+    private static final String TAG_TITLE = "title";
+    private static final String TAG_ARENA_NAME = "arenaname";
+    private static final String TAG_RINK_NAME = "rinkname";
+    private static final String TAG_EVENT_DATE = "eventdate";
+    private static final String TAG_ATTENDANCE_STATUS = "attstatus";
+    private static final String TAG_PLAYED = "played";
+
+    public Event(JSONObject jsonObject) {
+        try {
+            // Set the eventId.
+            this.setPlayed(jsonObject.getString(TAG_PLAYED));
+            this.setEventId(jsonObject.getString(TAG_EVENT_ID));
+            this.setTitle(jsonObject.getString(TAG_TITLE));
+            this.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
+            this.setRinkName(jsonObject.getString(TAG_RINK_NAME));
+            this.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
+
+            if (jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("null")) {
+                this.setAttendance("You haven't decided yet");
+            } else if (jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("0")) {
+                this.setAttendance("I am not attending this event");
+            } else if (jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("1")) {
+                this.setAttendance("I am attending this event");
+            }
+        }catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Event(Parcel in) {
+	    this.eventId = in.readString();
+        this.title = in.readString();
+        this.arenaName = in.readString();
+        this.rinkName = in.readString();
+        this.eventDate = in.readString();
+        this.attendance = in.readString();
+        this.teamId = in.readString();
+        this.playerId = in.readString();
+        this.result = in.readString();
+        this.played = in.readString();
     }
 
     public String getTitle() {
@@ -128,12 +159,8 @@ public class Events implements Parcelable {
     public boolean isNoClicked() {
         return noClicked;
     }
-
     public void setNoClicked(boolean noClicked) {
         this.noClicked = noClicked;
-    }
-    public Events() {
-
     }
 
     @Override
@@ -153,16 +180,16 @@ public class Events implements Parcelable {
 	    dest.writeString(this.eventId);
     }
 
-    public static final Parcelable.Creator<Events> CREATOR = new Parcelable.Creator<Events>() {
+    public static final Parcelable.Creator<Event> CREATOR = new Parcelable.Creator<Event>() {
 
         @Override
-        public Events createFromParcel(Parcel in) {
-            return new Events(in); // RECREATE VENUE GIVEN SOURCE
+        public Event createFromParcel(Parcel in) {
+            return new Event(in); // RECREATE VENUE GIVEN SOURCE
         }
 
         @Override
-        public Events[] newArray(int size) {
-            return new Events[size]; // CREATING AN ARRAY OF VENUES
+        public Event[] newArray(int size) {
+            return new Event[size]; // CREATING AN ARRAY OF VENUES
         }
 
     };

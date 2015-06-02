@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class DisplayEventsActivity extends Activity {
-    private ArrayList<Events> eventsList;
+    private ArrayList<Event> eventList;
     private CustomListAdapter adapter;
     private Calendar calendar = Calendar.getInstance();
     private int getMonth = calendar.get(Calendar.MONTH) + 1;
@@ -45,13 +45,13 @@ public class DisplayEventsActivity extends Activity {
 
         Log.d(TAG_MY_APP, " DisplayActivity " + peopleId + " " + teamId);
 
-        eventsList = new ArrayList<Events>();
+        eventList = new ArrayList<Event>();
 
         new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
 
 //        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/410281/17802742/5/2015");
         ListView listView = (ListView)findViewById(R.id.listView);
-        adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, peopleId, teamId, eventsList);
+        adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, peopleId, teamId, eventList);
 
         listView.setAdapter(adapter);
     }
@@ -65,13 +65,6 @@ public class DisplayEventsActivity extends Activity {
 
     private class ProcessCalendarAsync extends AsyncTask<String, Void, JSONArray> {
         private ProgressDialog dialog;
-        private static final String TAG_EVENT_ID = "eventid";
-        private static final String TAG_TITLE = "title";
-        private static final String TAG_ARENA_NAME = "arenaname";
-        private static final String TAG_RINK_NAME = "rinkname";
-        private static final String TAG_EVENT_DATE = "eventdate";
-        private static final String TAG_ATTENDANCE_STATUS = "attstatus";
-        private static final String TAG_PLAYED = "played";
         private JSONObject jsonObject;
         private JSONArray jsonArray;
         @Override
@@ -88,7 +81,7 @@ public class DisplayEventsActivity extends Activity {
         protected JSONArray doInBackground(String... urls) {
             HttpGet httpGet = null;
             HttpClient httpClient = null;
-            Events event = null;
+            Event event = null;
             try {
                 httpGet = new HttpGet(urls[0]);
                 httpClient = new DefaultHttpClient();
@@ -104,24 +97,9 @@ public class DisplayEventsActivity extends Activity {
                     for(int i = 0; i < jsonArray.length(); i++) {
 	                    jsonObject = jsonArray.getJSONObject(i);
 
-                        event = new Events();
+                        event = new Event(jsonObject);
 
-	                    // Set the eventId.
-                        event.setPlayed(jsonObject.getString(TAG_PLAYED));
-	                    event.setEventId(jsonObject.getString(TAG_EVENT_ID));
-                        event.setTitle(jsonObject.getString(TAG_TITLE));
-                        event.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
-                        event.setRinkName(jsonObject.getString(TAG_RINK_NAME));
-                        event.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
-
-                        if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("null")) {
-                            event.setAttendance("You haven't decided yet");
-                        } else if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("0")) {
-                            event.setAttendance("I am not attending this event");
-                        } else if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("1")) {
-                            event.setAttendance("I am attending this event");
-                        }
-                        eventsList.add(event);
+                        eventList.add(event);
                     }
                     return jsonArray;
                 }
