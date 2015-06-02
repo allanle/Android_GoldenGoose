@@ -65,7 +65,7 @@ public class MainActivity extends FragmentActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (email.getText().toString().equals("")) {
+                if(email.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Must enter email", Toast.LENGTH_SHORT).show();
                 } else if (password.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Must enter password", Toast.LENGTH_SHORT).show();
@@ -118,10 +118,10 @@ public class MainActivity extends FragmentActivity {
 
             try {
                 URL url = new URL(API_URL);
-                //String mUsername = email.getText().toString(); //"14hhqt+2y8jbjzz3wz1s@sharklasers.com";
-                //String mPassword = password.getText().toString(); //"ZuLGHDaLM9";
-                String mUsername = "ale@pointstreak.com";
-                String mPassword = "allan123";
+                String mUsername = email.getText().toString();
+                String mPassword = password.getText().toString();
+                //String mUsername = "allan_911@hotmail.com";
+                //String mPassword = "123456";
                 requestData = URLEncoder.encode("username", CHARSET) + "=" + URLEncoder.encode(mUsername, CHARSET);
                 requestData += "&" + URLEncoder.encode("password", CHARSET) + "=" + URLEncoder.encode(mPassword, CHARSET);
 
@@ -162,7 +162,7 @@ public class MainActivity extends FragmentActivity {
                     e1.printStackTrace();
                 }
             }
-            Log.d(TAG_MY_APP," response bro " + responseCode);
+
             try {
                 reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 

@@ -1,7 +1,6 @@
 package com.example.android.networkconnect;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,8 +21,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class CustomListAdapter extends ArrayAdapter<Events> {
-    private ArrayList<Events> events;
+public class CustomListAdapter extends ArrayAdapter<Event> {
+    private ArrayList<Event> events;
 	private String peopleId;
 	private String teamId;
     private LayoutInflater layoutInflater;
@@ -35,7 +34,11 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		super(null, Integer.parseInt(null));
 	}
 
-    public CustomListAdapter(Context context, int resource, String peopleId, String teamId, ArrayList<Events> events) {
+    public CustomListAdapter(Context context, int resource, ArrayList<Event> events) {
+        super(context, resource, events);
+    }
+
+    public CustomListAdapter(Context context, int resource, String peopleId, String teamId, ArrayList<Event> events) {
         super(context, resource, events);
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResource = resource;
@@ -62,60 +65,23 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
-            // Get the eventId for this record.
-	        String eventId = events.get(position).getEventId();
-            String played = events.get(position).getPlayed();
-
-            viewHolder = new ViewHolder();
             convertView = layoutInflater.inflate(mResource, null);
 
-	        // Set the tags for the record.
-            viewHolder.title = (TextView)convertView.findViewById(R.id.title);
-            viewHolder.arenaName = (TextView)convertView.findViewById(R.id.arenaname);
-            viewHolder.rinkName = (TextView)convertView.findViewById(R.id.rinkname);
-            viewHolder.eventDate = (TextView)convertView.findViewById(R.id.eventdate);
-            viewHolder.attendance = (TextView)convertView.findViewById(R.id.attendance);
-			viewHolder.eventId = (TextView)convertView.findViewById(R.id.eventid);
-			viewHolder.played = (TextView)convertView.findViewById(R.id.played);
-            viewHolder.no = (Button)convertView.findViewById(R.id.no);
-            viewHolder.yes = (Button)convertView.findViewById(R.id.yes);
+            viewHolder = new ViewHolder(convertView);
 
-	        convertView.setTag(viewHolder);
+            convertView.setTag(viewHolder);
 
-	        // Click listeners for the attendance buttons.
-            viewHolder.no.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId));
-            viewHolder.yes.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId));
         } else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
+        // Get the eventId for this record.
+        String eventId = events.get(position).getEventId();
 
-		// Strike through text for past events
-		if(events.get(position).getPlayed().equals("1")) {
-			viewHolder.title.setPaintFlags(viewHolder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			viewHolder.rinkName.setPaintFlags(viewHolder.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			viewHolder.arenaName.setPaintFlags(viewHolder.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			viewHolder.eventDate.setPaintFlags(viewHolder.eventDate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			viewHolder.attendance.setPaintFlags(viewHolder.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			viewHolder.yes.setPaintFlags(viewHolder.yes.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			viewHolder.no.setPaintFlags(viewHolder.no.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-		} else {
-			// Don't strike text if future events
-			viewHolder.title.setPaintFlags(0);
-			viewHolder.rinkName.setPaintFlags(0);
-			viewHolder.arenaName.setPaintFlags(0);
-			viewHolder.eventDate.setPaintFlags(0);
-			viewHolder.attendance.setPaintFlags(0);
-			viewHolder.yes.setPaintFlags(0);
-			viewHolder.no.setPaintFlags(0);
-		}
+        // Click listeners for the attendance buttons.
+        viewHolder.no.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId, position));
+        viewHolder.yes.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId, position));
 
-		viewHolder.title.setText(events.get(position).getTitle());
-		viewHolder.rinkName.setText(events.get(position).getRinkName());
-		viewHolder.arenaName.setText(events.get(position).getArenaName());
-		viewHolder.eventDate.setText(events.get(position).getEventDate());
-		viewHolder.attendance.setText(events.get(position).getAttendance());
-		viewHolder.eventId.setText(events.get(position).getEventId());
-		viewHolder.played.setText(events.get(position).getPlayed());
+        viewHolder.setEvent(events.get(position));
 
 		convertView.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -127,27 +93,18 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         return convertView;
 	}
 
-    class ViewHolder {
-		public TextView played;
-	    public TextView eventId;
-        public TextView title;
-        public TextView arenaName;
-        public TextView rinkName;
-        public TextView eventDate;
-        public Button yes;
-        public Button no;
-        public TextView attendance;
-    }
-
 	public class AttendanceClickListener implements View.OnClickListener {
 		private final String eventId;
 		private final String peopleId;
 		private final String teamId;
+		private final int position;
 
-		public AttendanceClickListener(final String eventId, final String peopleId, final String teamId) {
+		public AttendanceClickListener(final String eventId, final String peopleId, final String teamId,
+									   final int position) {
 			this.eventId = eventId;
 			this.peopleId = peopleId;
 			this.teamId = teamId;
+			this.position = position;
 		}
 
 		@Override
@@ -155,19 +112,23 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
 		// this will make sure that each button has a unique event ID to call the UpdateAttendanceEvent
 		// function.
 		public void onClick(View v) {
-			switch(v.getId()) {
-				case R.id.yes:
-					// The eventId, peopleId and teamId.
-					//new UpdateAttendanceEvent().execute("in", eventId, "17786870", "408330");
-					new UpdateAttendanceEvent().execute("in", eventId, peopleId, teamId);
-					Toast.makeText(getContext(), "Attending Event", Toast.LENGTH_SHORT).show();
-				break;
+            switch(v.getId()) {
+                case R.id.yes:
+                    // The eventId, peopleId and teamId.
+                    //new UpdateAttendanceEvent().execute("in", eventId, "17786870", "408330");
+                    new UpdateAttendanceEvent(v, position).execute("in", eventId, peopleId, teamId);
+                    events.get(position).setAttendance("I am attending this event");
+                    Toast.makeText(getContext(), "Attending Event", Toast.LENGTH_SHORT).show();
+                    events.get(position).setYesClicked(true);
+                    break;
 				case R.id.no:
-					// The eventId, peopleId and teamId.
-					//new UpdateAttendanceEvent().execute("out", eventId, "17786870", "408330");
-					new UpdateAttendanceEvent().execute("out", eventId, peopleId, teamId);
-					Toast.makeText(getContext(), "Not Attending Event", Toast.LENGTH_SHORT).show();
-				break;
+                    // The eventId, peopleId and teamId.
+                    //new UpdateAttendanceEvent().execute("out", eventId, "17786870", "408330");
+                    new UpdateAttendanceEvent(v, position).execute("out", eventId, peopleId, teamId);
+                    events.get(position).setAttendance("I am not attending this event");
+                    Toast.makeText(getContext(), "Not Attending Event", Toast.LENGTH_SHORT).show();
+                    events.get(position).setNoClicked(true);
+                    break;
 			}
 		}
 	}
@@ -186,20 +147,32 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         private static final String TAG_PERM_LEVEL = "permlevel";
         private static final String TAG_FLAGS = "flags";
 	    private static final String API_URL = "https://teamlockerroom.com/api/setattendance";
+        private View rowView;
+        private int position;
+
+        public UpdateAttendanceEvent(View v, int position) {
+            super();
+            this.rowView = v;
+            this.position = position;
+        }
 
         @Override
         // "params" should have 0 = String "in"/"out", 1 = eventid, 2 = peopleid, 3 = teamid.
         protected String doInBackground(String... params) {
 	        String attendance = "not attending";
+            HttpPost httpPost = null;
+            HttpClient httpClient = null;
+            JSONObject jsonObject = null;
+
 	        if(params[0].equals("in")) {
 		        attendance = "attending";
 	        }
 
 	        // Try and set the attendance.
 	        try {
-		        HttpPost httpPost = new HttpPost(API_URL);
-		        HttpClient httpClient = new DefaultHttpClient();
-		        JSONObject jsonObject = new JSONObject();
+		        httpPost = new HttpPost(API_URL);
+		        httpClient = new DefaultHttpClient();
+		        jsonObject = new JSONObject();
 		        String json = "";
 
 		        jsonObject.put(TAG_STATUS, params[0]);
@@ -239,12 +212,16 @@ public class CustomListAdapter extends ArrayAdapter<Events> {
         // "I am attending this event" or "I am not attending this event"
         // or it can highlight the yes/no button and disable the other.
         protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-			Log.d(TAG_MY_APP + " onPostExecute ", result);
-            if(result.equalsIgnoreCase("attending")) {
-                viewHolder.attendance.setText("yessssssssss");
-            } else if(result.equalsIgnoreCase("not attending")) {
-                viewHolder.attendance.setText("nooooooooooo");
+            TextView attendance = (TextView)((View)rowView.getParent().getParent()).findViewById(R.id.attendance);
+            Button buttonYes = (Button)(((View)rowView.getParent().getParent()).findViewById(R.id.yes));
+            Button buttonNo = (Button)(((View)rowView.getParent().getParent()).findViewById(R.id.no));
+
+            if(result.equals("attending")) {
+                attendance.setText("I am attending this event");
+                buttonYes.setEnabled(false);
+            } else {
+                attendance.setText("I am not attending this event");
+                buttonNo.setEnabled(false);
             }
         }
     }
