@@ -17,6 +17,7 @@
 package com.example.android.networkconnect;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -49,16 +50,19 @@ public class MainActivity extends FragmentActivity {
     private EditText email;
     private EditText password;
     private Button login;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     private static final String TAG_MY_APP = "MYAPP";
-
+    private static final String SHARED_PREFS = "SharedPrefs";
+    private static final String SHARED_EMAIL = "SharedEmail";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sample_main);
 
 	    Log.d(TAG_MY_APP, "+ Starting App");
-
-        email = (EditText)findViewById(R.id.email);
+        displaySavedEmail();
+        //email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
 
         login = (Button)findViewById(R.id.login);
@@ -73,8 +77,30 @@ public class MainActivity extends FragmentActivity {
                     Toast.makeText(getApplicationContext(), "Trying to login...", Toast.LENGTH_SHORT).show();
                     new LoginTask().execute();
                 }
+                setSharedPreferences();
             }
         });
+    }
+
+    public void setSharedPreferences() {
+        String sharedEmail = email.getText().toString();
+
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SHARED_EMAIL, sharedEmail);
+        editor.commit();
+    }
+
+    public String getSharedPreferences() {
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        String extractedEmail = sharedPreferences.getString(SHARED_EMAIL, null);
+        return extractedEmail;
+    }
+
+    private void displaySavedEmail() {
+        String mEmail = getSharedPreferences();
+        email = (EditText)findViewById(R.id.email);
+        email.setText(mEmail);
     }
 
     @Override
