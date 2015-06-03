@@ -24,11 +24,6 @@
     android:layout_height="fill_parent"
     android:background="@drawable/ic_background">
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
-
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

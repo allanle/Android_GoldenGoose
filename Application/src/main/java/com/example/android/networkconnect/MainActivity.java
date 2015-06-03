@@ -22,8 +22,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -102,7 +100,7 @@ public class MainActivity extends FragmentActivity {
         email = (EditText)findViewById(R.id.email);
         email.setText(mEmail);
     }
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -117,7 +115,7 @@ public class MainActivity extends FragmentActivity {
                 return true;
         }
         return false;
-    }
+    }*/
 
     /**
      * Implementation of AsyncTask, to fetch the data in the background away from
