@@ -50,16 +50,20 @@ public class MainActivity extends FragmentActivity {
     private Button login;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+
     private static final String TAG_MY_APP = "MYAPP";
     private static final String SHARED_PREFS = "SharedPrefs";
     private static final String SHARED_EMAIL = "SharedEmail";
+    private static final String SHARED_PASSWORD = "SharedPassword";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sample_main);
 
 	    Log.d(TAG_MY_APP, "+ Starting App");
-        displaySavedEmail();
+
+        displayUserCredentials();
         //email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
 
@@ -75,12 +79,13 @@ public class MainActivity extends FragmentActivity {
                     Toast.makeText(getApplicationContext(), "Trying to login...", Toast.LENGTH_SHORT).show();
                     new LoginTask().execute();
                 }
-                setSharedPreferences();
+                setSharedPreferencesEmail();
+                setSharedPreferencesPassword();
             }
         });
     }
 
-    public void setSharedPreferences() {
+    public void setSharedPreferencesEmail() {
         String sharedEmail = email.getText().toString();
 
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -89,16 +94,35 @@ public class MainActivity extends FragmentActivity {
         editor.commit();
     }
 
-    public String getSharedPreferences() {
+    public void setSharedPreferencesPassword() {
+        String sharedPassword = password.getText().toString();
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SHARED_PASSWORD, sharedPassword);
+        editor.commit();
+    }
+
+    public String getSharedPreferencesEmail() {
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         String extractedEmail = sharedPreferences.getString(SHARED_EMAIL, null);
+
         return extractedEmail;
     }
 
-    private void displaySavedEmail() {
-        String mEmail = getSharedPreferences();
+    public String getSharedPreferencesPassword() {
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        String extractedPassword = sharedPreferences.getString(SHARED_PASSWORD, null);
+
+        return extractedPassword;
+    }
+
+    private void displayUserCredentials() {
+        String mEmail = getSharedPreferencesEmail();
+        String mPassword = getSharedPreferencesPassword();
         email = (EditText)findViewById(R.id.email);
+        password = (EditText)findViewById(R.id.password);
         email.setText(mEmail);
+        password.setText(mPassword);
     }
 /*
     @Override
