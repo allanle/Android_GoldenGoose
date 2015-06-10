@@ -27,6 +27,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.android.encryption.ObscuredSharedPreferences;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,6 +52,7 @@ public class MainActivity extends FragmentActivity {
     private Button login;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private ObscuredSharedPreferences obscuredSharedPreferences;
 
     private static final String TAG_MY_APP = "MYAPP";
     private static final String SHARED_PREFS = "SharedPrefs";
@@ -65,13 +68,13 @@ public class MainActivity extends FragmentActivity {
 
         displayUserCredentials();
         //email = (EditText)findViewById(R.id.email);
-        password = (EditText)findViewById(R.id.password);
+        //password = (EditText)findViewById(R.id.password);
 
         login = (Button)findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(email.getText().toString().equals("")) {
+                if (email.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Must enter email", Toast.LENGTH_SHORT).show();
                 } else if (password.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Must enter password", Toast.LENGTH_SHORT).show();
@@ -88,29 +91,29 @@ public class MainActivity extends FragmentActivity {
     public void setSharedPreferencesEmail() {
         String sharedEmail = email.getText().toString();
 
-        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
+        editor = obscuredSharedPreferences.edit();
         editor.putString(SHARED_EMAIL, sharedEmail);
         editor.commit();
     }
 
     public void setSharedPreferencesPassword() {
         String sharedPassword = password.getText().toString();
-        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        sharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(SHARED_PASSWORD, sharedPassword);
         editor.commit();
     }
 
     public String getSharedPreferencesEmail() {
-        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        sharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
         String extractedEmail = sharedPreferences.getString(SHARED_EMAIL, null);
 
         return extractedEmail;
     }
 
     public String getSharedPreferencesPassword() {
-        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        sharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
         String extractedPassword = sharedPreferences.getString(SHARED_PASSWORD, null);
 
         return extractedPassword;
@@ -124,6 +127,7 @@ public class MainActivity extends FragmentActivity {
         email.setText(mEmail);
         password.setText(mPassword);
     }
+
 /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

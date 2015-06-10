@@ -33,6 +33,10 @@ public class Event implements Parcelable {
     private static final String TAG_ATTENDANCE_STATUS = "attstatus";
     private static final String TAG_PLAYED = "played";
 
+    private static final String ATTENDANCE_NULL = "You haven't decided yet";
+    private static final String ATTENDANCE_YES = "I am attending this event";
+    private static final String ATTENDANCE_NO = "I am not attending this event";
+
     public Event(JSONObject jsonObject) {
         try {
             // Set the eventId.
@@ -44,11 +48,11 @@ public class Event implements Parcelable {
             this.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
 
             if (jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("null")) {
-                this.setAttendance("You haven't decided yet");
+                this.setAttendance(ATTENDANCE_NULL);
             } else if (jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("0")) {
-                this.setAttendance("I am not attending this event");
+                this.setAttendance(ATTENDANCE_NO);
             } else if (jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("1")) {
-                this.setAttendance("I am attending this event");
+                this.setAttendance(ATTENDANCE_YES);
             }
         }catch(JSONException e) {
             e.printStackTrace();

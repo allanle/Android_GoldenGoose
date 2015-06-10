@@ -28,7 +28,10 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
     private LayoutInflater layoutInflater;
     private int mResource;
     private ViewHolder viewHolder;
+
 	private static final String TAG_MY_APP = "MyApp";
+    private static String ATTENDANCE_YES = "I am attending this event";
+    private static String ATTENDANCE_NO = "I am not attending this event";
 
 	public CustomListAdapter() {
 		super(null, Integer.parseInt(null));
@@ -117,7 +120,7 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
                     // The eventId, peopleId and teamId.
                     //new UpdateAttendanceEvent().execute("in", eventId, "17786870", "408330");
                     new UpdateAttendanceEvent(v, position).execute("in", eventId, peopleId, teamId);
-                    events.get(position).setAttendance("I am attending this event");
+                    events.get(position).setAttendance(ATTENDANCE_YES);
                     Toast.makeText(getContext(), "Attending Event", Toast.LENGTH_SHORT).show();
                     events.get(position).setYesClicked(true);
                     break;
@@ -125,7 +128,7 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
                     // The eventId, peopleId and teamId.
                     //new UpdateAttendanceEvent().execute("out", eventId, "17786870", "408330");
                     new UpdateAttendanceEvent(v, position).execute("out", eventId, peopleId, teamId);
-                    events.get(position).setAttendance("I am not attending this event");
+                    events.get(position).setAttendance(ATTENDANCE_NO);
                     Toast.makeText(getContext(), "Not Attending Event", Toast.LENGTH_SHORT).show();
                     events.get(position).setNoClicked(true);
                     break;
@@ -217,11 +220,13 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
             Button buttonNo = (Button)(((View)rowView.getParent().getParent()).findViewById(R.id.no));
 
             if(result.equals("attending")) {
-                attendance.setText("I am attending this event");
+                attendance.setText(ATTENDANCE_YES);
                 buttonYes.setEnabled(false);
+//                buttonYes.setBackgroundColor(0xB71C1C);
             } else {
-                attendance.setText("I am not attending this event");
+                attendance.setText(ATTENDANCE_NO);
                 buttonNo.setEnabled(false);
+//                buttonYes.setBackgroundColor(0x00695C);
             }
         }
     }
