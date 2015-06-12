@@ -53,6 +53,7 @@ public class MainActivity extends FragmentActivity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private ObscuredSharedPreferences obscuredSharedPreferences;
+    private JSONObject json;
 
     private static final String TAG_MY_APP = "MYAPP";
     private static final String SHARED_PREFS = "SharedPrefs";
@@ -82,8 +83,6 @@ public class MainActivity extends FragmentActivity {
                     Toast.makeText(getApplicationContext(), "Trying to login...", Toast.LENGTH_SHORT).show();
                     new LoginTask().execute();
                 }
-                setSharedPreferencesEmail();
-                setSharedPreferencesPassword();
             }
         });
     }
@@ -154,7 +153,7 @@ public class MainActivity extends FragmentActivity {
         private static final String TAG_PEOPLE_ID = "peopleid";
 	    private static final String API_URL = "https://teamlockerroom.com/api/authenticate";
 	    private static final String CHARSET = "UTF-8";
-        private JSONObject json;
+
 
         @Override
         protected JSONObject doInBackground(String... urls) {
@@ -257,6 +256,9 @@ public class MainActivity extends FragmentActivity {
                     if(json.getString(TAG_TEAMID).equals(null) || json.getString(TAG_PEOPLE_ID).equals(null)) {
                         Toast.makeText(MainActivity.this, "Something went wrong. Try again.", Toast.LENGTH_SHORT).show();
                     } else {
+                        setSharedPreferencesPassword();
+                        setSharedPreferencesEmail();
+
                         String teamId = json.getString(TAG_TEAMID).toString();
                         String peopleId = json.get(TAG_PEOPLE_ID).toString();
 
