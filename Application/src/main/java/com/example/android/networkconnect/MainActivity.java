@@ -50,7 +50,7 @@ public class MainActivity extends FragmentActivity {
     private EditText email;
     private EditText password;
     private Button login;
-    private SharedPreferences sharedPreferences;
+
     private SharedPreferences.Editor editor;
     private ObscuredSharedPreferences obscuredSharedPreferences;
 
@@ -67,8 +67,8 @@ public class MainActivity extends FragmentActivity {
 	    Log.d(TAG_MY_APP, "+ Starting App");
 
         displayUserCredentials();
-        //email = (EditText)findViewById(R.id.email);
-        //password = (EditText)findViewById(R.id.password);
+//        email = (EditText)findViewById(R.id.email);
+//        password = (EditText)findViewById(R.id.password);
 
         login = (Button)findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
@@ -82,13 +82,11 @@ public class MainActivity extends FragmentActivity {
                     Toast.makeText(getApplicationContext(), "Trying to login...", Toast.LENGTH_SHORT).show();
                     new LoginTask().execute();
                 }
-                setSharedPreferencesEmail();
-                setSharedPreferencesPassword();
             }
         });
     }
 
-    public void setSharedPreferencesEmail() {
+    private void setSharedPreferencesEmail() {
         String sharedEmail = email.getText().toString();
 
         obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
@@ -97,26 +95,35 @@ public class MainActivity extends FragmentActivity {
         editor.commit();
     }
 
-    public void setSharedPreferencesPassword() {
+    private void setSharedPreferencesPassword() {
         String sharedPassword = password.getText().toString();
-        sharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+
+        obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
+        editor = obscuredSharedPreferences.edit();
         editor.putString(SHARED_PASSWORD, sharedPassword);
         editor.commit();
     }
 
-    public String getSharedPreferencesEmail() {
-        sharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
-        String extractedEmail = sharedPreferences.getString(SHARED_EMAIL, null);
+    private String getSharedPreferencesEmail() {
+        obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
+        String extractedEmail = obscuredSharedPreferences.getString(SHARED_EMAIL, null);
 
         return extractedEmail;
     }
 
-    public String getSharedPreferencesPassword() {
-        sharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
-        String extractedPassword = sharedPreferences.getString(SHARED_PASSWORD, null);
+    private String getSharedPreferencesPassword() {
+        obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
+        String extractedPassword = obscuredSharedPreferences.getString(SHARED_PASSWORD, null);
 
         return extractedPassword;
+    }
+
+    private void removeSharedPreferencesPassword() {
+        obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
+        editor = obscuredSharedPreferences.edit();
+        editor.remove(SHARED_PASSWORD);
+        editor.commit();
+
     }
 
     private void displayUserCredentials() {
@@ -257,6 +264,9 @@ public class MainActivity extends FragmentActivity {
                     if(json.getString(TAG_TEAMID).equals(null) || json.getString(TAG_PEOPLE_ID).equals(null)) {
                         Toast.makeText(MainActivity.this, "Something went wrong. Try again.", Toast.LENGTH_SHORT).show();
                     } else {
+                        setSharedPreferencesEmail();
+                        setSharedPreferencesPassword();
+
                         String teamId = json.getString(TAG_TEAMID).toString();
                         String peopleId = json.get(TAG_PEOPLE_ID).toString();
 
@@ -276,16 +286,9 @@ public class MainActivity extends FragmentActivity {
                     }
 	            }
             } catch(JSONException e) {
+                removeSharedPreferencesPassword();
 	            Toast.makeText(MainActivity.this, "Incorrect email/password. Please try again.", Toast.LENGTH_SHORT).show();
             }
         }
     }
-/*
-    private void setJellyBeanAuthentication(HttpURLConnection httpURLConnection) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            byte[] auth = (email + ":" + password).getBytes();
-            String basic = Base64.encodeToString(auth, Base64.NO_WRAP);
-            httpURLConnection.setRequestProperty("Authorization", "Basic " + basic);
-        }
-    }*/
 }
