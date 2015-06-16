@@ -17,16 +17,17 @@
 package com.example.android.networkconnect;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.android.encryption.ObscuredSharedPreferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +50,15 @@ public class MainActivity extends FragmentActivity {
     private EditText email;
     private EditText password;
     private Button login;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private ObscuredSharedPreferences obscuredSharedPreferences;
+    private JSONObject json;
+
     private static final String TAG_MY_APP = "MYAPP";
+    private static final String SHARED_PREFS = "SharedPrefs";
+    private static final String SHARED_EMAIL = "SharedEmail";
+    private static final String SHARED_PASSWORD = "SharedPassword";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +67,15 @@ public class MainActivity extends FragmentActivity {
 
 	    Log.d(TAG_MY_APP, "+ Starting App");
 
-        email = (EditText)findViewById(R.id.email);
-        password = (EditText)findViewById(R.id.password);
+        displayUserCredentials();
+        //email = (EditText)findViewById(R.id.email);
+        //password = (EditText)findViewById(R.id.password);
 
         login = (Button)findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(email.getText().toString().equals("")) {
+                if (email.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Must enter email", Toast.LENGTH_SHORT).show();
                 } else if (password.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Must enter password", Toast.LENGTH_SHORT).show();
@@ -77,6 +87,47 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
+    public void setSharedPreferencesEmail() {
+        String sharedEmail = email.getText().toString();
+
+        obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
+        editor = obscuredSharedPreferences.edit();
+        editor.putString(SHARED_EMAIL, sharedEmail);
+        editor.commit();
+    }
+
+    public void setSharedPreferencesPassword() {
+        String sharedPassword = password.getText().toString();
+        sharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SHARED_PASSWORD, sharedPassword);
+        editor.commit();
+    }
+
+    public String getSharedPreferencesEmail() {
+        sharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
+        String extractedEmail = sharedPreferences.getString(SHARED_EMAIL, null);
+
+        return extractedEmail;
+    }
+
+    public String getSharedPreferencesPassword() {
+        sharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
+        String extractedPassword = sharedPreferences.getString(SHARED_PASSWORD, null);
+
+        return extractedPassword;
+    }
+
+    private void displayUserCredentials() {
+        String mEmail = getSharedPreferencesEmail();
+        String mPassword = getSharedPreferencesPassword();
+        email = (EditText)findViewById(R.id.email);
+        password = (EditText)findViewById(R.id.password);
+        email.setText(mEmail);
+        password.setText(mPassword);
+    }
+
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -91,7 +142,7 @@ public class MainActivity extends FragmentActivity {
                 return true;
         }
         return false;
-    }
+    }*/
 
     /**
      * Implementation of AsyncTask, to fetch the data in the background away from
@@ -102,7 +153,7 @@ public class MainActivity extends FragmentActivity {
         private static final String TAG_PEOPLE_ID = "peopleid";
 	    private static final String API_URL = "https://teamlockerroom.com/api/authenticate";
 	    private static final String CHARSET = "UTF-8";
-        private JSONObject json;
+
 
         @Override
         protected JSONObject doInBackground(String... urls) {
@@ -205,6 +256,9 @@ public class MainActivity extends FragmentActivity {
                     if(json.getString(TAG_TEAMID).equals(null) || json.getString(TAG_PEOPLE_ID).equals(null)) {
                         Toast.makeText(MainActivity.this, "Something went wrong. Try again.", Toast.LENGTH_SHORT).show();
                     } else {
+                        setSharedPreferencesPassword();
+                        setSharedPreferencesEmail();
+
                         String teamId = json.getString(TAG_TEAMID).toString();
                         String peopleId = json.get(TAG_PEOPLE_ID).toString();
 

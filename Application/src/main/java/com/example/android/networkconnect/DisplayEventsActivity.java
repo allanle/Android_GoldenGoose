@@ -99,6 +99,7 @@ public class DisplayEventsActivity extends Activity {
 
                         event = new Event(jsonObject);
 
+
                         eventList.add(event);
                     }
                     return jsonArray;
