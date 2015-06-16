@@ -262,7 +262,7 @@ public class MainActivity extends FragmentActivity {
 
                         // Put the bundle of extras together for the next activity.
                         Bundle bundle = new Bundle();
-                        bundle.putString(TAG_TEAMID, teamId);
+                        bundle.putString(TAG_TEAMID, teamId);git push origin CMS-
                         bundle.putString(TAG_PEOPLE_ID, peopleId);
 
                         Intent intent = new Intent(MainActivity.this, DisplayEventsActivity.class);
