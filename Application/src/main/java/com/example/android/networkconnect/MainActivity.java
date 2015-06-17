@@ -16,10 +16,12 @@
 
 package com.example.android.networkconnect;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -64,6 +66,13 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sample_main);
+
+        if(getSharedPreferencesEmail().length() == 0) {
+
+        } else {
+            Intent i = new Intent(MainActivity.this, DisplayEventsActivity.class);
+            startActivity(i);
+        }
 
 	    Log.d(TAG_MY_APP, "+ Starting App");
 
@@ -124,7 +133,6 @@ public class MainActivity extends FragmentActivity {
         editor = obscuredSharedPreferences.edit();
         editor.remove(SHARED_PASSWORD);
         editor.commit();
-
     }
 
     private void displayUserCredentials() {
@@ -134,6 +142,10 @@ public class MainActivity extends FragmentActivity {
         password = (EditText)findViewById(R.id.password);
         email.setText(mEmail);
         password.setText(mPassword);
+    }
+
+    private SharedPreferences getSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
 /*
@@ -169,9 +181,9 @@ public class MainActivity extends FragmentActivity {
             boolean ok = false;
             int responseCode = 0;
             HttpURLConnection conn = null;
-            String requestData = null;
-            BufferedReader reader = null;
-            String line = null;
+            String requestData;
+            BufferedReader reader;
+            String line;
             StringBuilder sb = new StringBuilder();
             OutputStream oStream;
             OutputStreamWriter wr;
@@ -268,9 +280,6 @@ public class MainActivity extends FragmentActivity {
 
                         setSharedPreferencesPassword();
                         setSharedPreferencesEmail();
-
-                        setSharedPreferencesEmail();
-                        setSharedPreferencesPassword();
 
                         String teamId = json.getString(TAG_TEAMID).toString();
                         String peopleId = json.get(TAG_PEOPLE_ID).toString();
