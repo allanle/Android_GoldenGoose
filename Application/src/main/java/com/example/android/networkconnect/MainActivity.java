@@ -52,10 +52,12 @@ public class MainActivity extends FragmentActivity {
     private EditText email;
     private EditText password;
     private Button login;
-
+    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private ObscuredSharedPreferences obscuredSharedPreferences;
     private JSONObject json;
+
+    private SessionManager sessionManager;
 
     private static final String TAG_MY_APP = "MYAPP";
     private static final String SHARED_PREFS = "SharedPrefs";
@@ -66,19 +68,19 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sample_main);
-
-        if(getSharedPreferencesEmail().length() == 0) {
-
-        } else {
-            Intent i = new Intent(MainActivity.this, DisplayEventsActivity.class);
-            startActivity(i);
-        }
-
+        sessionManager = new SessionManager(getApplicationContext());
 	    Log.d(TAG_MY_APP, "+ Starting App");
 
         displayUserCredentials();
 //        email = (EditText)findViewById(R.id.email);
 //        password = (EditText)findViewById(R.id.password);
+
+//        if(getUserName(MainActivity.this).length() == 0) {
+//            Context context = null;
+//            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//            context.startActivity(intent);
+//            Toast.makeText(getApplicationContext(), "You need to log in again bro", Toast.LENGTH_SHORT).show();
+//        }
 
         login = (Button)findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
@@ -144,8 +146,18 @@ public class MainActivity extends FragmentActivity {
         password.setText(mPassword);
     }
 
-    private SharedPreferences getSharedPreferences(Context context) {
+    private static SharedPreferences getSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    private void setUserName(Context ctx, String userName) {
+        editor = getSharedPreferences(ctx).edit();
+        editor.putString(SHARED_EMAIL, userName);
+        editor.commit();
+    }
+
+    private static String getUserName(Context ctx) {
+        return getSharedPreferences(ctx).getString(SHARED_EMAIL, "");
     }
 
 /*

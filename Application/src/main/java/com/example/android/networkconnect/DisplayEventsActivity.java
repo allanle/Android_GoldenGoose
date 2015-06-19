@@ -32,11 +32,14 @@ public class DisplayEventsActivity extends Activity {
     private static final String TAG_PEOPLE_ID = "peopleid";
     private static final String TAG_TEAM_ID = "teamid";
 
+    private SessionManager sessionManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_games);
 
+        sessionManager = new SessionManager(DisplayEventsActivity.this);
+        sessionManager.checkLogin();
 
         //getting json data from login activity to pass into api calendar
 	    Bundle bundle = getIntent().getExtras();
@@ -67,6 +70,7 @@ public class DisplayEventsActivity extends Activity {
         private ProgressDialog dialog;
         private JSONObject jsonObject;
         private JSONArray jsonArray;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
