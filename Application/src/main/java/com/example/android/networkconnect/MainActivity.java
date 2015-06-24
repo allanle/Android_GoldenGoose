@@ -267,11 +267,11 @@ public class MainActivity extends FragmentActivity {
         @Override
         protected void onPostExecute(JSONObject json) {
             try {
-				// If the failed == true, then there was a login failure. Notify the User.
-	            if(json.getBoolean("failed")) {
-		            Toast.makeText(MainActivity.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
-	            } else {
-                    if(json.getString(TAG_TEAMID).equals(null) || json.getString(TAG_PEOPLE_ID).equals(null)) {
+                // If the failed == true, then there was a login failure. Notify the User.
+                if (json.getBoolean("failed")) {
+                    Toast.makeText(MainActivity.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (json.getString(TAG_TEAMID).equals(null) || json.getString(TAG_PEOPLE_ID).equals(null)) {
                         Toast.makeText(MainActivity.this, "Something went wrong. Try again.", Toast.LENGTH_SHORT).show();
                     } else {
 
@@ -295,14 +295,16 @@ public class MainActivity extends FragmentActivity {
                         // Start the DisplayEventsActivity.
                         startActivity(intent);
                     }
-	            }
-            } catch(JSONException e) {
+                }
+            } catch (JSONException e) {
                 removeSharedPreferencesPassword();
 //                removeSharedPreferencesEmail();
-	            Toast.makeText(MainActivity.this, "Incorrect email/password. Please try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Incorrect email/password. Please try again.", Toast.LENGTH_SHORT).show();
             }
-            if(dialog.isShowing()) {
+            try {
                 dialog.dismiss();
+            } catch(Exception e) {
+                e.printStackTrace();
             }
         }
     }
