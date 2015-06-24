@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.networkconnect;
+package com.pointstreak.goldengoose.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -28,7 +28,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.android.encryption.ObscuredSharedPreferences;
+import com.example.android.networkconnect.R;
+import com.pointstreak.goldengoose.encryption.ObscuredSharedPreferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;

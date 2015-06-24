@@ -1,4 +1,4 @@
-package com.example.android.networkconnect;
+package com.pointstreak.goldengoose.adapter;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -10,6 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.android.networkconnect.R;
+import com.pointstreak.goldengoose.classes.Event;
+import com.pointstreak.goldengoose.classes.ViewHolder;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

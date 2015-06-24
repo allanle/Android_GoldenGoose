@@ -1,4 +1,4 @@
-package com.example.android.encryption;
+package com.pointstreak.goldengoose.encryption;
 
 import android.content.Context;
 import android.content.SharedPreferences;

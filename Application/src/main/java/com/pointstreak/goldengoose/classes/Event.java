@@ -1,4 +1,4 @@
-package com.example.android.networkconnect;
+package com.pointstreak.goldengoose.classes;
 
 import android.os.Parcel;
 import android.os.Parcelable;

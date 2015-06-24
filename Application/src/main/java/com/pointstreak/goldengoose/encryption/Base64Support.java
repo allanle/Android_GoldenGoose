@@ -1,4 +1,4 @@
-package com.example.android.encryption;
+package com.pointstreak.goldengoose.encryption;
 
 /*
  * Copyright (C) 2010 The Android Open Source Project

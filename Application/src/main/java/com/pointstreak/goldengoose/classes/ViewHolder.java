@@ -1,9 +1,11 @@
-package com.example.android.networkconnect;
+package com.pointstreak.goldengoose.classes;
 
 import android.graphics.Paint;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.example.android.networkconnect.R;
 
 /**
  * Created by pointstreak on 15-06-02.

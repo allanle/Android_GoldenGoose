@@ -13,9 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.example.android.networkconnect.tests;
+package com.pointstreak.goldengoose.classes.tests;
 
-import com.example.android.networkconnect.*;
+import com.pointstreak.goldengoose.activity.MainActivity;
 
 import android.test.ActivityInstrumentationTestCase2;
 
