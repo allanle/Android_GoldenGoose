@@ -16,12 +16,10 @@
 
 package com.example.android.networkconnect;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -52,12 +50,9 @@ public class MainActivity extends FragmentActivity {
     private EditText email;
     private EditText password;
     private Button login;
-    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private ObscuredSharedPreferences obscuredSharedPreferences;
     private JSONObject json;
-
-    private SessionManager sessionManager;
 
     private static final String TAG_MY_APP = "MYAPP";
     private static final String SHARED_PREFS = "SharedPrefs";
@@ -68,27 +63,24 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sample_main);
-        sessionManager = new SessionManager(getApplicationContext());
+
 	    Log.d(TAG_MY_APP, "+ Starting App");
 
         displayUserCredentials();
-//        email = (EditText)findViewById(R.id.email);
-//        password = (EditText)findViewById(R.id.password);
 
-//        if(getUserName(MainActivity.this).length() == 0) {
-//            Context context = null;
-//            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//            context.startActivity(intent);
-//            Toast.makeText(getApplicationContext(), "You need to log in again bro", Toast.LENGTH_SHORT).show();
-//        }
+        if(password.getText().toString().length() != 0) {
+            Toast.makeText(getApplicationContext(), "HOLD ON BRO IM LOGGING BACK IN", Toast.LENGTH_SHORT).show();
+            new LoginTask().execute();
+            //dialog.dismiss();
+        }
 
         login = (Button)findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (email.getText().toString().equals("")) {
+                if(email.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Must enter email", Toast.LENGTH_SHORT).show();
-                } else if (password.getText().toString().equals("")) {
+                } else if(password.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Must enter password", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Trying to login...", Toast.LENGTH_SHORT).show();
@@ -97,6 +89,8 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
+
+
 
     private void setSharedPreferencesEmail() {
         String sharedEmail = email.getText().toString();
@@ -119,14 +113,14 @@ public class MainActivity extends FragmentActivity {
     private String getSharedPreferencesEmail() {
         obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
         String extractedEmail = obscuredSharedPreferences.getString(SHARED_EMAIL, null);
-
+        Log.d(TAG_MY_APP, "extracted email: " + extractedEmail);
         return extractedEmail;
     }
 
     private String getSharedPreferencesPassword() {
         obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
         String extractedPassword = obscuredSharedPreferences.getString(SHARED_PASSWORD, null);
-
+        Log.d(TAG_MY_APP, "extracted Password: " + extractedPassword);
         return extractedPassword;
     }
 
@@ -134,6 +128,13 @@ public class MainActivity extends FragmentActivity {
         obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
         editor = obscuredSharedPreferences.edit();
         editor.remove(SHARED_PASSWORD);
+        editor.commit();
+    }
+
+    private void removeSharedPreferencesEmail() {
+        obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
+        editor = obscuredSharedPreferences.edit();
+        editor.remove(SHARED_EMAIL);
         editor.commit();
     }
 
@@ -146,19 +147,19 @@ public class MainActivity extends FragmentActivity {
         password.setText(mPassword);
     }
 
-    private static SharedPreferences getSharedPreferences(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context);
-    }
+//    private static SharedPreferences getSharedPreferences(Context context) {
+//        return PreferenceManager.getDefaultSharedPreferences(context);
+//    }
 
-    private void setUserName(Context ctx, String userName) {
-        editor = getSharedPreferences(ctx).edit();
-        editor.putString(SHARED_EMAIL, userName);
-        editor.commit();
-    }
+//    private void setUserName(Context ctx, String userName) {
+//        editor = getSharedPreferences(ctx).edit();
+//        editor.putString(SHARED_EMAIL, userName);
+//        editor.commit();
+//    }
 
-    private static String getUserName(Context ctx) {
-        return getSharedPreferences(ctx).getString(SHARED_EMAIL, "");
-    }
+//    private static String getUserName(Context ctx) {
+//        return getSharedPreferences(ctx).getString(SHARED_EMAIL, "");
+//    }
 
 /*
     @Override
@@ -169,14 +170,14 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+        switch(item.getItemId()) {
             case R.id.fetch_action:
                 new LoginTask().execute();
                 return true;
         }
         return false;
-    }*/
-
+    }
+*/
     /**
      * Implementation of AsyncTask, to fetch the data in the background away from
      * the UI thread.
@@ -186,7 +187,6 @@ public class MainActivity extends FragmentActivity {
         private static final String TAG_PEOPLE_ID = "peopleid";
 	    private static final String API_URL = "https://teamlockerroom.com/api/authenticate";
 	    private static final String CHARSET = "UTF-8";
-
 
         @Override
         protected JSONObject doInBackground(String... urls) {
@@ -313,6 +313,7 @@ public class MainActivity extends FragmentActivity {
 	            }
             } catch(JSONException e) {
                 removeSharedPreferencesPassword();
+//                removeSharedPreferencesEmail();
 	            Toast.makeText(MainActivity.this, "Incorrect email/password. Please try again.", Toast.LENGTH_SHORT).show();
             }
         }

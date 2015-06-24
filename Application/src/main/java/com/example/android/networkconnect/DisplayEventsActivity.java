@@ -2,11 +2,16 @@ package com.example.android.networkconnect;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
+
+import com.example.android.encryption.ObscuredSharedPreferences;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,21 +30,27 @@ import java.util.Calendar;
 public class DisplayEventsActivity extends Activity {
     private ArrayList<Event> eventList;
     private CustomListAdapter adapter;
+    private ObscuredSharedPreferences obscuredSharedPreferences;
+    private SharedPreferences.Editor editor;
     private Calendar calendar = Calendar.getInstance();
     private int getMonth = calendar.get(Calendar.MONTH) + 1;
     private int getYear = calendar.get(Calendar.YEAR);
+
     private static final String TAG_MY_APP = "MyApp";
     private static final String TAG_PEOPLE_ID = "peopleid";
     private static final String TAG_TEAM_ID = "teamid";
+    private static final String SHARED_PREFS = "SharedPrefs";
+    private static final String SHARED_EMAIL = "SharedEmail";
+    private static final String SHARED_PASSWORD = "SharedPassword";
 
-    private SessionManager sessionManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_games);
 
-        sessionManager = new SessionManager(DisplayEventsActivity.this);
-        sessionManager.checkLogin();
+//        sessionManager = new SessionManager(DisplayEventsActivity.this);
+//        sessionManager.checkLogin();
 
         //getting json data from login activity to pass into api calendar
 	    Bundle bundle = getIntent().getExtras();
@@ -62,8 +73,25 @@ public class DisplayEventsActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_games, menu);
+        getMenuInflater().inflate(R.menu.menu_display_events, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_logout:
+                obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
+                editor = obscuredSharedPreferences.edit();
+                editor.remove(SHARED_EMAIL);
+                editor.remove(SHARED_PASSWORD);
+                editor.commit();
+
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+        }
+        return false;
     }
 
     private class ProcessCalendarAsync extends AsyncTask<String, Void, JSONArray> {
