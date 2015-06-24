@@ -16,6 +16,7 @@
 
 package com.example.android.networkconnect;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -53,6 +54,7 @@ public class MainActivity extends FragmentActivity {
     private SharedPreferences.Editor editor;
     private ObscuredSharedPreferences obscuredSharedPreferences;
     private JSONObject json;
+    private ProgressDialog dialog;
 
     private static final String TAG_MY_APP = "MYAPP";
     private static final String SHARED_PREFS = "SharedPrefs";
@@ -69,9 +71,13 @@ public class MainActivity extends FragmentActivity {
         displayUserCredentials();
 
         if(password.getText().toString().length() != 0) {
+            dialog = new ProgressDialog(MainActivity.this);
+            dialog.setMessage("Loading, please wait");
+            dialog.setTitle("Connecting to server");
+            dialog.show();
+            dialog.setCancelable(true);
             Toast.makeText(getApplicationContext(), "HOLD ON BRO IM LOGGING BACK IN", Toast.LENGTH_SHORT).show();
             new LoginTask().execute();
-            //dialog.dismiss();
         }
 
         login = (Button)findViewById(R.id.login);
@@ -89,8 +95,6 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
-
-
 
     private void setSharedPreferencesEmail() {
         String sharedEmail = email.getText().toString();
@@ -146,20 +150,6 @@ public class MainActivity extends FragmentActivity {
         email.setText(mEmail);
         password.setText(mPassword);
     }
-
-//    private static SharedPreferences getSharedPreferences(Context context) {
-//        return PreferenceManager.getDefaultSharedPreferences(context);
-//    }
-
-//    private void setUserName(Context ctx, String userName) {
-//        editor = getSharedPreferences(ctx).edit();
-//        editor.putString(SHARED_EMAIL, userName);
-//        editor.commit();
-//    }
-
-//    private static String getUserName(Context ctx) {
-//        return getSharedPreferences(ctx).getString(SHARED_EMAIL, "");
-//    }
 
 /*
     @Override
@@ -315,6 +305,9 @@ public class MainActivity extends FragmentActivity {
                 removeSharedPreferencesPassword();
 //                removeSharedPreferencesEmail();
 	            Toast.makeText(MainActivity.this, "Incorrect email/password. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+            if(dialog.isShowing()) {
+                dialog.dismiss();
             }
         }
     }
