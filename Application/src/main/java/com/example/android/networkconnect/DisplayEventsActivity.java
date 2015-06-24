@@ -49,9 +49,6 @@ public class DisplayEventsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_games);
 
-//        sessionManager = new SessionManager(DisplayEventsActivity.this);
-//        sessionManager.checkLogin();
-
         //getting json data from login activity to pass into api calendar
 	    Bundle bundle = getIntent().getExtras();
         String peopleId = bundle.getString(TAG_PEOPLE_ID);

@@ -42,11 +42,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-/**
- * Sample application demonstrating how to connect to the network and fetch raw
- * HTML. It uses AsyncTask to do the fetch on a background thread. To establish
- * the network connection, it uses HttpURLConnection.
- */
 public class MainActivity extends FragmentActivity {
     private EditText email;
     private EditText password;
