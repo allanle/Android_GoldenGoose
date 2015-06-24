@@ -21,6 +21,8 @@ public class ViewHolder {
     private boolean yesClicked = false;
     private boolean noClicked = false;
     private Event event;
+//    private Calendar calendar;
+//    private SimpleDateFormat simpleDateFormat;
 
     public ViewHolder(View convertView) {
         // Set the tags for the record.
@@ -43,8 +45,15 @@ public class ViewHolder {
     }
 
     public void setStrikeoutText() {
+//        DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy");
+//        String date = df.format(Calendar.getInstance().getTime());
+//        Date result = df.parse(date);
+//        int currentDate = Integer.parseInt(df.format(Calendar.getInstance().getTime()));
+//        int oldDate = Integer.parseInt(event.getEventDate());
+//        Log.d("MyApp", "Formatted date: " + date);
         // Strike through text for past event
         if(event.getPlayed().equals("1")) {
+
             this.title.setPaintFlags(this.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             this.rinkName.setPaintFlags(this.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             this.arenaName.setPaintFlags(this.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);

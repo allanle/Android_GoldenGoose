@@ -80,7 +80,7 @@ public class DisplayEventsActivity extends Activity {
             case R.id.action_logout:
                 obscuredSharedPreferences = ObscuredSharedPreferences.getPrefs(this, SHARED_PREFS, MODE_PRIVATE);
                 editor = obscuredSharedPreferences.edit();
-//                editor.remove(SHARED_EMAIL);
+                editor.remove(SHARED_EMAIL);
                 editor.remove(SHARED_PASSWORD);
                 editor.commit();
 
@@ -127,7 +127,6 @@ public class DisplayEventsActivity extends Activity {
 	                    jsonObject = jsonArray.getJSONObject(i);
 
                         event = new Event(jsonObject);
-
 
                         eventList.add(event);
                     }

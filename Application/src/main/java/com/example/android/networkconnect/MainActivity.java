@@ -71,7 +71,7 @@ public class MainActivity extends FragmentActivity {
             dialog.setTitle("Connecting to server");
             dialog.show();
             dialog.setCancelable(true);
-            Toast.makeText(getApplicationContext(), "HOLD ON BRO IM LOGGING BACK IN", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Trying to login...", Toast.LENGTH_SHORT).show();
             new LoginTask().execute();
         }
 
