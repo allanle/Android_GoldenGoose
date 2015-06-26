@@ -6,9 +6,6 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by pointstreak on 15-04-14.
- */
 public class Event implements Parcelable {
 	private String eventId;
     private String title;

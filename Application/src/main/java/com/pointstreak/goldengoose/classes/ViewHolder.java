@@ -7,9 +7,6 @@ import android.widget.TextView;
 
 import com.example.android.networkconnect.R;
 
-/**
- * Created by pointstreak on 15-06-02.
- */
 public class ViewHolder {
     private TextView played;
     private TextView eventId;
