@@ -37,14 +37,12 @@ public class Event implements Parcelable {
     public Event(JSONObject jsonObject) {
         try {
             if(jsonObject.getString(TAG_RINK_NAME).equalsIgnoreCase("null")) {
-                this.setRinkName(jsonObject.getString(TAG_RINK_NAME));
+                this.setRinkName("");
             } else if(jsonObject.getString(TAG_ARENA_NAME).equalsIgnoreCase("null")) {
-                this.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
+                this.setArenaName("");
             } else if(jsonObject.getString(TAG_EVENT_DATE).equalsIgnoreCase("null")) {
                 this.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
-            } else if(jsonObject.getString(TAG_EVENT_DATE).equalsIgnoreCase("null")) {
-                this.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
-        }
+            }
 
             if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("null")) {
                 this.setAttendance(ATTENDANCE_NULL);
