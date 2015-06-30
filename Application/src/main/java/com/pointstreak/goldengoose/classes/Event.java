@@ -44,7 +44,7 @@ public class Event implements Parcelable {
                 this.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
             } else if(jsonObject.getString(TAG_EVENT_DATE).equalsIgnoreCase("null")) {
                 this.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
-            }
+        }
 
             if(jsonObject.getString(TAG_ATTENDANCE_STATUS).equalsIgnoreCase("null")) {
                 this.setAttendance(ATTENDANCE_NULL);

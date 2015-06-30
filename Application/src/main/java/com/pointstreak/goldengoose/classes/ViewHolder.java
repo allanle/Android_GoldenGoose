@@ -7,6 +7,12 @@ import android.widget.TextView;
 
 import com.example.android.networkconnect.R;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class ViewHolder {
     private TextView played;
     private TextView eventId;
@@ -20,8 +26,8 @@ public class ViewHolder {
     private boolean yesClicked = false;
     private boolean noClicked = false;
     private Event event;
-//    private Calendar calendar;
-//    private SimpleDateFormat simpleDateFormat;
+    private Calendar calendar;
+    private SimpleDateFormat simpleDateFormat;
 
     public ViewHolder(View convertView) {
         // Set the tags for the record.
@@ -44,31 +50,35 @@ public class ViewHolder {
     }
 
     public void setStrikeoutText() {
-//        DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy");
-//        String date = df.format(Calendar.getInstance().getTime());
-//        Date result = df.parse(date);
-//        int currentDate = Integer.parseInt(df.format(Calendar.getInstance().getTime()));
-//        int oldDate = Integer.parseInt(event.getEventDate());
-//        Log.d("MyApp", "Formatted date: " + date);
-        // Strike through text for past event
-        if(event.getPlayed().equals("1")) {
+        try {
+            DateFormat dateFormat = null;
+            Date oldEventDate;
 
-            this.title.setPaintFlags(this.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            this.rinkName.setPaintFlags(this.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            this.arenaName.setPaintFlags(this.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            this.eventDate.setPaintFlags(this.eventDate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            this.attendance.setPaintFlags(this.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            this.yes.setPaintFlags(this.yes.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            this.no.setPaintFlags(this.no.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
-            // Don't strike text if future event
-            this.title.setPaintFlags(0);
-            this.rinkName.setPaintFlags(0);
-            this.arenaName.setPaintFlags(0);
-            this.eventDate.setPaintFlags(0);
-            this.attendance.setPaintFlags(0);
-            this.yes.setPaintFlags(0);
-            this.no.setPaintFlags(0);
+            dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
+            Date currentDate = Calendar.getInstance().getTime();
+
+            oldEventDate = dateFormat.parse(event.getEventDate());
+
+            if(oldEventDate.before(currentDate)) {
+                this.title.setPaintFlags(this.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                this.rinkName.setPaintFlags(this.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                this.arenaName.setPaintFlags(this.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                this.eventDate.setPaintFlags(this.eventDate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                this.attendance.setPaintFlags(this.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                this.yes.setPaintFlags(this.yes.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                this.no.setPaintFlags(this.no.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                // Don't strike text if future event
+                this.title.setPaintFlags(0);
+                this.rinkName.setPaintFlags(0);
+                this.arenaName.setPaintFlags(0);
+                this.eventDate.setPaintFlags(0);
+                this.attendance.setPaintFlags(0);
+                this.yes.setPaintFlags(0);
+                this.no.setPaintFlags(0);
+            }
+        } catch(ParseException e) {
+            e.printStackTrace();
         }
     }
 
