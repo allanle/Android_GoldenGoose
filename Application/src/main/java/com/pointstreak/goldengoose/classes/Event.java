@@ -55,12 +55,12 @@ public class Event implements Parcelable {
             }
 
             // Set the eventId.
+            this.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
             this.setPlayed(jsonObject.getString(TAG_PLAYED));
             this.setEventId(jsonObject.getString(TAG_EVENT_ID));
             this.setTitle(jsonObject.getString(TAG_TITLE));
             this.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
             this.setRinkName(jsonObject.getString(TAG_RINK_NAME));
-            this.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
 
         }catch(JSONException e) {
             e.printStackTrace();
