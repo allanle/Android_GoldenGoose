@@ -61,6 +61,7 @@ public class DisplayEventsActivity extends Activity {
 
         eventList = new ArrayList<Event>();
 
+        // execute calendar api
         new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
 
 //        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/410281/17802742/7/2015");
@@ -77,6 +78,12 @@ public class DisplayEventsActivity extends Activity {
         return true;
     }
 
+    /**
+     * action_logout allows the users to log out of their account. When the user logs out, the email / password
+     * text fields will be cleared.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
@@ -88,6 +95,8 @@ public class DisplayEventsActivity extends Activity {
                 editor.commit();
 
                 Intent intent = new Intent(this, MainActivity.class);
+                // this makes it so the app doesn't have to create a new activity and will go back to
+                // the activity that was paused.
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
         }
@@ -99,6 +108,9 @@ public class DisplayEventsActivity extends Activity {
         private JSONObject jsonObject;
         private JSONArray jsonArray;
 
+        /**
+         * A dialog will appear when trying to make an API GET.
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -109,16 +121,23 @@ public class DisplayEventsActivity extends Activity {
             dialog.setCancelable(false);
         }
 
+        /**
+         *
+         * @param urls - takes in a url address (API).
+         * @return
+         */
         @Override
         protected JSONArray doInBackground(String... urls) {
             HttpGet httpGet = null;
             HttpClient httpClient = null;
             Event event = null;
             try {
+                // http GET request.
                 httpGet = new HttpGet(urls[0]);
                 httpClient = new DefaultHttpClient();
                 HttpResponse httpResponse = httpClient.execute(httpGet);
 
+                // getting the server response.
                 int status = httpResponse.getStatusLine().getStatusCode();
 
                 if(status == 200) {
@@ -143,6 +162,10 @@ public class DisplayEventsActivity extends Activity {
             return jsonArray;
         }
 
+        /**
+         * This will notifiy the changes that will be made to the list view adapter.
+         * @param jsonArray
+         */
         @Override
         protected void onPostExecute(JSONArray jsonArray) {
             dialog.cancel();

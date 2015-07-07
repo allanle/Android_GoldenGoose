@@ -29,6 +29,10 @@ public class ViewHolder {
     private Calendar calendar;
     private SimpleDateFormat simpleDateFormat;
 
+    /**
+     * Look for a child view with the given tag.
+     * @param convertView
+     */
     public ViewHolder(View convertView) {
         // Set the tags for the record.
         this.title = (TextView)convertView.findViewById(R.id.title);
@@ -42,6 +46,10 @@ public class ViewHolder {
         this.yes = (Button)convertView.findViewById(R.id.yes);
     }
 
+    /**
+     *
+     * @param event - passing in event
+     */
     public void setEvent(Event event) {
         this.event = event;
         this.setStrikeoutText();
@@ -49,6 +57,10 @@ public class ViewHolder {
         this.setButtonClicking();
     }
 
+    /**
+     * Used date comparison for events to strike out past events. If the older date is less than
+     * the current date, then strike out the text.
+     */
     public void setStrikeoutText() {
         try {
             DateFormat dateFormat = null;
@@ -57,6 +69,7 @@ public class ViewHolder {
             dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
             Date currentDate = Calendar.getInstance().getTime();
 
+            // parse the json date format to simple date format.
             oldEventDate = dateFormat.parse(event.getEventDate());
 
             if(oldEventDate.before(currentDate)) {
@@ -82,6 +95,9 @@ public class ViewHolder {
         }
     }
 
+    /**
+     * Setting the text to the current JSON feed.
+     */
     public void setText() {
         this.title.setText(event.getTitle());
         this.rinkName.setText(event.getRinkName());
@@ -92,6 +108,9 @@ public class ViewHolder {
         this.played.setText(event.getPlayed());
     }
 
+    /**
+     * Flags for setting attendance to an event.
+     */
     public void setButtonClicking() {
         if(event.isYesClicked()) {
             this.yes.setEnabled(false);
