@@ -27,8 +27,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class DisplayEventsActivity extends Activity {
     private ArrayList<Event> eventList;
@@ -46,7 +49,7 @@ public class DisplayEventsActivity extends Activity {
     private static final String SHARED_EMAIL = "SharedEmail";
     private static final String SHARED_PASSWORD = "SharedPassword";
 
-
+    int count = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +65,10 @@ public class DisplayEventsActivity extends Activity {
         eventList = new ArrayList<Event>();
 
         // execute calendar api
-        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
-
+//        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
+        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId);
 //        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/410281/17802742/7/2015");
+
         ListView listView = (ListView)findViewById(R.id.listView);
         adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, peopleId, teamId, eventList);
 
@@ -131,6 +135,8 @@ public class DisplayEventsActivity extends Activity {
             HttpGet httpGet = null;
             HttpClient httpClient = null;
             Event event = null;
+            int count1 = 0;
+            int count2 = 0;
             try {
                 // http GET request.
                 httpGet = new HttpGet(urls[0]);
@@ -145,9 +151,36 @@ public class DisplayEventsActivity extends Activity {
                     String data = EntityUtils.toString(entity);
                     jsonArray = new JSONArray(data);
 
-                    for(int i = 0; i < jsonArray.length(); i++) {
-	                    jsonObject = jsonArray.getJSONObject(i);
+                    DateFormat dateFormat = null;
+                    Date oldEventDate;
 
+                    dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
+                    Date currentDate = Calendar.getInstance().getTime();
+
+                    for(int i = 0; i < jsonArray.length(); i++) {
+                        try {
+
+
+                            // parse the json date format to simple date format.
+                            oldEventDate = dateFormat.parse(event.getEventDate());
+//                            Log.d(TAG_MY_APP, oldEventDate.toString());
+
+                            if(jsonObject.getString("eventdate").contains("2014")) {
+                                count1++;
+                            }
+                            if(jsonObject.getString("eventdate").contains("2015")) {
+                                count2++;
+                            }
+                            Log.d(TAG_MY_APP, "2014 " +String.valueOf(count1));
+                            Log.d(TAG_MY_APP, "2015 " +String.valueOf(count2));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        jsonObject = jsonArray.getJSONObject(i);
+                        count++;
+//                        jsonArray.remove(0);
+                        Log.d(TAG_MY_APP, jsonObject.toString());
+                        Log.d(TAG_MY_APP, "count " + count);
                         event = new Event(jsonObject);
 
                         eventList.add(event);

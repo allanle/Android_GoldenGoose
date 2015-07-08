@@ -32,11 +32,11 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
     private LayoutInflater layoutInflater;
     private int mResource;
     private ViewHolder viewHolder;
-
+    private Event event;
 	private static final String TAG_MY_APP = "MyApp";
     private static String ATTENDANCE_YES = "I am attending this event";
     private static String ATTENDANCE_NO = "I am not attending this event";
-
+    private int count = 0;
 	public CustomListAdapter() {
 		super(null, Integer.parseInt(null));
 	}
@@ -54,6 +54,16 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
         this.events = events;
 	    this.peopleId = peopleId;
 	    this.teamId = teamId;
+    }
+
+    @Override
+    public Event getItem(int position) {
+        return events.get(position);
+    }
+
+    @Override
+    public int getCount() {
+        return events.size();
     }
 
 	/**
@@ -75,12 +85,15 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
             convertView = layoutInflater.inflate(mResource, null);
 
             viewHolder = new ViewHolder(convertView);
-
             convertView.setTag(viewHolder);
-
         } else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
+//        if(events.get(position).getEventDate().contains("2014")) {
+//            count++;
+//        }
+//        Log.d(TAG_MY_APP, "count: "+ count);
+
         // Get the eventId for this record.
         String eventId = events.get(position).getEventId();
 
@@ -91,16 +104,15 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
         viewHolder.setEvent(events.get(position));
 
 		convertView.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Toast.makeText(getContext(), events.get(position).getTitle(), Toast.LENGTH_SHORT).show();
-			}
-		});
-
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), events.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+            }
+        });
         return convertView;
 	}
 
-	public class AttendanceClickListener implements View.OnClickListener {
+	private class AttendanceClickListener implements View.OnClickListener {
 		private final String eventId;
 		private final String peopleId;
 		private final String teamId;

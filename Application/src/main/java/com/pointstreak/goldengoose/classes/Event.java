@@ -13,7 +13,7 @@ public class Event implements Parcelable {
     private String rinkName;
     private String eventDate;
     private String attendance;
-    private JSONObject jsonObject;
+//    private JSONObject jsonObject;
     private String teamId;
     private String playerId;
     private String result;
@@ -29,13 +29,30 @@ public class Event implements Parcelable {
     private static final String TAG_EVENT_DATE = "eventdate";
     private static final String TAG_ATTENDANCE_STATUS = "attstatus";
     private static final String TAG_PLAYED = "played";
-
+    private static final String TAG_MY_APP = "MyApp";
     private static final String ATTENDANCE_NULL = "You haven't decided yet";
     private static final String ATTENDANCE_YES = "I am attending this event";
     private static final String ATTENDANCE_NO = "I am not attending this event";
 
     public Event(JSONObject jsonObject) {
+
         try {
+//            int position = 0;
+//            DateFormat dateFormat = null;
+//            Date oldEventDate;
+//            CustomListAdapter adapter = null;
+//            dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
+//            Date currentDate = Calendar.getInstance().getTime();
+//            ArrayList<Event> events = null;
+//            // parse the json date format to simple date format.
+//            oldEventDate = dateFormat.parse(jsonObject.getString(TAG_EVENT_DATE));
+//            Log.d(TAG_MY_APP, oldEventDate.toString());
+//
+//            if(oldEventDate.before(currentDate)) {
+//                events.remove(position);
+//                adapter.notifyDataSetChanged();
+//            }
+
             if(jsonObject.getString(TAG_RINK_NAME).equalsIgnoreCase("null")) {
                 this.setRinkName("");
             } else if(jsonObject.getString(TAG_ARENA_NAME).equalsIgnoreCase("null")) {
@@ -60,7 +77,7 @@ public class Event implements Parcelable {
             this.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
             this.setRinkName(jsonObject.getString(TAG_RINK_NAME));
 
-        }catch(JSONException e) {
+        } catch(JSONException e) {
             e.printStackTrace();
         }
     }

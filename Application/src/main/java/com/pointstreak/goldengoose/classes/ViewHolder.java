@@ -71,7 +71,7 @@ public class ViewHolder {
 
             // parse the json date format to simple date format.
             oldEventDate = dateFormat.parse(event.getEventDate());
-
+//            Log.d("MyApp", oldEventDate.toString());
             if(oldEventDate.before(currentDate)) {
                 this.title.setPaintFlags(this.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 this.rinkName.setPaintFlags(this.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
