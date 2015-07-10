@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.example.android.networkconnect.R;
 import com.pointstreak.goldengoose.adapter.CustomListAdapter;
 import com.pointstreak.goldengoose.classes.Event;
+import com.pointstreak.goldengoose.classes.ViewHolder;
 import com.pointstreak.goldengoose.encryption.ObscuredSharedPreferences;
 
 import org.apache.http.HttpEntity;
@@ -41,15 +42,16 @@ public class DisplayEventsActivity extends Activity {
     private Calendar calendar = Calendar.getInstance();
     private int getMonth = calendar.get(Calendar.MONTH) + 1;
     private int getYear = calendar.get(Calendar.YEAR);
-
+    private ViewHolder viewHolder;
     private static final String TAG_MY_APP = "MyApp";
     private static final String TAG_PEOPLE_ID = "peopleid";
     private static final String TAG_TEAM_ID = "teamid";
+    private static final String TAG_EVENT_DATE = "eventdate";
     private static final String SHARED_PREFS = "SharedPrefs";
     private static final String SHARED_EMAIL = "SharedEmail";
     private static final String SHARED_PASSWORD = "SharedPassword";
 
-    int count = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,14 +67,42 @@ public class DisplayEventsActivity extends Activity {
         eventList = new ArrayList<Event>();
 
         // execute calendar api
-//        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
         new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId);
+
+//        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
 //        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/410281/17802742/7/2015");
 
-        ListView listView = (ListView)findViewById(R.id.listView);
+        final ListView listView = (ListView)findViewById(R.id.listView);
         adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, peopleId, teamId, eventList);
 
+//        listView.setSelection(20);
+
+//        listView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         listView.setAdapter(adapter);
+/*
+        adapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                listView.setSelection(adapter.getCount() - 1);
+            }
+        });*/
+/*
+        adapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+//                listView.smoothScrollToPosition(20);
+                listView.setSelection(20);
+            }
+        });*/
+
+        listView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                listView.setSelection(20);
+            }
+        }, 100L);
     }
 
     @Override
@@ -135,8 +165,12 @@ public class DisplayEventsActivity extends Activity {
             HttpGet httpGet = null;
             HttpClient httpClient = null;
             Event event = null;
-            int count1 = 0;
-            int count2 = 0;
+            DateFormat yearFormat = null;
+            Date currentDate = Calendar.getInstance().getTime();
+            int count = 0;
+            int count2014 = 0;
+            int count2015 = 0;
+
             try {
                 // http GET request.
                 httpGet = new HttpGet(urls[0]);
@@ -151,39 +185,41 @@ public class DisplayEventsActivity extends Activity {
                     String data = EntityUtils.toString(entity);
                     jsonArray = new JSONArray(data);
 
-                    DateFormat dateFormat = null;
-                    Date oldEventDate;
+//                    DateFormat dateFormat = null;
+//                    Date oldEventDate;
+//                    dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
+                    // parse the json date format to simple date format.
+//                            oldEventDate = dateFormat.parse(event.getEventDate());
+//                            Log.d(TAG_MY_APP, oldEventDate.toString());
+                    // year format
+                    yearFormat = new SimpleDateFormat("yyyy");
 
-                    dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
-                    Date currentDate = Calendar.getInstance().getTime();
+                    // convert year format to a String to compare
+                    String yearString = yearFormat.format(currentDate);
+
+                    Log.d(TAG_MY_APP, "the year is: " + yearString);
 
                     for(int i = 0; i < jsonArray.length(); i++) {
-                        try {
-
-
-                            // parse the json date format to simple date format.
-                            oldEventDate = dateFormat.parse(event.getEventDate());
-//                            Log.d(TAG_MY_APP, oldEventDate.toString());
-
-                            if(jsonObject.getString("eventdate").contains("2014")) {
-                                count1++;
-                            }
-                            if(jsonObject.getString("eventdate").contains("2015")) {
-                                count2++;
-                            }
-                            Log.d(TAG_MY_APP, "2014 " +String.valueOf(count1));
-                            Log.d(TAG_MY_APP, "2015 " +String.valueOf(count2));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
                         jsonObject = jsonArray.getJSONObject(i);
+
+                        if(jsonObject.getString(TAG_EVENT_DATE).contains("2014")) {
+                            count2014++;
+                        }
+
+                        // takes in a formatted date for the current year.
+                        if(jsonObject.getString(TAG_EVENT_DATE).contains(yearString)) {
+                            count2015++;
+
+                            event = new Event(jsonObject);
+                            eventList.add(event);
+                        }
+
                         count++;
-//                        jsonArray.remove(0);
+
                         Log.d(TAG_MY_APP, jsonObject.toString());
                         Log.d(TAG_MY_APP, "count " + count);
-                        event = new Event(jsonObject);
-
-                        eventList.add(event);
+                        Log.d(TAG_MY_APP, "2014 " + count2014);
+                        Log.d(TAG_MY_APP, "2015 " + count2015);
                     }
                     return jsonArray;
                 }

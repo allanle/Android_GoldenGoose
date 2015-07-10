@@ -36,7 +36,8 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
 	private static final String TAG_MY_APP = "MyApp";
     private static String ATTENDANCE_YES = "I am attending this event";
     private static String ATTENDANCE_NO = "I am not attending this event";
-    private int count = 0;
+    public int count;
+
 	public CustomListAdapter() {
 		super(null, Integer.parseInt(null));
 	}
@@ -89,10 +90,6 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
         } else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
-//        if(events.get(position).getEventDate().contains("2014")) {
-//            count++;
-//        }
-//        Log.d(TAG_MY_APP, "count: "+ count);
 
         // Get the eventId for this record.
         String eventId = events.get(position).getEventId();
@@ -103,6 +100,7 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
 
         viewHolder.setEvent(events.get(position));
 
+        Log.d(TAG_MY_APP,"adapter count: " + count);
 		convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
