@@ -213,13 +213,13 @@ public class DisplayEventsActivity extends Activity {
                         try {
                             // parse the json date format to simple date format.
                             oldEventDate = pivotFormat.parse(jsonObject.getString(TAG_EVENT_DATE));
+
+                            // keeping track of how many past events are before the current date.
+                            if(oldEventDate.before(currentDate)) {
+                                pivotCount++;
+                            }
                         } catch (ParseException e) {
                             e.printStackTrace();
-                        }
-
-                        // keeping track of how many past events are before the current date.
-                        if(oldEventDate.before(currentDate)) {
-                            pivotCount++;
                         }
 
                         if(jsonObject.getString(TAG_EVENT_DATE).contains("2014")) {
