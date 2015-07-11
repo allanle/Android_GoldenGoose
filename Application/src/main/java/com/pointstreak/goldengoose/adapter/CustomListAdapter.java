@@ -37,6 +37,7 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
     private static String ATTENDANCE_YES = "I am attending this event";
     private static String ATTENDANCE_NO = "I am not attending this event";
     public int count;
+    int newcount;
 
 	public CustomListAdapter() {
 		super(null, Integer.parseInt(null));
@@ -99,8 +100,10 @@ public class CustomListAdapter extends ArrayAdapter<Event> {
         viewHolder.yes.setOnClickListener(new AttendanceClickListener(eventId, peopleId, teamId, position));
 
         viewHolder.setEvent(events.get(position));
-
-        Log.d(TAG_MY_APP,"adapter count: " + count);
+//        this.count = viewHolder.count;
+//        newcount++;
+//        Log.d(TAG_MY_APP,"this is the new count: " +newcount);
+//        Log.d(TAG_MY_APP,"adapter count: " + count);
 		convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

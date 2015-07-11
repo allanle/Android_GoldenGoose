@@ -37,22 +37,6 @@ public class Event implements Parcelable {
     public Event(JSONObject jsonObject) {
 
         try {
-//            int position = 0;
-//            DateFormat dateFormat = null;
-//            Date oldEventDate;
-//            CustomListAdapter adapter = null;
-//            dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
-//            Date currentDate = Calendar.getInstance().getTime();
-//            ArrayList<Event> events = null;
-//            // parse the json date format to simple date format.
-//            oldEventDate = dateFormat.parse(jsonObject.getString(TAG_EVENT_DATE));
-//            Log.d(TAG_MY_APP, oldEventDate.toString());
-//
-//            if(oldEventDate.before(currentDate)) {
-//                events.remove(position);
-//                adapter.notifyDataSetChanged();
-//            }
-
             if(jsonObject.getString(TAG_RINK_NAME).equalsIgnoreCase("null")) {
                 this.setRinkName("");
             } else if(jsonObject.getString(TAG_ARENA_NAME).equalsIgnoreCase("null")) {
@@ -76,7 +60,6 @@ public class Event implements Parcelable {
             this.setTitle(jsonObject.getString(TAG_TITLE));
             this.setArenaName(jsonObject.getString(TAG_ARENA_NAME));
             this.setRinkName(jsonObject.getString(TAG_RINK_NAME));
-
         } catch(JSONException e) {
             e.printStackTrace();
         }

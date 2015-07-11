@@ -1,7 +1,6 @@
 package com.pointstreak.goldengoose.classes;
 
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -81,7 +80,6 @@ public class ViewHolder {
                 this.attendance.setPaintFlags(this.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 this.yes.setPaintFlags(this.yes.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 this.no.setPaintFlags(this.no.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                count++;
             } else {
                 // Don't strike text if future event
                 this.title.setPaintFlags(0);
@@ -92,10 +90,11 @@ public class ViewHolder {
                 this.yes.setPaintFlags(0);
                 this.no.setPaintFlags(0);
             }
-            Log.d("MyApp", "old date count: " + count);
         } catch(ParseException e) {
             e.printStackTrace();
         }
+//        count++;
+//        Log.d("MyApp", "old date count: " + count);
     }
 
     public int getCount() {

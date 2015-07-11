@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,7 +52,7 @@ public class DisplayEventsActivity extends Activity {
     private static final String SHARED_PREFS = "SharedPrefs";
     private static final String SHARED_EMAIL = "SharedEmail";
     private static final String SHARED_PASSWORD = "SharedPassword";
-
+    private int pivotCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,22 +89,30 @@ public class DisplayEventsActivity extends Activity {
                 listView.setSelection(adapter.getCount() - 1);
             }
         });*/
-/*
+
+        // the pivot count is passed into smoothScrollToPosition() to keep
+        // track the amount of past games of the current date.
         adapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
 //                listView.smoothScrollToPosition(20);
-                listView.setSelection(20);
+                listView.setSelection(pivotCount);
             }
-        });*/
-
+        });
+/*
         listView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                listView.setSelection(20);
+                try {
+                    listView.smoothScrollToPosition(pivotCount);
+//                listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
+//                listView.setSelection(15);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }, 100L);
+        },100);*/
     }
 
     @Override
@@ -165,7 +175,9 @@ public class DisplayEventsActivity extends Activity {
             HttpGet httpGet = null;
             HttpClient httpClient = null;
             Event event = null;
+            Date oldEventDate = null;
             DateFormat yearFormat = null;
+            DateFormat pivotFormat = null;
             Date currentDate = Calendar.getInstance().getTime();
             int count = 0;
             int count2014 = 0;
@@ -185,12 +197,8 @@ public class DisplayEventsActivity extends Activity {
                     String data = EntityUtils.toString(entity);
                     jsonArray = new JSONArray(data);
 
-//                    DateFormat dateFormat = null;
-//                    Date oldEventDate;
-//                    dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
-                    // parse the json date format to simple date format.
-//                            oldEventDate = dateFormat.parse(event.getEventDate());
-//                            Log.d(TAG_MY_APP, oldEventDate.toString());
+                    pivotFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
+
                     // year format
                     yearFormat = new SimpleDateFormat("yyyy");
 
@@ -201,6 +209,18 @@ public class DisplayEventsActivity extends Activity {
 
                     for(int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
+
+                        try {
+                            // parse the json date format to simple date format.
+                            oldEventDate = pivotFormat.parse(jsonObject.getString(TAG_EVENT_DATE));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        // keeping track of how many past events are before the current date.
+                        if(oldEventDate.before(currentDate)) {
+                            pivotCount++;
+                        }
 
                         if(jsonObject.getString(TAG_EVENT_DATE).contains("2014")) {
                             count2014++;
@@ -213,14 +233,15 @@ public class DisplayEventsActivity extends Activity {
                             event = new Event(jsonObject);
                             eventList.add(event);
                         }
-
                         count++;
-
-                        Log.d(TAG_MY_APP, jsonObject.toString());
-                        Log.d(TAG_MY_APP, "count " + count);
-                        Log.d(TAG_MY_APP, "2014 " + count2014);
-                        Log.d(TAG_MY_APP, "2015 " + count2015);
                     }
+
+                    Log.d(TAG_MY_APP, "old event date counter: " + oldEventDate.toString());
+                    Log.d(TAG_MY_APP, "pivot counter: " + pivotCount);
+                    Log.d(TAG_MY_APP, jsonObject.toString());
+                    Log.d(TAG_MY_APP, "count " + count);
+                    Log.d(TAG_MY_APP, "2014 " + count2014);
+                    Log.d(TAG_MY_APP, "2015 " + count2015);
                     return jsonArray;
                 }
             } catch (IOException e) {
