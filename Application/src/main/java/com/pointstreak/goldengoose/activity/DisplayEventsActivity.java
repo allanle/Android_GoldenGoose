@@ -29,7 +29,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -152,9 +151,7 @@ public class DisplayEventsActivity extends Activity {
             DateFormat yearFormat = null;
             DateFormat pivotFormat = null;
             Date currentDate = Calendar.getInstance().getTime();
-            int count = 0;
-            int count2014 = 0;
-            int count2015 = 0;
+
 
             try {
                 // http GET request.
@@ -183,30 +180,14 @@ public class DisplayEventsActivity extends Activity {
                     for(int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
 
-                        try {
-                            // parse the json date format to simple date format.
-                            oldEventDate = pivotFormat.parse(jsonObject.getString(TAG_EVENT_DATE));
-
-                            // keeping track of how many past events are before the current date.
-                            if(oldEventDate.before(currentDate)) {
-                                pivotCount++;
-                            }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-                        if(jsonObject.getString(TAG_EVENT_DATE).contains("2014")) {
-                            count2014++;
-                        }
-
                         // takes in a formatted date for the current year.
                         if(jsonObject.getString(TAG_EVENT_DATE).contains(yearString)) {
-                            count2015++;
+
 
                             event = new Event(jsonObject);
                             eventList.add(event);
                         }
-                        count++;
+
                     }
 
                     return jsonArray;
