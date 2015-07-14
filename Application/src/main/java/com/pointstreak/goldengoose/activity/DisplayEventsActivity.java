@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,8 +28,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class DisplayEventsActivity extends Activity {
     private ArrayList<Event> eventList;
@@ -45,6 +50,8 @@ public class DisplayEventsActivity extends Activity {
     private static final String SHARED_PREFS = "SharedPrefs";
     private static final String SHARED_EMAIL = "SharedEmail";
     private static final String SHARED_PASSWORD = "SharedPassword";
+    private static final String TAG_EVENT_DATE = "eventdate";
+    private int pivotCount;
 
 
     @Override
@@ -62,13 +69,23 @@ public class DisplayEventsActivity extends Activity {
         eventList = new ArrayList<Event>();
 
         // execute calendar api
-        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
+        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId);
 
+//        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
 //        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/410281/17802742/7/2015");
-        ListView listView = (ListView)findViewById(R.id.listView);
+        final ListView listView = (ListView)findViewById(R.id.listView);
         adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, peopleId, teamId, eventList);
 
         listView.setAdapter(adapter);
+
+        adapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+//                listView.smoothScrollToPosition(20);
+                listView.setSelection(pivotCount);
+            }
+        });
     }
 
     @Override
@@ -131,6 +148,14 @@ public class DisplayEventsActivity extends Activity {
             HttpGet httpGet = null;
             HttpClient httpClient = null;
             Event event = null;
+            Date oldEventDate = null;
+            DateFormat yearFormat = null;
+            DateFormat pivotFormat = null;
+            Date currentDate = Calendar.getInstance().getTime();
+            int count = 0;
+            int count2014 = 0;
+            int count2015 = 0;
+
             try {
                 // http GET request.
                 httpGet = new HttpGet(urls[0]);
@@ -145,13 +170,51 @@ public class DisplayEventsActivity extends Activity {
                     String data = EntityUtils.toString(entity);
                     jsonArray = new JSONArray(data);
 
+                    pivotFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
+
+                    // year format
+                    yearFormat = new SimpleDateFormat("yyyy");
+
+                    // convert year format to a String to compare
+                    String yearString = yearFormat.format(currentDate);
+
+                    Log.d(TAG_MY_APP, "the year is: " + yearString);
+
                     for(int i = 0; i < jsonArray.length(); i++) {
-	                    jsonObject = jsonArray.getJSONObject(i);
+                        jsonObject = jsonArray.getJSONObject(i);
 
-                        event = new Event(jsonObject);
+                        try {
+                            // parse the json date format to simple date format.
+                            oldEventDate = pivotFormat.parse(jsonObject.getString(TAG_EVENT_DATE));
 
-                        eventList.add(event);
+                            // keeping track of how many past events are before the current date.
+                            if(oldEventDate.before(currentDate)) {
+                                pivotCount++;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        if(jsonObject.getString(TAG_EVENT_DATE).contains("2014")) {
+                            count2014++;
+                        }
+
+                        // takes in a formatted date for the current year.
+                        if(jsonObject.getString(TAG_EVENT_DATE).contains(yearString)) {
+                            count2015++;
+
+                            event = new Event(jsonObject);
+                            eventList.add(event);
+                        }
+                        count++;
                     }
+
+                    Log.d(TAG_MY_APP, "old event date counter: " + oldEventDate.toString());
+                    Log.d(TAG_MY_APP, "pivot counter: " + pivotCount);
+                    Log.d(TAG_MY_APP, jsonObject.toString());
+                    Log.d(TAG_MY_APP, "count " + count);
+                    Log.d(TAG_MY_APP, "2014 " + count2014);
+                    Log.d(TAG_MY_APP, "2015 " + count2015);
                     return jsonArray;
                 }
             } catch (IOException e) {
