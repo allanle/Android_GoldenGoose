@@ -70,24 +70,17 @@ public class ViewHolder {
             Date currentDate;
 
             dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy HH:mm");
-<<<<<<< HEAD
-
-            currentDate = Calendar.getInstance().getTime();
-=======
->>>>>>> 9d743760b9d68d9550180c15e9a7e437dc31d3d7
 
             currentDate = Calendar.getInstance().getTime();
             TimeZone.setDefault(TimeZone.getTimeZone("PST"));
             // parse the json date format to simple date format.
             oldEventDate = dateFormat.parse(event.getEventDate());
 
-<<<<<<< HEAD
-
-=======
             Log.d("MyApp","old event: "+ oldEventDate.toString());
             Log.d("MyApp","cur date: " +currentDate.toString());
+
+
 //            Log.d("MyApp","new current date: " +newCurrentDate.toString());
->>>>>>> 9d743760b9d68d9550180c15e9a7e437dc31d3d7
             if(oldEventDate.before(currentDate)) {
                 this.title.setPaintFlags(this.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 this.rinkName.setPaintFlags(this.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -109,8 +102,6 @@ public class ViewHolder {
         } catch(ParseException e) {
             e.printStackTrace();
         }
-//        count++;
-//        Log.d("MyApp", "old date count: " + count);
     }
 
     public int getCount() {
