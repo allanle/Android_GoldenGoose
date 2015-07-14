@@ -1,6 +1,7 @@
 package com.pointstreak.goldengoose.classes;
 
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class ViewHolder {
     private TextView played;
@@ -65,13 +67,18 @@ public class ViewHolder {
         try {
             DateFormat dateFormat = null;
             Date oldEventDate;
+            Date currentDate;
 
-            dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
-            Date currentDate = Calendar.getInstance().getTime();
+            dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy HH:mm");
 
+            currentDate = Calendar.getInstance().getTime();
+            TimeZone.setDefault(TimeZone.getTimeZone("PST"));
             // parse the json date format to simple date format.
             oldEventDate = dateFormat.parse(event.getEventDate());
-//            Log.d("MyApp", oldEventDate.toString());
+
+            Log.d("MyApp","old event: "+ oldEventDate.toString());
+            Log.d("MyApp","cur date: " +currentDate.toString());
+//            Log.d("MyApp","new current date: " +newCurrentDate.toString());
             if(oldEventDate.before(currentDate)) {
                 this.title.setPaintFlags(this.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 this.rinkName.setPaintFlags(this.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
