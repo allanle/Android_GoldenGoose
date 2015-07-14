@@ -169,16 +169,9 @@ public class DisplayEventsActivity extends Activity {
                     for(int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
 
-                        // takes in a formatted date for the current year.
-                        if(jsonObject.getString(TAG_EVENT_DATE).contains(yearString)) {
-
-
                             event = new Event(jsonObject);
                             eventList.add(event);
-                        }
-
                     }
-
                     return jsonArray;
                 }
             } catch (IOException e) {

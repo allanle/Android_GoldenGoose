@@ -286,6 +286,7 @@ public class MainActivity extends FragmentActivity {
 //                removeSharedPreferencesEmail();
                 Toast.makeText(MainActivity.this, "Incorrect email/password. Please try again.", Toast.LENGTH_SHORT).show();
             }
+
             try {
                 dialog.dismiss();
             } catch(Exception e) {
