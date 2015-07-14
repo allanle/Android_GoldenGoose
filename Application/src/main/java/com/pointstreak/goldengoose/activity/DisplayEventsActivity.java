@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.ListView;
 import com.example.android.networkconnect.R;
 import com.pointstreak.goldengoose.adapter.CustomListAdapter;
 import com.pointstreak.goldengoose.classes.Event;
+import com.pointstreak.goldengoose.classes.ViewHolder;
 import com.pointstreak.goldengoose.encryption.ObscuredSharedPreferences;
 
 import org.apache.http.HttpEntity;
@@ -42,21 +44,21 @@ public class DisplayEventsActivity extends Activity {
     private Calendar calendar = Calendar.getInstance();
     private int getMonth = calendar.get(Calendar.MONTH) + 1;
     private int getYear = calendar.get(Calendar.YEAR);
-
+    private ViewHolder viewHolder;
     private static final String TAG_MY_APP = "MyApp";
     private static final String TAG_PEOPLE_ID = "peopleid";
     private static final String TAG_TEAM_ID = "teamid";
-    private static final String SHARED_PREFS = "SharedPrefs";
-    private static final String SHARED_EMAIL = "SharedEmail";
-    private static final String SHARED_PASSWORD = "SharedPassword";
 
 
     private static final String TAG_EVENT_DATE = "eventdate";
 
 
+    private static final String SHARED_PREFS = "SharedPrefs";
+    private static final String SHARED_EMAIL = "SharedEmail";
+    private static final String SHARED_PASSWORD = "SharedPassword";
+
+
     private int pivotCount;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +78,30 @@ public class DisplayEventsActivity extends Activity {
         new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId);
 
 //        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/" + teamId + "/" + peopleId + "/" + getMonth + "/" + getYear);
+
+
 //        new ProcessCalendarAsync().execute("https://teamlockerroom.com/api/calendar/410281/17802742/7/2015");
+
         final ListView listView = (ListView)findViewById(R.id.listView);
         adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, peopleId, teamId, eventList);
 
+
+
+//        listView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         listView.setAdapter(adapter);
+
+
+
+        adapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+//                listView.smoothScrollToPosition(20);
+                listView.setSelection(pivotCount);
+            }
+        });
+
+
     }
 
     @Override
@@ -185,29 +206,18 @@ public class DisplayEventsActivity extends Activity {
                             // keeping track of how many past events are before the current date.
                             if(oldEventDate.before(currentDate)) {
                                 pivotCount++;
-
-
-
                             }
                         } catch (ParseException e) {
                             e.printStackTrace();
-
-
-
                         }
 
                         if(jsonObject.getString(TAG_EVENT_DATE).contains("2014")) {
                             count2014++;
-
-
-
                         }
 
                         // takes in a formatted date for the current year.
                         if(jsonObject.getString(TAG_EVENT_DATE).contains(yearString)) {
                             count2015++;
-
-
 
                             event = new Event(jsonObject);
                             eventList.add(event);
