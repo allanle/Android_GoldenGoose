@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,7 +49,7 @@ public class DisplayEventsActivity extends Activity {
     private static final String SHARED_EMAIL = "SharedEmail";
     private static final String SHARED_PASSWORD = "SharedPassword";
     private static final String TAG_EVENT_DATE = "eventdate";
-    private int pivotCount;
+
 
 
     @Override
@@ -76,15 +75,6 @@ public class DisplayEventsActivity extends Activity {
         adapter = new CustomListAdapter(getApplicationContext(), R.layout.custom_list_adapter, peopleId, teamId, eventList);
 
         listView.setAdapter(adapter);
-
-        adapter.registerDataSetObserver(new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-//                listView.smoothScrollToPosition(20);
-                listView.setSelection(pivotCount);
-            }
-        });
     }
 
     @Override
@@ -167,7 +157,6 @@ public class DisplayEventsActivity extends Activity {
                     String data = EntityUtils.toString(entity);
                     jsonArray = new JSONArray(data);
 
-                    pivotFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
 
                     // year format
                     yearFormat = new SimpleDateFormat("yyyy");
