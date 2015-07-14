@@ -209,12 +209,6 @@ public class DisplayEventsActivity extends Activity {
                         count++;
                     }
 
-                    Log.d(TAG_MY_APP, "old event date counter: " + oldEventDate.toString());
-                    Log.d(TAG_MY_APP, "pivot counter: " + pivotCount);
-                    Log.d(TAG_MY_APP, jsonObject.toString());
-                    Log.d(TAG_MY_APP, "count " + count);
-                    Log.d(TAG_MY_APP, "2014 " + count2014);
-                    Log.d(TAG_MY_APP, "2015 " + count2015);
                     return jsonArray;
                 }
             } catch (IOException e) {
