@@ -21,6 +21,7 @@ public class Event implements Parcelable {
     private String played;
     private boolean yesClicked;
     private boolean noClicked;
+    private String unixTimeStamp;
 
     private static final String TAG_EVENT_ID = "eventid";
     private static final String TAG_TITLE = "title";
@@ -29,6 +30,7 @@ public class Event implements Parcelable {
     private static final String TAG_EVENT_DATE = "eventdate";
     private static final String TAG_ATTENDANCE_STATUS = "attstatus";
     private static final String TAG_PLAYED = "played";
+    private static final String TAG_UNIX_TIME_STAMP = "unixtime";
     private static final String TAG_MY_APP = "MyApp";
     private static final String ATTENDANCE_NULL = "You haven't decided yet";
     private static final String ATTENDANCE_YES = "I am attending this event";
@@ -54,6 +56,7 @@ public class Event implements Parcelable {
             }
 
             // Set the eventId.
+            this.setUnixTimeStamp(jsonObject.getString(TAG_UNIX_TIME_STAMP));
             this.setEventDate(jsonObject.getString(TAG_EVENT_DATE));
             this.setPlayed(jsonObject.getString(TAG_PLAYED));
             this.setEventId(jsonObject.getString(TAG_EVENT_ID));
@@ -76,6 +79,7 @@ public class Event implements Parcelable {
         this.playerId = in.readString();
         this.result = in.readString();
         this.played = in.readString();
+        this.unixTimeStamp = in.readString();
     }
 
     public String getTitle() {
@@ -169,8 +173,17 @@ public class Event implements Parcelable {
     public boolean isNoClicked() {
         return noClicked;
     }
+
     public void setNoClicked(boolean noClicked) {
         this.noClicked = noClicked;
+    }
+
+    public String getUnixTimeStamp() {
+        return unixTimeStamp;
+    }
+
+    public void setUnixTimeStamp(String unixTimeStamp) {
+        this.unixTimeStamp = unixTimeStamp;
     }
 
     @Override

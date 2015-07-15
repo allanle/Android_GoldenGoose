@@ -8,13 +8,6 @@ import android.widget.TextView;
 
 import com.example.android.networkconnect.R;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-
 public class ViewHolder {
     private TextView played;
     private TextView eventId;
@@ -28,9 +21,9 @@ public class ViewHolder {
     private boolean yesClicked = false;
     private boolean noClicked = false;
     private Event event;
-    private Calendar calendar;
-    private SimpleDateFormat simpleDateFormat;
-    public int count = 0;
+    private TextView unixTimeStamp;
+    private static final String TAG_MY_APP = "MyApp";
+
     /**
      * Look for a child view with the given tag.
      * @param convertView
@@ -46,6 +39,7 @@ public class ViewHolder {
         this.played = (TextView)convertView.findViewById(R.id.played);
         this.no = (Button)convertView.findViewById(R.id.no);
         this.yes = (Button)convertView.findViewById(R.id.yes);
+        this.unixTimeStamp = (TextView)convertView.findViewById(R.id.unixtimestamp);
     }
 
     /**
@@ -64,48 +58,36 @@ public class ViewHolder {
      * the current date, then strike out the text.
      */
     public void setStrikeoutText() {
+        long currentUnixTime = System.currentTimeMillis() / 1000;
+        long eventUnixTime = 0;
+
         try {
-            DateFormat dateFormat = null;
-            Date oldEventDate;
-            Date currentDate;
-
-            dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy HH:mm");
-
-            currentDate = Calendar.getInstance().getTime();
-            TimeZone.setDefault(TimeZone.getTimeZone("PST"));
-            // parse the json date format to simple date format.
-            oldEventDate = dateFormat.parse(event.getEventDate());
-
-            Log.d("MyApp","old event: "+ oldEventDate.toString());
-            Log.d("MyApp","cur date: " +currentDate.toString());
-//            Log.d("MyApp","new current date: " +newCurrentDate.toString());
-            if(oldEventDate.before(currentDate)) {
-                this.title.setPaintFlags(this.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                this.rinkName.setPaintFlags(this.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                this.arenaName.setPaintFlags(this.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                this.eventDate.setPaintFlags(this.eventDate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                this.attendance.setPaintFlags(this.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                this.yes.setPaintFlags(this.yes.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                this.no.setPaintFlags(this.no.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            } else {
-                // Don't strike text if future event
-                this.title.setPaintFlags(0);
-                this.rinkName.setPaintFlags(0);
-                this.arenaName.setPaintFlags(0);
-                this.eventDate.setPaintFlags(0);
-                this.attendance.setPaintFlags(0);
-                this.yes.setPaintFlags(0);
-                this.no.setPaintFlags(0);
-            }
-        } catch(ParseException e) {
+            eventUnixTime = Long.parseLong(event.getUnixTimeStamp());
+        } catch(Exception e) {
             e.printStackTrace();
         }
-//        count++;
-//        Log.d("MyApp", "old date count: " + count);
-    }
 
-    public int getCount() {
-        return count;
+        Log.d(TAG_MY_APP, "cur  time : " + currentUnixTime);
+        Log.d(TAG_MY_APP, event.getTitle() + " : " + eventUnixTime);
+
+        if(eventUnixTime < currentUnixTime) {
+            this.title.setPaintFlags(this.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            this.rinkName.setPaintFlags(this.rinkName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            this.arenaName.setPaintFlags(this.arenaName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            this.eventDate.setPaintFlags(this.eventDate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            this.attendance.setPaintFlags(this.attendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            this.yes.setPaintFlags(this.yes.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            this.no.setPaintFlags(this.no.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            // Don't strike text if future event
+            this.title.setPaintFlags(0);
+            this.rinkName.setPaintFlags(0);
+            this.arenaName.setPaintFlags(0);
+            this.eventDate.setPaintFlags(0);
+            this.attendance.setPaintFlags(0);
+            this.yes.setPaintFlags(0);
+            this.no.setPaintFlags(0);
+        }
     }
 
     /**
@@ -119,6 +101,7 @@ public class ViewHolder {
         this.attendance.setText(event.getAttendance());
         this.eventId.setText(event.getEventId());
         this.played.setText(event.getPlayed());
+        this.unixTimeStamp.setText(event.getUnixTimeStamp());
     }
 
     /**
