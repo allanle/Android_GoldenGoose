@@ -1,4 +1,4 @@
-Android NetworkConnect Sample
+Pointstreak GoldenGoose
 ===================================
 
 This sample demonstrates how to connect to the network and fetch raw HTML using
